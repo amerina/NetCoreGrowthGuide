@@ -560,19 +560,153 @@ MVC 模式最初是作为 Smalltalk-80类库的一部分实现的。它最初被
 
 ### 3、DDD领域驱动架构
 
+领域驱动设计(Domain Driven Design)是 Eric Evans 在2003年首次引入的一种软件设计策略，旨在将复杂的领域(现实世界中的问题)简化为可扩展和可维护的软件解决方案。
+
+"为了创建好的软件，你必须知道软件是关于什么的。除非你很好地理解银行是关于什么的，一个人必须了解银行的领域，否则不可能创建一个好的银行软件系统。"——Eric Evans
+
+
+
+首先要有一个 DDD 的心态，将你的思维从数据驱动的方法中解放出来。为项目开发一种通用语言，有了通用语言之后就可以使用子域、Bounded Contexts有界上下文和Context Mapping上下文映射来进行战略设计。
+
+#### 1、DDD相关概念
+
+**通用语言Common Language**--围绕领域模型建立的一种语言，团队所有成员都使用这种语言把团队的所有活动与软件联系起来。
+
+
+
+**战略设计Strategic Design**--一种针对系统整体的建模和设计决策。这样的决策影响整个项目，并且必须由团队来制定。
+
+战略设计主要目标就是识别出领域、限界上下文，从大的方面划分出需要关注的重点而不关注具体的细节实现。
+
+战略和战术设计是站在DDD的角度进行划分。战略设计侧重于高层次、宏观上去划分和集成限界上下文，而战术设计则关注更具体使用建模工具来细化上下文。
+
+**领域Domain**--知识、影响或活动的范围
+
+- 核心领域Core Domain--模型的独特部分，是用户的核心目标，它使得应用程序与众不同并且有价值
+- 支撑子域Support SubDomain
+- 通用子域Common Domain
 
 
 
 
-### 4、事件驱动架构
+
+**限界上下文Bounded Context-**-限界上下文是一个显式边界，领域模型便存在于边界之内。一个由显示边界限定的特定职责。领域模型便存在于这个边界之内。在边界内，每一个模型概念，包括它的属性和操作，都具有特殊的含义。
+
+**上下文映射图Context Map**--项目所涉及的限界上下文以及它们与模型之间的关系的一种表示
+
+限界上下文之间的映射关系
+
+- 合作关系（Partnership）：两个上下文紧密合作的关系，一荣俱荣，一损俱损。
+- 共享内核（Shared Kernel）：两个上下文依赖部分共享的模型。
+- 客户方-供应方开发（Customer-Supplier     Development）：上下文之间有组织的上下游依赖。
+- 遵奉者（Conformist）：下游上下文只能盲目依赖上游上下文。
+- 防腐层（Anticorruption Layer,ACL）：一个上下文通过一些适配和转换与另一个上下文交互。
+- 开放主机服务（Open     Host Service）：定义一种协议来让其他上下文来对本上下文进行访问。
+- 发布语言（Published     Language）：通常与OHS一起使用，用于定义开放主机的协议。
+- 大泥球（Big     Ball of Mud）：混杂在一起的上下文关系，边界不清晰。
+- 另谋他路（SeparateWay）：两个完全没有任何联系的上下文。
+
+![DomainMap](Image\DomainMap.png)
 
 
 
-### 5、CQRS
+**战术建模--细化上下文**
 
 
 
-### 6、微服务架构
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+战术建模--细化上下文
+
+领域模型Domain Object
+
+
+
+
+
+聚合--聚合就是一组相关对象的集合，我们把聚合作为数据修改的单元。外部对象只能引用聚合中的一个成员，我们把它称为根。在聚合的边界之内应用一组一致的规则。
+
+分析模式analysis pattern--分析模式是用来表示业务建模中的常见构造的概念集合。它可能只与一个领域有关，也可能跨多个领域。
+
+
+
+命令，也称为修改器命令(Command/modifier)--使系统发生改变的操作(例如设置变量),它是一种有意产生副作用的操作
+
+
+
+
+
+深层模型deep Model--领域专家们最关心的问题以及这些问题最相关的知识的清晰表示。深层模型不停留在领域的表层和粗浅的理解上。
+
+设计模式design pattern--设计模式是对一些互相交互的对象和类的描述，我们通过定制这些对象和类来解决特定上下文中的一般设计问题
+
+
+
+领域层domain layer--在分层架构中负责领域逻辑的那部分设计和实现。领域层是在软件中用来表示领域模型的地方。
+
+Entity实体--一种对象，它不是由属性来定义的，而是通过一连串的连续事件和标识定义的。
+
+大型结构large-scale structure--一组高层的概念或规则，它为整个系统建立了一种设计模式。它使人们能够从大的角度来讨论和理解系统
+
+模块Model--一个抽象的系统，描述了领域的所选方面，可用于解决与该领域有关的问题
+
+存储库--一种把存储、检索和搜索行为封装起来的机制，它类似于一个对象集合。
+
+服务Service--一种作为接口提供的操作。它在模型中是独立的，没有封装的状态。
+
+
+
+Value Object值对象--一中描述了某种特征或属性但没有概念标识的对象
+
+
+
+**DDD常用模式：**
+
+
+
+**DDD开发流程：**
+
+
+
+**DDD Sample：**
+
+
+
+**何时使用：**
+
+DDD 非常适合业务（不仅仅是技术）非常复杂的大型应用程序。 
+
+这种应用程序需要借助领域专家的知识。 领域模型本身应包含有某种意义的行为，应体现出业务规则和交互，而不仅仅是存储和检索数据存储中各种记录的当前状态。
+
+**何时不该使用：**
+
+DDD 需要在建模、体系结构和通信方面进行投资，这对于较小型的应用程序或本质只是 CRUD（创建/读取/更新/删除）的应用程序来说可能并不值得。
+
+如果选择采用 DDD 处理应用程序，但发现领域中有一个没有任何行为的贫血模型，则可能需要重新考虑处理方法。可能是该应用程序不需要 DDD，也可能是你需要别人帮助你重构应用程序，将业务逻辑封装在领域模型中，而不是数据库或用户界面中。
+
+可以使用混合方法，只对应用程序中的事务性区域或比较复杂的区域使用 DDD，而不对应用程序中比较简单的 CRUD 或只读部分使用 DDD。
+
+例如，如果是为显示报表或将仪表板数据可视化而查询数据，则无需具有聚合约束。 使用单独的、更简单的读取模型处理这类要求是完全可以接受的。
+
+### 4、CQRS
+
+
+
+
+
+### 5、微服务架构
 
 
 
@@ -617,6 +751,25 @@ public void Configure(IApplicationBuilder app)
 
 所以过滤器是中间件的一种，是中间件中的一个类别。
 
+#### 2、事件驱动架构
+
+事件驱动架构是围绕事件的发布、捕获、处理和存储(或持久性)构建的集成模型。具体来说，当一个应用程序或服务执行一个操作或经历另一个应用程序或服务可能想知道的更改时，它发布一个事件(该操作或更改的记录) ，另一个应用程序或服务可以使用该事件并依次处理该事件以执行一个或多个操作。
+
+事件驱动架构使连接的应用程序和服务之间实现松散耦合ーー它们可以通过发布和使用事件彼此进行通信，除了事件格式之外，它们对彼此一无所知。与请求/响应体系结构(或集成模型)相比，这种模型具有显著的优势，在这种体系结构中，一个应用程序或服务必须从另一个特定的应用程序或服务请求特定的信息，而这些应用程序或服务正在期待特定的请求。
+
+![EventDriven](Image\EventDriven.png)
+
+事件驱动架构被广泛认为是微服务实现的最佳实践。微服务可以使用 REST API 彼此通信。但是 REST，一种请求/响应集成模型，通过强制在微服务之间进行同步的、紧密耦合的集成，破坏了松散耦合微服务体系结构的许多好处。
+
+**示例：**
+
+一个电商应用程序工作流程如下：
+
+Order Service 创建一个 Order，这个订单处于待定Pending状态，然后发布一个OrderCreated事件。
+
+- Customer Service 接收到这个事件并尝试为这个 Order 扣除信用额度。然后发布一个Credit Reserved 事件或者CreditLimitExceeded(超出信用限额度)事件。
+- Order Service接收到 Customer Service 发送的事件并将订单状态更改为已核准Open或已取消Cancel。
+
 
 
 ### **8、参考：**
@@ -629,4 +782,7 @@ public void Configure(IApplicationBuilder app)
 6. [ASP.NET Core Middleware With Examples](https://dotnettutorials.net/lesson/asp-net-core-middleware-components/)
 7. [Understanding the ASP.NET Core Middleware pipeline](https://thomaslevesque.com/2018/03/27/understanding-the-asp-net-core-middleware-pipeline/)
 8. [ASP.NET Core过滤器](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-6.0)
+9. [事件驱动的架构| Microsoft Docs](https://docs.microsoft.com/zh-cn/azure/architecture/guide/architecture-styles/event-driven)
+10. [Event-Driven Architecture | IBM](https://www.ibm.com/cloud/learn/event-driven-architecture)
+11. [Domain Driven Design | DevIQ](https://deviq.com/domain-driven-design/ddd-overview)
 
