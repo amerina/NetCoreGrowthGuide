@@ -440,13 +440,12 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 如：使用Factory模式实现IOC原则即是服务定位器模式的实现
 
-### 5、参考：
+### 5、参考
 
-[Learn Inversion of Control Principle](https://www.tutorialsteacher.com/ioc)
+1. [Learn Inversion of Control Principle](https://www.tutorialsteacher.com/ioc)
+2. [Inversion of Control History](http://picocontainer.com/inversion-of-control-history.html)
 
-[Inversion of Control History](http://picocontainer.com/inversion-of-control-history.html)
-
-[控制反转](https://baike.baidu.com/item/控制反转/1158025)
+3. [控制反转](https://baike.baidu.com/item/控制反转/1158025)
 
 ## 2、模块化系统
 
@@ -499,18 +498,135 @@ API客户端：
 
 ### 2、MVC架构
 
+#### 1、初代版本-Smalltalk
+
+在1978年Trygve Reenskaug写了第一篇关于 MVC 的论文。当时他是著名的施乐帕洛阿尔托研究中心 Smalltalk 小组的访问科学家。最初他将其称为 Thing Model View Editor 模式，但是他很快将该模式的名称更改为 Model View Controller 模式。
+
+Reenskaug 试图解决的问题是如何表示(建模)复杂的现实世界系统，如“主要桥梁，电站或海上石油生产平台的设计和建造。”人类有这些系统的心智模型，计算机有数字模型。如何在心智模型和数字模型之间架起一座桥梁？
+
+MVC 模式早在第一个网络浏览器出现之前就已经发明了。
+
+MVC 模式最初是作为 Smalltalk-80类库的一部分实现的。它最初被用作创建图形用户界面(GUI)的架构模式。
+
+模型视图控制器模式的原始含义与今天的模式有很大的不同。在图形用户界面上下文中，模型视图控制器模式是这样解释的:
+
+- 模型-由应用程序表示的特定数据。例如，气象站温度读数。
+- VIEW-模型中数据的一种表示形式。同一个模型可能有多个关联的视图。例如，温度读数可以用标签和条形图来表示。这些视图通过观察者关系与特定的模型相关联。
+- CONTROLLER-收集用户输入并修改模型。例如，控制器可能收集鼠标单击和击键，并更新模型。
+
+![OriginalMVCPattern](Image\OriginalMVCPattern.png)
+
+**注意：**
+
+1. 在此图中，视图是从模型间接更新的。当模型发生更改时，模型引发事件，视图响应该事件而发生更改。
+2. 控制器并不直接与视图交互。相反，控制器修改模型，因为视图正在观察模型，所以视图得到更新。
+
+根据 Martinfowler 的说法，这个最初版本的 MVC 模式的主要好处是分离呈现：确保任何操纵表示的代码只操纵表示，将所有领域和数据源逻辑推入程序的明确分离的区域
+
+分离展示层是关注点分离(SoC)软件设计原则的一个特例。这是统一所有MVC模式理由的通用思路。**MVC模式提供了清晰的关注点分离。**
+
+#### 2、二代版本-JSP
+
+1998年JSP(JavaServer Pages)引入MVC架构，JSP版本MVC架构与原始版本有很大的不同，MVC 应用程序的组件是这样工作的:
+
+- 模型-业务逻辑加上一个或多个数据源，例如关系数据库。
+- VIEW-向用户显示模型信息的用户界面。
+- 控制器-控制用户与应用程序的交互。
+
+在这个新版本的 MVC 模型中，视图和模型之间不再有任何关系。视图和模型之间的所有通信都是通过控制器进行的。
+
+![Model2MVCPattern](Image\Model2MVCPattern.png)
+
+
+
+#### 3、三代版本-ASP.NET MVC
+
+2008年微软为.NET引入ASP.NET MVC版本,搭配ASP.NET的成熟框架组成一个强大的组合。
+
+
+
+![ASP.NETMVC](Image\ASP.NETMVC.png)
+
+
+
+
+
+
+
+#### 4、对比分层架构与MVC架构
+
+- 简单的Web应用程序：分层架构可以快速成型,开发简单
+- 复杂的Web应用程序：MVC架构更易于测试、职责清晰分工明确、修改和维护简单
+
 ### 3、DDD领域驱动架构
+
+
+
+
 
 ### 4、事件驱动架构
 
-### 5、微服务架构
 
-拓展：
 
-管道-过滤器架构
+### 5、CQRS
 
 
 
-参考：
+### 6、微服务架构
+
+
+
+
+
+### **7、拓展**知识
+
+#### 1、**管道-过滤器架构**
+
+<img src="Image\PipeFilterPattern.png" alt="PipeFilterPattern" style="zoom:80%;" />
+
+将一个执行复杂处理的任务分解为一系列可重复使用的单个元素。 此模式允许单独部署和缩放执行处理的任务元素，从而可以提高性能、可扩展性和可重用性。
+
+管道就像生产流水线上的传送带，过滤器就像每一道工序上的机器。管道负责数据的传递，原始数据通过管道传送给第一个过滤器，第一个过滤器处理完成之后，再通过管道把处理结果传送给下一个过滤器，重复这个过程直到处理结束，最终得到需要的结果数据。
+
+ASP.NET Core一系列中间件组成一个管道。用户请求通过管道传递，每个中间件都有机会在将它们传递到下一个中间件之前对它们执行某些操作。传出响应也以相反的顺序通过管道传递。
+
+<img src="Image\NetCoreMiddleware.png" alt="NetCoreMiddleware" style="zoom:80%;" />
+
+
+
+```c#
+public void Configure(IApplicationBuilder app)
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseStaticFiles();
+    app.UseAuthentication();
+    app.UseMvcWithDefaultRoute();
+}
+```
+
+"Use*"每种方法都会向管道添加一个中间件。添加它们的顺序决定了请求遍历它们的顺序。因此，传入请求将首先遍历异常处理程序中间件，然后是静态文件中间件，然后是身份验证中间件，最终将由 MVC 中间件处理。
+
+
+
+**延伸：**
+
+中间件是组装到应用管道中以处理请求和响应的软件。每个组件：
+
+- 选择是否将请求传递给管道中的下一个组件。
+- 可以在管道中的下一个组件之前和之后执行工作。
+
+所以过滤器是中间件的一种，是中间件中的一个类别。
+
+
+
+### **8、参考：**
 
 1. [常用 Web 应用程序体系结构 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures)
+2. [ASP.NET MVC Version History](https://www.tutorialsteacher.com/mvc/asp.net-mvc-version-history)
+3. [The Evolution of MVC](http://stephenwalther.com/archive/2008/08/24/the-evolution-of-mvc)
+4. [管道和筛选器模式](https://docs.microsoft.com/zh-cn/azure/architecture/patterns/pipes-and-filters)
+5. [ASP.NET Core Middleware](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-6.0)
+6. [ASP.NET Core Middleware With Examples](https://dotnettutorials.net/lesson/asp-net-core-middleware-components/)
+7. [Understanding the ASP.NET Core Middleware pipeline](https://thomaslevesque.com/2018/03/27/understanding-the-asp-net-core-middleware-pipeline/)
+8. [ASP.NET Core过滤器](https://docs.microsoft.com/en-us/aspnet/core/mvc/controllers/filters?view=aspnetcore-6.0)
+
