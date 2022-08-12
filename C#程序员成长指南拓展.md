@@ -759,9 +759,29 @@ Todo...
 
 ### 4、CQRS
 
+1988年Bertrand Meyer 在其《面向对象软件构造》一书中首次使用CQS(Command Query Separation)术语。
+
+其基本思想是，我们应该将对象的方法分为两个明显分开的类别：
+
+- **查询Queries**：返回结果，不更改系统的可观察状态（无副作用）。
+- **命令Commands**：更改系统的状态，但不返回值。
+
+每种方法要么返回状态，要么更改状态，不会二者兼具。
+
+CQRS命令和查询职责分离由 Greg Young 提出并由 Udi Dahan 等人大力推广。它基于 CQS 原则，在 CQRS 中，对象拆分为两个对象，一个对象包含命令，另一个包含查询。。
+
+CQRS 的优势
+
+- **系统行为之间的界限清晰**：它为构建与行为相关的应用程序提供了具体指导。
+- **更接近业务逻辑**：代码和体系结构按其业务操作进行隔离，从而更容易专注于业务案例。
+- **松耦合**逻辑是内聚的，并且相互关联性较低，因此更容易创建模块化的、可维护的应用程序。
+- **减少认知负荷**由于垂直拆分，相关代码保持在一起。若要修改现有代码或创建新代码，无需了解整个体系结构和业务逻辑。专注于特定任务更容易。
+- **更轻松地扩展、优化和架构更改**由于我们的代码保存在孤岛中，因此更容易仅微调一个管道，而其余部分保持不变。在业务关键型位置，可以更轻松地专注于精确优化。
+- **可 预见性**由于隔离，您有操作行为的一般规则。您不会对查询更改应用程序状态感到惊讶;保持写入和读取逻辑之间的分离可以降低最终使用意大利面条式代码的机会。
 
 
 
+Todo。。。
 
 ### 5、微服务架构
 
@@ -842,4 +862,8 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 9. [事件驱动的架构| Microsoft Docs](https://docs.microsoft.com/zh-cn/azure/architecture/guide/architecture-styles/event-driven)
 10. [Event-Driven Architecture | IBM](https://www.ibm.com/cloud/learn/event-driven-architecture)
 11. [Domain Driven Design | DevIQ](https://deviq.com/domain-driven-design/ddd-overview)
+12. [CommandQuerySeparation (martinfowler.com)](https://martinfowler.com/bliki/CommandQuerySeparation.html)
+13. [CQRS (martinfowler.com)](https://www.martinfowler.com/bliki/CQRS.html)
+14. [CQRS Guide](https://www.eventstore.com/cqrs-pattern)
+15. [在微服务中应用简化的 CQRS 和 DDD 模式 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns)
 
