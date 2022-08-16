@@ -461,6 +461,10 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 ## 7、动态WebAPI实现
 
+
+
+
+
 拓展：
 
 API客户端：
@@ -470,7 +474,16 @@ API客户端：
 
 
 
+参考
+
+1. [API/Auto API Controllers | Documentation Center | ABP.IO](https://docs.abp.io/en/abp/latest/API/Auto-API-Controllers)
+2. 
+
 ## 8、认证与授权系统
+
+
+
+
 
 ## 9、常用软件架构
 
@@ -785,7 +798,7 @@ Todo。。。
 
 ### 5、微服务架构
 
-
+Todo...
 
 
 
@@ -828,7 +841,7 @@ public void Configure(IApplicationBuilder app)
 
 所以过滤器是中间件的一种，是中间件中的一个类别。
 
-#### 2、事件驱动架构
+#### 2、事件驱动架构Event Sourcing
 
 事件驱动架构是围绕事件的发布、捕获、处理和存储(或持久性)构建的集成模型。具体来说，当一个应用程序或服务执行一个操作或经历另一个应用程序或服务可能想知道的更改时，它发布一个事件(该操作或更改的记录) ，另一个应用程序或服务可以使用该事件并依次处理该事件以执行一个或多个操作。
 
@@ -846,6 +859,8 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 
 - Customer Service 接收到这个事件并尝试为这个 Order 扣除信用额度。然后发布一个Credit Reserved 事件或者CreditLimitExceeded(超出信用限额度)事件。
 - Order Service接收到 Customer Service 发送的事件并将订单状态更改为已核准Open或已取消Cancel。
+
+#### 3、DDD、CQRS And Event Sourcing
 
 
 
