@@ -2,7 +2,7 @@
 
 # C#程序员成长指南拓展
 
-## 0、ASP.NET发展史(译)
+## 0、ASP.NET发展史([译](https://www.dotnetcurry.com/aspnet/1492/aspnet-history-part-1#))
 
 ### Part I
 
@@ -165,6 +165,68 @@ ASP.NET通过组合拳保存状态:
 
 但是包含更多的控件并不是框架更新的所有内容。
 
+框架还有许多其他的补充和改进，改变了开发体验:
+
+- View State得到了改进并缩小了大小，这是对ASP.NET的一个批评(最开始View State太大了)。引入“控件状态”的概念是为了将控件发挥作用(不能禁用)所需的绝对最小数据与视图状态的其余部分分离开来
+- 在引入母版页(Master Pages)之后，实现一致的外观和感觉变得更容易了，母版页的概念接近于ASP.NET MVC与ASP.NET Core中看到的布局。整个网站的样式可以通过主题Themes和皮肤Skins集中起来，主题由许多CSS和皮肤(.Skin)文件组成，皮肤SKin是CSS的XML文件，可以为ASP.NET服务器控件设置属性
+- 现在可以创建站点地图(Site Map)了，这是一个描述网站中页面位置和名称的xml文件。该文件可以直接与新添加的用于导航目的的服务器控件一起使用，能够从站点地图呈现面包屑、菜单或树菜单。
+- 页面生命周期使用了新的事件
+- 现在允许跨页回发。也就是说，一个页面现在可以将POST发送到另一个页面，而不仅仅是发送到它自己
+- 缓存特性得到了显著改进。基于SQL server的新依赖被引入，开发人员现在可以编写他们自己的缓存依赖实现，缓存页面中也允许动态部分(即动态字段也允许页面缓存)
+- Web部件允许用户对网站进行个性化设置，就像iGoogle或My Yahoo!时间的传送门。服务器控件可以用作Web部件(并且可以创建自定义部件)，用户可以从门户类页面中添加、删除和自定义这些Web部件
+- 最后，将工厂设计模式与泛型相结合，以创建所谓的提供者模式(*Providers*模式)。这只是一个与ASP.NET脱钩的契约。从底层数据的实际来源获取成员资格或概要文件等特性。该框架已经包含了典型源(如SQL Server或XML)的提供者，而开发人员可以创建自己的提供者。然后可以将它们作为提供者配置部分的一部分连接到它们的特性上。
+
+我相信即使只有上面这样一个简短的总结，您也会同意我的观点，即 ASP.NET 2.0总体上是向前迈出的重要一步
+
+然而，您可能已经注意到，对于客户端来说，几乎没有什么新东西。大多数新功能仍然面向服务器，浏览器主要专注于呈现服务器上生成的页面。
+
+这一切即将改变，而且会很快发生！
+
+#### 4、JavaScript 和 AJAX 的重要性
+
+Web 2.0引入了对更多动态网站的需求，越来越需要利用客户端脚本。这种趋势一直持续到2010年前5年，直到这些功能成为现代网站的一个共同特征和预期特征，尤其是在谷歌产品采用了这些功能之后，这种趋势开始进入指数增长。2005年初创造的术语 AJAX (*Asynchronous JavaScript and XML*)迅速成为一个流行词，无处不在，并成为 Web 开发中的下一个大事件。
+
+在 ASP.NET 2.0之前，AJAX 这个术语还没有被创造出来，也没有被采用，但是它所依赖的 XMLHttpRequest API 已经在浏览器中使用了好几年了。事实上，没有什么能真正阻止 ASP.NET 开发人员创建服务器端端点，然后从 JavaScript 调用这些端点，正如[本文](https://learn.microsoft.com/en-us/previous-versions/dotnet/articles/ms972956(v%3dmsdn.10))介绍 ASP.NET 开发人员使用这种模式的文章所描述的那样。
+
+ASP.NET 2.0认识到 JavaScript 与 XMLHttpRequest 交互的重要性与日俱增(仍然没有通常标识为 AJAX) ，并引入了一个称为[脚本回调](https://learn.microsoft.com/en-us/aspnet/web-forms/overview/moving-to-aspnet-20/the-asp-net-2-0-page-model#script-callbacks-in-aspnet-20)(Script CallBacks)的特性。这允许从 JavaScript 通过 XMLHttpRequest 调用服务器端方法。这个版本还引入了 ClientScriptManager，这是管理和捆绑每个页面所需的 JavaScript 代码的早期尝试！
+
+在 ASP.NET 2.0即将发布的时候，AJAX 的狂热已经开始了。微软已经注意到并[宣布](https://weblogs.asp.net/scottgu/416185)他们正在开发一个代号为 Atlas 的项目，该项目将为 ASP.NET 带来一流的 AJAX 支持。
+
+Atlas 最终在2007年1月以微软 AJAX 1.0的形式发布。除了将 AJAX 带到了 ASP.NET 的前沿，这次发布标志着 ASP.NET 的两个有趣的第一次:
+
+- 它是独立于.NET框架发布的，作为一个独立的安装程序，将Microsoft AJAX添加到ASP.NET 2.0。在此之前，开发人员必须等待.NET框架2年的发布周期才能获得新特性
+- AJAX控件工具包的新控件部分的源代码是开源的，可以在CodePlex中获得。客户端JavaScript代码是在MS-PL(微软公共许可证)下发布的，它类似于MIT许可证。服务器端代码使用了更严格的MS-RsL (Microsoft Reference Source License)，目的是促进开发和调试。
+
+微软的 AJAX 关注点并不局限于 AJAX 请求，而是集中在当时现代动态网站所需的所有客户端方面:
+
+- [控件工具包](https://learn.microsoft.com/en-us/aspnet/web-forms/overview/ajax-control-toolkit/)中包含的控件，如日期选择器、手风琴或下拉菜单，包含丰富的客户端功能。包含常规ASP.NET控件的控制扩展程序使得向现有的服务器控件中添加一些新功能变得很容易
+- 像[UpdatePanel](https://learn.microsoft.com/en-us/dotnet/api/system.web.ui.updatepanel?redirectedfrom=MSDN&view=netframework-4.7.2)这样的服务器端控件简化了部分更新页面部分的任务，而不需要编写任何JavaScript代码
+- 引入了一个完整的[JavaScript类型系统](https://learn.microsoft.com/en-us/previous-versions/bb386453(v=vs.140)?redirectedfrom=MSDN)，允许开发人员使用类型编写JavaScript代码。众所周知，这个想法后来会随着TypeScript的发布再次得到实现和完善。尽管如此，看到早期的尝试还是很有趣的，我想知道在后来的TypeScript开发过程中是否使用了之前开发JavaScript类型系统中学到的经验教训(如果有的话)。
+- ASMX和WCF [Web服务](https://learn.microsoft.com/en-us/previous-versions/aspnet/bb398785(v%3dvs.100))都可以使用新的ServiceReference对象向客户端脚本公开，该对象自动生成一个JavaScript代理来调用服务。
+
+虽然微软 AJAX 的工作接近其初始版本，NET Framework 3.0于2006年11月发布。这个版本的唯一目的是介绍基于 XML 的框架 WCF (Windows Communication Foundation)、 WPF (Windows PresentationFoundation)和 WF (Windows Workflow Foundation)。
+
+直到一年后.NET Framework 3.5于2007年11月发布，ASP.NET 获得了新的特性。最重要的一点是，Microsoft AJAX 现在是框架的一部分。另一个主要特性是包含 ListView 控件，它允许通过定制不同的模板，轻松地为任何数据源构建类似 CRUD 的功能。
+
+我们也不应该忘记.NET 3.5引入了 LINQ (语言集成查询) 这一点，这让包括 ASP.NET 开发人员在内的许多人感到高兴，他们甚至获得了一个特定的 LinqDataSource 控件。
+
+#### 5、结论
+
+在2007年年底，我们有了一个经过3次重大修订的成熟的.NET 框架，其中包括一个非常强大的 ASP.NET 框架。然而，弊端开始显现。ASP.NET 提供的抽象在不需要深入理解 HTML、 HTTP 和 JavaScript的情况下提供的客户端功能方面做得相当不错，但是当事情不能正常工作时，或者需要定制功能时，同样的抽象就会泄露出来并成为阻碍。
+
+通过绑定关注服务器端控件和声明性编程，对开发者隐藏了更多的Web网络现实。当开发人员试图跟上对 Web 应用程序日益增长的期望时，他们会发现自己在围绕框架工作，而不是按照框架预期的方式工作。
+
+与此同时，对于开发者和网络用户来说，事情开始发生变化。Ruby on Rails 于2004年发布，对 Web 开发世界产生了巨大的影响。它的方法与 ASP.NET 有很大的不同，它提供了一个轻量级的 MVC 框架，该框架接受 Web 的优点和局限性，并且明确地试图不妨碍开发人员的工作。相比之下，它使 ASP.NET 看起来又老又重，受到那些寻求更好的 Web 应用开发方法的人的批评，并经常被作为反例。
+
+然而，最大的变化是由第一代 iPhone 引起的。在2007年夏天推出，一旦移动设备的用户数量爆炸式增长，网络将不再是原来的样子！
+
+### Part II
+
+#### 0、摘要
+
+第1部分概述了ASP.NET的初始设计以及微软如何对Web Dev的各种变化做出反应。在第二部分中，我们将看看这些变化是如何影响ASP.NET MVC的发展的，最终使ASP.NET转变成一个由多个库组成、可以解决不同问题的更灵活的框架。
+
+------
 
 
 
@@ -177,7 +239,24 @@ ASP.NET通过组合拳保存状态:
 
 
 
-原文：[The History of ASP.NET| DotNetCurry](https://www.dotnetcurry.com/aspnet/1492/aspnet-history-part-1#)
+
+
+
+
+
+
+
+
+
+
+
+### Part III
+
+
+
+
+
+
 
 ## 1、依赖注入系统
 
