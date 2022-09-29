@@ -228,33 +228,281 @@ Atlas 最终在2007年1月以微软 AJAX 1.0的形式发布。除了将 AJAX 带
 
 ------
 
+.NET 的第一个版本于20年前的2002年初作为.NET 架构的一部分发布。在本系列文章的第一部分中，我们看了它的初始设计，一个提供了比Classic ASP 和 ActiveX 更好的Web 平台，一个对现有的 Windows 开发人员来说熟悉的平台。
+
+随着Web成为最快节奏的平台之一，回顾过去，我们会发现框架别无选择，只能适应自最初发布以来发生在Web及其周围技术上的多种变化。当然，这在当时的变化中并不明显!
+
+在本系列的第二部分中，我们将看看这些变化是如何影响ASP.NET MVC的开发，最终将ASP.NET转变成一个更灵活的框架，该框架由多个库组成，可以解决不同的问题。
+
+#### 1、MVC-新方向(2008-2014)
+
+网络的变化发生得很快，ASP.NET 对此有些准备不足。我们已经讨论过Web表单的抽象意味着Web的现实以及HTTP、HTML和JavaScript是如何对开发人员隐藏的。尽管 ASP.NET 在2002年以服务器为中心的 Web 应用程序和基于 XML 的 Web Services服务的旧世界中运行良好，但 Web 开发的进步使这种抽象变得更加漏洞百出。
+
+一方面，越来越多的功能使用JavaScript 代码实现移动到客户端。尽管 ASP.NET 拥有针对 JavaScript 的工具，特别是当微软的 AJAX 成为框架的一部分时，但是它的重点仍然主要放在控件上。
+
+使用 ScriptManager 编写 JavaScript 并将其添加到页面是可能的，但是要绕过 PostBack 模型并不容易，除非使用 ASMX 或 WCF 服务构建 SPA 应用程序，而 JavaScript 还没有为此做好充分准备。也可以将[自定义 JavaScript 添加到自定义服务器控件](https://learn.microsoft.com/en-us/previous-versions/bb386450(v=vs.140)?redirectedfrom=MSDN)中，但是这个过程很麻烦。
+
+最终，许多开发人员主要使用 UpdatePanel 之类的控件，以及 AJAX Control Toolkit 的控件/扩展程序部分，而不是编写 JavaScript。
+
+另一方面，JSON 成为 AJAX 请求最常用的有效负载格式，因为它比XML更小，而且易于与通常使用它们的 JavaScript 代码集成。ASP.NET 和 WCF 都专注于基于 XML 的 SOAP 服务，后来增加了对HTTP上的JSON的支持。ASMX Web 服务和 WCF 服务都需要专门配置来处理基于 HTTP 的 JSON。
+
+但这还不是全部。
+
+由于 Web Forms 为 ASP.NET 开发人员抽象了Web，直接使用 JSON 在没有框架中的一流支持的情况下是[一个繁琐](https://learn.microsoft.com/en-us/previous-versions/dotnet/articles/bb299886(v%3dmsdn.10)#working-with-json-in-the-net-framework)的后期工作。
+
+总之，当 Ruby on Rails 这样的框架爆发时，我们有一个漏洞百出的 Web Forms 抽象，同时 JavaScript 和 JSON 的重要性日益增加。
+
+#### 2、引入ASP.NET MVC
+
+微软意识到了这种情况，在[2007年底宣布](https://learn.microsoft.com/zh-cn/archive/blogs/peterlau/asp-net-mvc-framework-announced-at-alt-net-conference)他们正在开发一个名为 ASP.NET MVC 的新框架，试图解决这些问题。这个框架将是开源的，并且在设计时考虑到可测试性和可插拔性。作为声明的一部分，微软甚至分享了以下关键设计目标清单:
+
+- 遵循[关注点分离](https://en.wikipedia.org/wiki/Separation_of_concerns)原则
+- 授予对生成的HTML的完全控制
+- 为TDD提供一级支持([测试驱动开发](https://en.wikipedia.org/wiki/Test-driven_development))
+- 与现有ASP.NET基础设施集成(缓存、会话、模块、处理程序、IIS主机等)
+- 可插拔。提供适当的hooks钩子，以便像控制器工厂或视图引擎这样的组件可以被替换
+- 默认使用ASPX视图引擎(没有视图状态或回发)，但允许使用其他视图引擎，如来自MonoRail的视图引擎等。
+- 支持IoC([控制反转](https://stackoverflow.com/questions/3058/what-is-inversion-of-control))容器，用于控制器的创建和对控制器的依赖注入
+- 提供对URL和导航的完全控制
+
+值得强调的是，这并不是第一次尝试一个更清洁的 .NET Web 框架。我们已经看到，早在2003年，微软自己就为 MVC 或Front Controller(前端控制器)等模式的实现提供了指导。那个.NET 社区也致力于提供自己的替代方案，其中 MonoRail ([Castle 项目](https://en.wikipedia.org/wiki/Castle_Project)的一部分，受 Ruby on Rails 的启发)是最突出的一个。事实上，这是微软因其对开源的态度而面临的[常见批评](https://jaxenter.com/asp-net-web-forms-redux-125274.html)之一。他们不是拥抱和支持开源计划，而是建立和推广自己的计划。
+
+用 Steve Naidamast 的话说:
+
+"MVC 作为一种模式已经存在很长时间了,.NET 社区也有类似的“*Castle* 项目”，被称为“ MonoRail”。在微软开始推广他们自己的 MVC 版本之前，它从来没有被任何人认为是实质性的东西，这个版本看起来和“Castle项目”的人们已经开发的一模一样。"
+
+最终，该框架的1.0版于2009年3月发布。它独立于.NET 框架，发布周期为2年。它的代码可以在 CodePlex 中获得，并使用 MS-PL 许可证，拥有修改和重新发布代码的广泛权利。这标志着微软对开放源码态度的一个重要里程碑。
+
+开发者现在有了来自微软的另一种选择，它拥抱网络，不试图隐藏HTML、HTTP、JavaScript或其无状态特性等细节。相反，它提供了与它们一起工作所需的工具和灵活性。
+
+HTTP请求现在将由Controller类的特定Action方法提供服务。URL通过一个新的路由模块匹配到控制器和动作，该模块允许使用默认/controller/action的基于约定的路由。然后，操作方法将执行服务请求所需的必要逻辑并返回操作结果，其中呈现视图只是结果之一。视图将是位于与控制器不同文件夹中的ASPX模板。
 
 
 
+![aspnet-mvc-request-lifecycle](Image\aspnet-mvc-request-lifecycle.png)
 
 
 
+​																ASP.NET MVC 应用程序的请求生命周期
+
+通常的 Hello World 示例可以包含位于 Controller 文件夹中的 HelloWorldController 类:
+
+```c#
+public class HelloWorldController : Controller
+{
+    public ViewResult Index()
+    {
+        return View((string)null);      
+    }
+        
+    [HttpPost]
+    public ViewResult Index(String name)
+    {  
+        return View(name);
+    }  
+}
+```
+
+一个相应的视图 Index.aspx 位于 Views/HelloWorld 文件夹中。最初的框架使用了 ASPX 视图引擎，这使得混合 C # 代码和 HTML 不像当前的 Razor 代码那么好:
+
+```asp.net
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<String>"  MasterPageFile="~/Views/Shared/Site.Master" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+<% if (Model != null) { %>
+  <p>
+    Hello <%=Html.Encode(Model) %> !
+  </p>
+<% } %>
+<% using (Html.BeginForm()) { %>
+  <p>
+    <label for="name">Name:</label>
+    <input id="name" name="name" type="text">
+  </p>
+  <input type="submit" value="Say Hi" />
+<% } %>
+</asp:Content>
+```
+
+常见的布局和 HTML 结构是通过母版页实现的，视图在其@Page 指令中指定母版页。在此示例中，将有一个共享母版页 Site。在视图/共享文件夹中的 Master.aspx:
+
+```asp.net
+<%@ Master Language="C#" AutoEventWireup="true" Inherits="System.Web.Mvc.ViewMasterPage" %>
+<!DOCTYPE html>
+<html> 
+<head>
+  <meta charset="UTF-8">
+  <title>Hello World</title>
+</head>
+<body>
+  <h1>ASP MVC 1.0</h1>
+  <asp:ContentPlaceHolder ID="MainContent" runat="server">
+  </asp:ContentPlaceHolder>
+</body>
+</html>
+```
+
+框架不需要被告知控制器或视图的位置。它内置了**约定**的思想，用于路由和控制器/视图位置。
+
+提供了默认的路由/controller/action，框架将自动在 Controllers 文件夹中查找与 URL 名称匹配的控制器类。然后，它将查找名称与 URL 中的名称相匹配的控制器的方法。类似地，框架将在视图文件夹中查找具有正确名称的视图。开发人员还可以自由地用自己的约定替换这些约定，自定义路由或连接自己的控制器工厂和/或视图引擎。
+
+总的来说，像这样的 Hello World 示例，甚至简单的类CRUD 功能看起来比 Web Forms更复杂，更难实现。这就是为什么[脚手架](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/nerddinner/provide-crud-create-read-update-delete-data-form-entry-support)，自动生成页面和控制器的工具(一个从 Ruby on Rails 导入的想法)变得如此重要。
+
+#### 3、ASP.NET MVC or Web Forms?
+
+MVC仍在继续发展，它的2.0版本于2010年3月发布，比.Net Framework 4.0发布早了一个月。ASP.NET 4.0进一步改进了Web Forms，除了其他新特性之外，现在可以禁用视图状态(View State)，除非在那些你显式启用的控件上，而且还可以对Web Forms页面使用路由模块。
+
+微软面临着严峻的挑战。它在 Web Forms 方面有着巨大的投资和用户基础，同时，它必须转向 MVC作为未来的战略。自 [MVC 1.0](https://learn.microsoft.com/en-us/aspnet/mvc/overview/older-versions-1/overview/asp-net-mvc-overview)以来采取的立场是，这两个框架是兼容的，具有不同的优势。Web Forms 之所以被定位为 RAD 平台，是因为它具有一系列控件和有状态特性，允许开发人员快速构建应用程序，而无需处理 Web 的复杂性。
+
+不管微软如何定位这两个框架，ASP.NET 开发者社区的反应是好坏参半的。一些人在它宣布之后就对它充满热情，并认为它是 ASP.NET 所需要的改变，类似于 [ALT.NET](https://weblogs.asp.net/jongalloway/are-you-alt-net) 运动所宣扬的那样。
+
+对于许多经常使用 Web Forms 的人来说，最初的反应是怀疑，他们认为 Web Forms 是一个成熟而稳定的框架，可以构建任何具有成本效益的东西，而 MVC 则是纯粹主义者和专家的实验。我们可以[在这里读一个例子](https://stackoverflow.com/questions/102558/biggest-advantage-to-using-asp-net-mvc-vs-web-forms/4871559#4871559)，[在这里读另一个例子](https://softwareengineering.stackexchange.com/questions/95212/when-to-favor-asp-net-webforms-over-mvc/95253#95253):
+
+MVC 的问题在于，即使对于“专家”来说，它也会占用大量宝贵的时间，并且需要大量的努力。企业的驱动力是基于“快速解决方案”，而不管其背后的技术是什么。WebForms 是一种节省时间和金钱的 RAD 技术。任何需要更多时间的事情都是企业所不能接受的。
+
+时间/金钱是为什么选择Web Forms而不是 MVC 的最大原因。如果你的团队中的大多数人都知道WebForms，而你又没有时间让他们在 MVC 上加快速度，那么产生的代码可能不是高质量的。学习 MVC 的基础知识，然后去做你需要做的复杂的页面是非常不同的事情。学习曲线很高，所以你需要在你的预算中考虑到这一点。
+
+MVC的复杂性和学习曲线是它的缺点之一。.NET开发人员需要编写更多的代码来实现使用服务器控件和视图状态获得的相同功能。用[Rick Strahl的话](https://www.codemag.com/article/070183/What%E2%80%99s-Ailing-ASP.NET-Web-Forms)说或者[用这个回答]([Should I migrate to ASP.NET MVC? - Stack Overflow](https://stackoverflow.com/questions/30067/should-i-migrate-to-asp-net-mvc/52876#52876))来说：
+
+“我已经看到了框架的早期构建，但是对于我来说，如何有效地处理更复杂的页面还不是很清楚。我过去已经构建了几个 Web 框架，它们使用了类似于 MVC 的方法，虽然您可以轻松地完成许多简单的事情，但是根据我的经验，当您的页面包含许多不同的、有些独立的组件时，这种方法就会开始分崩离析。通过基于控制器的方法管理这种复杂性(不管理任何状态)要比 Web 窗体现在提供的方法困难得多。
+
+因为你没有使用 WebForms，所以不能使用任何 ASP.NET 控件。这意味着如果你想创建一个 GridView，你将运行一个 for 循环并手动创建table。如果你想在 MVC 中使用 ASP.NET Wizard向导，那么你必须自己创建。你需要记住的是，你是否能从重新创造所有的东西中获益?总的来说，我更喜欢Webforms框架，因为它有丰富的控件套件和自动管道“
+
+另一个产生一些阻力的地方是，在视图中将代码与标记混合在一起，这被视为退回到Web Forms所抛弃的Classic ASP时代。我们可以在[Stack Overflow问题]([Biggest advantage to using ASP.Net MVC vs web forms - Stack Overflow](https://stackoverflow.com/questions/102558/biggest-advantage-to-using-asp-net-mvc-vs-web-forms))的答案中找到一些这样的例子:
+
+"现在有些人(可能是从未编写过Classic ASP 程序的人)决定是时候回到把代码和内容混在一起并称之为“关注点分离”的时代了。"
+
+"MVC 最大的缺点是我们回到了 ASP 的时代。还记得混合服务器代码和 HTML 的意大利面条代码吗? ? ？哦，我的上帝，尝试阅读一个 混合了Javascript，HTML，JQuery，CSS，服务器标签等大杂烩的MVC aspx 页面。"
+
+还有人担心放弃对Web Forms的现有投资，比如知识、服务器控件、工具和基础设施，转而支持一个全新的框架。对于那些在Web Forms上投入了大量资金的公司来说，这不是一个容易的决定。
+
+对我来说，这些最初的反应，特别是他们之间关于MV的复杂性C和没有Web Forms抽象Web的共识，证明了微软必须向MVC迈进。这个问题包含了一个完美的例子:
+
+“这怎么可能? 没有视图? 没有事件？”
+
+这些都是开发者社区即将落后于Web的症状，正是在这个时候，对 HTML、 HTTP 和 JavaScript 的良好理解将成为任何网络开发者的重要技能！
+
+让我告诉你，我也是其中之一。
+
+大约在这个时候，我已经在微软的技术领域工作了5年。我使用 VB6和 Win Forms、基于 WCF SOAP 的服务和 ASP.NET 中偶尔出现的内部站点进行桌面开发。
+
+我清楚地记得在尝试构建一个示例站点时浏览了 MVC2文档，并对其复杂性感到恼火。我很难理解Web是无状态的，并且在浏览器和服务器之间管理状态非常困难!我的直觉告诉我，当某些UX事件触发时，你应该能够运行代码来响应它，这些代码能够访问当前状态。这在Win Forms中工作得很好，在Web Forms中也得到了模拟，但与MVC发生了正面冲突，MVC毫无顾忌地暴露了Web的HTML、HTTP和JavaScript现实。
+
+与此同时，我讨厌我在工作中看到的少数Web Forms应用程序(我们设法将它们转换成一堆无法遵循的意大利面条式代码背后的混乱)，并且知道一定有更好的方法。即使在我转换到MVC之后，在多年的Windows开发之后，我仍然花了几年的时间来适应严酷的现实和Web的局限性!
+
+在微软之外，[jQuery](https://en.wikipedia.org/wiki/JQuery) 在2006年发布之后，很快就成为了事实上的 DOM 操作和 AJAX 客户端库，以至于连微软都不再将Ajax包含在 ASP.NET 项目模板中。
+
+最初，客户端代码由一组或多或少优雅地绑定在一起的 jQuery 事件处理程序组成。但是随着逻辑向客户机的转移继续，客户端 JavaScript 框架出现了，并试图提供一些结构。到2010年，我们已经有3个主要的框架在争夺我们的注意力: [Backbone](https://en.wikipedia.org/wiki/Backbone.js)，[Knockout](https://en.wikipedia.org/wiki/Knockout_(web_framework)) 和 [AngularJS](https://en.wikipedia.org/wiki/AngularJS)。甚至微软自己也因发布开源项目 TypeScript 而引起了另一次轰动。
+
+拥有一个与这些客户端框架相匹配的服务器端框架，对 HTML、 CSS 和 JavaScript 给予完全的控制，以及对 AJAX 请求的一流支持，对于 ASP.NET 保持相关性是必要的。
+
+看来 MVC 来得正是时候！
+
+#### 4、ASP.NET MVC正当时
+
+随着MVC继续向前发展，ASP.NET开发人员的怀疑变成了困惑。用于处理HTML和HTTP的Ruby或PHP开发人员更容易掌握该框架，但传统Web Forms开发人员对其明显的复杂性和与Web Forms相比缺乏功能感到困惑。一旦这个框架在许多人眼中失去了“实验性”的标签，论坛、博客和杂志就会开始讨论何时以及如何采用MVC的正确方法。
+
+MVC 的开发周期继续独立于.NET 框架，在2011年初发布了 [MVC 3](https://learn.microsoft.com/en-us/aspnet/mvc/mvc3)。这是 MVC 的一个重要里程碑，它改进了脚手架特性并引入了 [Razor](https://learn.microsoft.com/en-us/aspnet/mvc/mvc3#the-razor-view-engine) 视图引擎，最终取代了旧的 ASPX 视图引擎。另一个亮点是 [NuGet](https://haacked.com/archive/2011/01/13/aspnetmvc3-released.aspx/#nuget-10-rtm)的发布，它最终为.NET 社区带来了一个包管理器，类似于现有的RubyGems 或 NPM，它们使Ruby 和 Node.js 开源生态系统蓬勃发展 。
+
+为.NET 发布和使用开源库从来没有这么容易过！
+
+当然，在早期使用开源库是可能的，但大多数公司要么依赖于他们内部的库，要么依赖于微软的库，像Telerik这样的Web Forms控件是一个常见的例外。
+
+NuGet 改变了这种情况！
+
+此外，NuGet 完美匹配了MVC 的可插拔特性。
+
+关于哪个[依赖注入库](https://stackoverflow.com/questions/4581791/how-do-the-major-c-sharp-di-ioc-frameworks-compare)最好，或者应该使用哪个[模拟框架](https://stackoverflow.com/questions/642620/what-should-i-consider-when-choosing-a-mocking-framework-for-net)，或者NHibernate是否比Entity Framework更好的讨论非常激烈(尽管微软会继续创建自己的库，如Unity或EF，而不是支持开源的库)。你可以从Scott Hanselman那里读到[NuGet软件包的每周专栏](https://www.hanselman.com/blog/nuget-package-of-the-week-9-aspnet-miniprofiler-from-stackexchange-rocks-your-world)，运行NuGet安装命令，几分钟内就能让它在你的网站上运行。
+
+```powershell
+# This was the future!
+Install-Package MiniProfiler
+```
+
+正是在这个时候，随着 MVC 3作为最新的版本发布，许多开发人员和公司开始意识到 MVC 将继续发展。慢慢地，公司以低风险项目或概念验证悄悄地进入 MVC，开发人员也逐渐习惯了。随着公司和开发人员都获得了使用 MVC 的经验，MVC 开始成为新开发的默认选择。
+
+更重要的是，MVC 成功地实现了关注点分离和 TDD。[SOLID 原则](https://en.wikipedia.org/wiki/SOLID)、依赖注入和单元测试成为了 ASP.NET 开发者常用词汇的一部分！这些都不是新的，在过去当然也不是不可能的，但它们变得相关而且被广泛接受，而在此之前，只有少数人了解这些。
+
+但那不是全部。微软发布了 [Web Pages](https://docs.microsoft.com/en-us/aspnet/web-pages/videos/aspnet-razor-pages/getting-started-with-webmatrix-and-aspnet-web-pages)，试图将 Web Forms 的概念与 Razor 视图引擎和其他 MVC 特性以及 [WebMatrix](https://stackoverflow.com/questions/12431402/what-is-the-difference-between-microsoft-webmatrix-and-visual-studio) (一个将简化的 IDE 和 IIS Express 结合在一起的免费工具)结合起来。
+
+与此同时，客户端 JavaScript 框架的日益普及和移动应用程序的出现增加了对 HTTP 服务的需求，REST ([Representational State Transfer](https://en.wikipedia.org/wiki/Representational_state_transfer))成为了新的流行词。
+
+因此，当2012年中发布 [ASP MVC 4](https://learn.microsoft.com/en-us/aspnet/mvc/mvc4)时，移动和 REST 服务成为主要话题也就不足为奇了。引入了一个使用 [JQuery Mobile](https://jquerymobile.com/) 的新移动模板，以及[显示模式](https://www.red-gate.com/simple-talk/dotnet/asp-net/multiple-views-and-displaymode-providers-in-asp-net-mvc-4/)，它允许框架基于浏览器的用户代理在同一视图的桌面/移动版本之间自动选择。然而，这个版本的真正亮点是一个名为 **Web API** 的新框架，它的引入是为了通过适应[ MVC 体系结构](https://www.dotnetcurry.com/aspnet/888/aspnet-webapi-message-lifecycle)(但仍然是一个不同的框架)来简化 REST HTTP 服务的创建。到那时，控制器、过滤器和路由器都是已知的构建模块，这意味着任何使用 MVC 的人都会发现自己对 Web API 如鱼得水:
+
+```c#
+public class ProductsController: ApiController
+{
+    public IEnumerable<Product> GetAllProducts()
+    {
+        return repository.GetAll();
+    }
+    public Product GetProduct(int id)
+    {
+        Product item = repository.Get(id);
+        if (item == null) throw new HttpResponseException(HttpStatusCode.NotFound);     
+    
+        return item;
+    }
+    public Product PostProduct(Product item) { ... }
+    public void PutProduct(int id, Product product) { ... }
+    public void DeleteProduct(int id) { ... }
+}
+```
+
+不久之后，[MVC 的一个更新](https://learn.microsoft.com/en-us/aspnet/single-page-application/overview/introduction/knockoutjs-template)发布了，它引入了 [SPA](https://en.wikipedia.org/wiki/Single-page_application) (单页应用程序)项目模板，使用了 Knokout、 AngularJS 或 Backbone 等框架。该模板将 MVC 和 Web API 与不同的客户端库结合在一起，进一步将逻辑移动到客户端。
+
+那时，ASP.NET 团队已经习惯于频繁发布引入更新和新库的版本。在2012年，他们进一步改进了 ASP.NET，将 SignalR 库作为 NuGet 包发布。这为开发人员提供了一个工具，使他们能够轻松地在 ASP.NET 应用程序中实现实时功能。
+
+有了 SignalR，扩展的 ASP.NET 家族就完整了。
+
+#### 5、One ASP.NET
+
+在2013年底发布了.NET框架的4.5.1版本。在[这次发布](https://blogs.msdn.microsoft.com/mvpawardprogram/2013/11/12/one-asp-net-welcome-to-the-web-development-buffet/)中，微软重新定位了现在属于ASP.NET的所有技术。ASP.NET(即Web Forms, MVC, Web API和SignalR)作为**One ASP.NET**的一部分。Visual Studio中的一个统一项目模板现在充当了ASP.NET所有不同组件的入口点。其想法是开发人员可以混合和匹配不同的框架，并找到适合他们需求的合适的框架。
+
+![one-aspnet](Image\one-aspnet.jpg)
+
+​																		所有框架重新命名为 One ASP.NET
+
+Web API在这次发布中发布了2.0版本。在其他特性中，对 OData (开放数据协议)的支持得到了改进，增加了一个实现 CORS (跨来源资源共享)的特定包，最重要的是，引入了现在无处不在的属性路由:
+
+```c#
+[Route("api/books")]
+public IEnumerable<Book> GetBooks() { ... }
+```
+
+同时，[MVC 5发布](https://www.dotnetcurry.com/aspnet-mvc/975/new-features-aspnet-mvc-5)了。它获得了与Web API相同的属性路由，脚手架支持得到了改进，发布了一个新的用于身份验证的 **ASP.NET Identity** 库，并使用用于身份验证和授权的分离过滤器对请求生命周期进行了细化。		
+
+用Bootstrap 3更新了默认的项目模板，这是一个很好的理由来看看MVC主页的演变:
 
 
 
+![aspnet-mvc3](Image\aspnet-mvc3.png)
 
+![aspnet-mvc4](Image\aspnet-mvc4.png)
 
+![aspnet-mvc5](Image\aspnet-mvc5.png)
 
+​												MVC 主页从 MVC 3(顶部)到 MVC 5(底部)的演变
 
+甚至 Web 窗体也继续接收新特性。有趣的是，这些特性中的大部分都是为了让 Web Forms 更接近 MVC。开发人员现在可以使用模型绑定器、数据注释、路由或 Unobtrusive JavaScript，这些功能最初是作为 MVC 特性而存在的。
 
+#### 6、结论
 
+ASP.NET以良好的状态到达2014年，在One ASP.NET下提供了几个库，以适应不同的Web应用程序的需求。您可能不是唯一一个认为该框架已经达到其全部潜力并将在几年内保持稳定的人。
 
+在 ASP.NET 之外，[React](https://en.wikipedia.org/wiki/React_(JavaScript_library)) 在2013年出现，并立即成为 SPA 框架的考虑对象之一，而 [Node.js]([en.wikipedia.org](https://en.wikipedia.org/wiki/Node.js)) 和 [NPM](https://en.wikipedia.org/wiki/Npm_(software)) 生态系统经历了爆炸性的增长。事实上，很多人都喜欢用 Node.js 构建 Web 应用程序，这要归功于像 [Express](https://expressjs.com/)这样的轻量级框架，它基于中间件功能的请求管道思想。以至于 MEAN 栈([MongoDB](https://en.wikipedia.org/wiki/MongoDB)、 Express、 AngularJS 和 Node.js)成为了那个时代的另一个流行词。
 
-
-
-
-
+正如我们将在下一篇文章(第3部分)中看到的，ASP.NET 团队对于 ASP.NET 的计划要比增量改进大得多。他们可以看到开放源码和多平台开发的潜力，并且对开放源码社区可以给其框架带来的好处并不陌生。
 
 ### Part III
 
 
 
 
+
+在2022年的今天我们公司的系统依然运行在WebForm为主要技术的框架之中,虽然部分代码已经升级但是其中蕴含的复杂业务
+
+我想说的是技术是为业务服务的
 
 
 
