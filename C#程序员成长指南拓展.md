@@ -496,13 +496,242 @@ ASP.NET以良好的状态到达2014年，在One ASP.NET下提供了几个库，�
 
 ### Part III
 
+#### 0、摘要
 
+在ASP.NET进化系列的第三部分也是最后一部分。我们将看到ASP.NET过渡到ASP.NET Core
 
+- 开源的，跨平台的
+- 完全包含了Web的本质
 
+编辑注意: 本教程的 vNext 和展望未来部分正在更新，以反映最新的变化。
 
-在2022年的今天我们公司的系统依然运行在WebForm为主要技术的框架之中,虽然部分代码已经升级但是其中蕴含的复杂业务
+在这个系列的最后一篇文章中，我们将看到它演变的最后一步——一个完成了从一个试图隐藏和抽象网络的封闭平台到一个完全拥抱网络本质的开源跨平台的转变。
 
-我想说的是技术是为业务服务的
+####  1、ASP.NET Core 出场(2014-至今)
+
+看起来 ASP.NET 团队终于通过 One ASP.NET 的想法和不同的框架实现了他们的长期愿景。但这远非事实。团队正忙于更深入地研究框架，甚至研究它的.NET 的基本本质。他们甚至决定在内部代号为 ASP.NET vNext，而不是它(当时)的公共名称 ASP.NET 5。
+
+这让很多人大吃一惊，但其根源可以在项目[Katana](https://learn.microsoft.com/en-us/aspnet/aspnet/overview/owin-and-katana/an-overview-of-project-katana)中看到，这是微软为.NET开发的OWIN(开放Web接口)实现。[OWIN和Katana](https://www.dotnetcurry.com/signalr/915/owin-katana-signalr-web-server)是微软现代化ASP.NET的最初尝试，灵感来自Ruby和Node。它试图提供一个轻量级的Web平台(不是System.Web)，建立在从其他框架(由中间件功能组成的请求管道)中学习到的最佳实践之上，可以托管在任何服务器上。
+
+Project Katana 于2013年发布，现有的两个 ASP.NET 库 Web API 和 SignalR 与其兼容。例如，由于 OWIN 兼容性，[可以](https://learn.microsoft.com/en-us/aspnet/web-api/overview/hosting-aspnet-web-api/use-owin-to-self-host-web-api)将 Web API 托管为控制台应用程序。
+
+到今天为止，OWIN 已经被 ASP.NET Core所取代，因为它实现了相同甚至更多的目标。
+
+回顾过去，很容易看到 ASP.NET 团队在开始 ASP.NET Core之旅之前测试方向并获得知识
+
+#### 2、ASP.NET vNext早期开发阶段
+
+早在2014年5月，大卫•福勒(David Fowler)就宣布 vNext 正在筹备中:
+
+“在过去的几个月里，我一直致力于我们现在所称的 ASP.NET vNext 。我们研究了当今我们的生态系统中存在的一些常见问题，并采用了在.NET、ASP.NET和Web开发中学习到的最佳实践。结合他们提出了以下要求。”
+
+在他的博客文章的最后，人们可以读到以下内容:
+
+“奖励: 我们正在与 Mono 团队合作，使其与 linux，osx 一起工作”
+
+尽管 Mono 已经存在了相当长的一段时间(2004年发布的1.0版本) ，但这是微软第一次构建跨平台的.NET产品！在后续的博客文章中，他分享了新体系结构的初步细节，包括新的运行时间(在当时被称为 KRuntime)、新的 HTTP 抽象、简化宿主以及统一 MVC/Web API 的计划。
+
+大约在同一时间，Scott Hanselman 也在他的[博客](https://www.hanselman.com/blog/IntroducingASPNETVNext.aspx)上发表了关于 vNext 的文章。他展示了运行中的新运行时，强调了 NuGet 是如何用于管理所有依赖关系的，并让我们一瞥新的 project.json 项目文件。
+
+```json
+{
+  "webroot": "wwwroot",
+  "version": "1.0.0-*",
+  "exclude": [
+    "wwwroot"
+  ],
+  "packExclude": [
+    "**.kproj",
+    "**.user",
+    "**.vspscc"
+  ],
+  "dependencies": {
+    "Microsoft.AspNet.Mvc ": "1.0.0-beta1",
+    "Microsoft.AspNet.Hosting ": "1.0.0-beta1",
+    "Microsoft.AspNet.Diagnostics": "1.0.0-beta1"
+  },
+  "frameworks": {
+    "aspnet50": { },
+    "aspnetcore50": { }
+  },
+  "commands":{
+    "web": "Microsoft.AspNet.Hosting --server Kestrel --server.urls http://localhost:50
+  }
+}
+```
+
+虽然在 Core 1.1.1中遗憾地放弃了对 project.json 的更改，取而代之的是简化的.csproj (为了保持与现有工具的兼容性) ，它是团队采用的大胆方法的另一个很好的例子。
+
+Scott Hanselman 也给出了驱动团队的开源思维的一个重要提示:
+
+"ASP.NET 和 Web 工具团队正在进行一些非常酷的工作。这个团队已经在微软推动开放的东西好几年了，我们已经与.NET  Core团队和其他团队的创新者联合起来！"
+
+这是一场非常缓慢的革命，他们花了几年时间才完成。还记得我们回头看微软的 AJAX 和它的 MS-PL 许可证吗？很高兴看到，从那些不起眼的开始，团队成功地完全采用了开源。有了 vNext，他们计划用一个新的 CLR 对 ASP.NET 进行彻底的重写，同时在开放的环境下进行开发，使用 GitHub 进行代码和问题跟踪、社区站点，最终在 Apache 许可下发布。
+
+我推荐阅读 Scott Hunter 的精彩文章，[开始.NET 开源革命](https://medium.com/microsoft-open-source-stories/starting-the-net-open-source-revolution-e0268b02ac8a)。
+
+随着 vNext 工作的继续，团队热衷于分享信息和收到反馈。例如，Daniel Roth 在2014年10月为 [MSDN 杂志](https://learn.microsoft.com/en-us/archive/msdn-magazine/2014/special-issue/asp-net-5-introducing-the-asp-net-5-preview)撰写了一篇关于最近发布的 ASP.NET 5预览版的文章。这将恢复跨平台框架、灵活的托管、统一的MVC/Web API模型、内置依赖注入、基于中间件概念并以NuGet包作为依赖单元的新请求管道的目标。
+
+"作为微软的一部分发布的 ASP.NET .NET Framework 1.0，与 Visual Studio 2002一起于2002年发布。它是Active Server Pages(ASP)的进化，带来了面向对象的设计、.NET基类库(BCLs)、更好的性能以及更多。ASP.NET的设计是为了方便习惯于编写桌面应用程序的开发人员使用ASP.NET Web Forms来构建Web应用程序。随着Web的发展，新的框架被添加到ASP.NET: 2008年是MVC, 2010年是Web Pages, 2012年是Web API和SignalR。这些新框架都建立在ASP.ET 1.0之上。"
+
+在 ASP.NET 5中，ASP.NET 被重新构想，就像2002年 ASP.NET 被重新构想一样。
+
+经过多年对 Visual Studio 中基于 GUI 的工具的关注之后，看到命令行工具作为新框架的一部分出现在新版本中让人耳目一新。最初的预览使用了所谓的 **KRuntime**，有3种不同的 CLI 工具:
+
+- Kvm-用于在运行时版本之间安装和切换
+- Kpm-用于恢复项目依赖关系，并将项目打包(或构建)成一个自包含的映像
+- K -用于运行project.json中定义的命令，启动应用程序
+
+一个是 kvm 列出现有版本的运行时，kpm 恢复 & kpm 打包您的项目，最后 k web 在本地主机上运行它。如果这些命令对您来说听起来很陌生，那是因为它们经历了几次重命名。KRuntime 变成 **DNX** 运行时，命令变成 dnvm、 dnu 和 DNX，而不是 kvm、 kpm 和 k。作为统一的 **dotnet CLI** 的一部分，ASP.NET Core 1.0将再次改变它们，成为诸如 dotnet  list、 dotnet restore、 dotnet publish、 dotnet run 等子命令。
+
+#### 3、ASP.NET vNext vs Node.js
+
+看到 vNext 与 Node.js 如此相似是件有趣的事情，这并非巧合，因为 Node.js 确实受到了 vNext 的影响，与 Ruby、 Go从 Project Katana 和其他项目中学到的东西一起:
+
+![aspnetcore-vs-nodejs](Image\aspnetcore-vs-nodejs.jpg)
+
+​																		ASP.NET vNext vs Node.js
+
+开发过程将继续进行，在2015年11月发布第一个RC(发布候选版本)之前，将发布多达8个beta公开版本。2016年5月当 ASP.NET 5被正式重命名为 ASP.NET Core (ASP.NET vNext 一直是一个内部名称)时，还会有第二个 RC 版本。在RC2发布之前，Scott Hanselman已经宣布了重命名并解释了它的原因(因为它给早期的RC1采用者带来了一些痛苦):
+
+“为什么是1.0？因为整个.NET Core概念是全新的。.NET Core 1.0 CLI 是非常新的。不仅如此.NET Core并不像完整的.NET Framework 4.6.我们仍在探索服务器端图形库。我们仍在探索 ASP.NET 4.6和 ASP.NET Core 1.0之间的差距。”
+
+有了一个能更好地传达ASP.NET和ASP.NET Core之间的区别，团队已经准备好进行最初的发布。
+
+#### 4、ASP.NET Core 到来
+
+.NET Core 1.0最终于2016年6月底发布。它花了两年多的时间开发，但结果是充满希望的。正如微软在其声明中所说:
+
+“我们挑战一切，而不是交付增量更新，这样你就可以拥有一个极其模块化，快速和轻量级的平台，非常适合软件开发的新时代，在这个时代，单一应用程序被可以单独部署的小型、自主的服务所取代。所有这些都是为了保持和扩展.NET最擅长的:开发人员的生产力，以及现代语言和库。最终的结果是一个ASP.NET，你会觉得非常熟悉，而且现在更适合现代web开发。”
+
+在 ASP.NET Core 中创建 Web 应用程序感觉非常类似于创建 MVC/Web API 应用程序。控制器与早期的模型没有太大的不同，事实上这很可能是 ASP.NET MVC 代码:
+
+```c#
+public class HelloWorldController: Controller
+{
+    public IActionResult Index()
+    {
+        return View();      
+    }
+        
+    [HttpPost]
+    public IActionResult Index(String name)
+    {  
+        return View(name);
+    }  
+}
+```
+
+相应的使用 Razor 的 Index.cshtml 视图看起来也很熟悉，尽管它暗示了视图中的一个主要变化，[标签帮助程序](https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-2.2):
+
+```asp
+@model String
+
+@if (Model != null) {
+    <p>Hello @Model</p>
+}
+<form asp-action="Index">
+    <p>
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text">        
+    </p>
+    <input type="submit" value="Say Hi" />
+</form>
+```
+
+然而，一旦人们开始触及表面，差异就开始变得明显。
+
+第一个是基于中间件函数的新[请求管道](https://www.dotnetcurry.com/aspnet/1312/aspnet-core-request-pipeline-vanity-url)。像身份验证这样的常见功能是作为中间件实现的，开发人员可以轻松地创建和注册自己的中间件。通过这种方式定义了管道，在这种方式中，请求流经不同的中间件，直到到达委托给控制器动作的路由中间件。假设使用的是传统的MVC模式，那么框架就足够灵活了。用您编写的简单请求处理程序替换Routing非常简单。
+
+![aspnetcore-request-pipeline](Image\aspnetcore-request-pipeline.png)
+
+​												ASP.NET Core中的统一请求管道
+
+抛开中间件的概念，我们还内置了一个依赖注入框架，在整个框架中应用依赖倒置模式。还有一个完全不同的项目启动和设置，它反映了新的轻量级托管方法和基于中间件的管道。
+
+一些最直接明显的改进是对Razor的添加，以构建更清晰的视图。我指的是替换旧MVC HtmlHelpers和Partial Views的[标记帮助器](https://learn.microsoft.com/en-us/aspnet/core/mvc/views/tag-helpers/intro?view=aspnetcore-2.2)和[视图组件](https://learn.microsoft.com/en-us/aspnet/core/mvc/views/view-components?view=aspnetcore-6.0&viewFallbackFrom=aspnetcore-2.2)。查看我[以前的一篇文章](https://www.dotnetcurry.com/aspnet/1321/aspnet-core-clean-frontend-code)，了解如何使用它们创建更清晰的视图。
+
+当我们拿到1.0版本时，ASP.NET团队正忙于以下版本的开发。2016年11月，1.1.0版本发布了一些改进和细化，比如使用中间件作为过滤器，或者使用标签助手Tag Helper呈现任何视图组件。后者将使视图组件的使用非常类似于任何JavaScript SPA框架中组件的使用。也就是说，要呈现一个名为LatestArticles的视图组件，现在可以简单地编写
+
+```
+<vc:latest-articles></vc:latest-articles> 
+```
+
+而不是
+
+```
+@await Component. invokeasync (" LatestArticles ")
+```
+
+在下一个主要版本公开发布之前，还有两个较小的版本，1.1.1和1.1.2。
+
+#### 5、ASP.NET Core 2.0 和未来的路线图
+
+经过[两次预览](https://blogs.msdn.microsoft.com/webdev/2017/08/14/announcing-asp-net-core-2-0/)，ASP.NET Core 2.0终于在2017年8月发布。
+
+其最大的特性之一是包含了 Razor Pages，这在某种程度上使我们回到了我们在2003年设计Web Forms时讨论的Page Controller(页面控制器)模式!
+
+但是，这次没有表单抽象，而是完全控制了 HTTP 请求和生成的 HTML。我们的 HelloWorld 示例可以实现为一个新的 HelloWorldd.cshtml 页面:
+
+```asp
+@page
+@model HelloWorldModel
+
+@if (Name != null) {
+    <p>Hello @Name</p>
+}
+<form method="post">
+    <p>
+        <label asp-for="Name "></label>
+        <input class="form-control" asp-for="Name" />        
+    </p>
+    <input type="submit" value="Say Hi" />
+</form>
+```
+
+与它的代码隐藏文件一起(是的，我们回到了代码隐藏。这不是很有趣吗?)实现页面模型:
+
+```c#
+public class HelloWorldModel: PageModel
+{
+    [BindProperty]
+    public String Name { get; set; }
+
+    public IActionResult OnPost()
+    {
+        Return Page();
+    }
+}
+```
+
+这为框架增加了使用 MVVM (Model View View-Model模型视图-模型)模式的可能性，开发人员可以根据自己的需要混合使用传统的 MVC 方法。
+
+.NET Core 2.0中另一个重要的补充是 IHostingService 的引入。这为您的Web应用程序提供了一种非常方便和直接的方式来运行后台进程。这对于不需要复杂的分布式体系结构的场景非常有用。您可以在[ ASP.NET Core 2.0的早期文章](https://www.dotnetcurry.com/aspnet/1402/aspnet-core-2-new-features)中阅读更多关于这些和其他特性的内容。
+
+2018年5月发布了2.1.0版本，在众多特性和改进中，它最终将重写的 SignalR 框架引入到了 ASP.NET Core 中。这是 SignalR 的一个更简单、更高性能和更轻量级的版本，旨在扩展和利用.NET Core。
+
+更广泛的.NET Core接受[全局工具](https://learn.microsoft.com/en-us/dotnet/core/tools/global-tools)作为一种安装全局命令行工具的方式，类似于全局安装的NPM包。这是否会像Node.js那样引发用.NET编写的工具的热潮还为时尚早，但由Nate McMaster策划的[列表](https://github.com/natemcmaster/dotnet-tools)正迅速变长。
+
+通过 SignalR 和 Razor Pages，One ASP.NET 下的原始库集最终被移植到.NET Core！(假设 Razor Pages 作为 Web Forms和 Web Pages的对应物)
+
+展望未来，我们可以在即将发布的.NET Core 3.0中看到两个令人兴奋的特性:
+
+- 最终将添加对[Windows应用程序](https://devblogs.microsoft.com/dotnet/net-core-3-and-support-for-windows-desktop-applications/)的支持，允许在Core 3.0中支持WinForms、WPF和UWP应用程序
+- (过时的部分)不再是试验性的Blazor框架(现在是预览版)将部分随.NET Core 3.0发布。这可以通过以下事实来解释:Blazor的服务器端模型将被提取并重命名为Server- side Blazor(以前称为Razor Components)。基于Web assembly的客户端模型，可以在浏览器中运行.NET，将成为Blazor的唯一模型，并将保持实验版本，尚未准备好投入生产。检查我们的文章关于[Blazor](https://www.dotnetcurry.com/dotnet/1460/blazor-getting-started)了解更多关于两种模式也从[官方网站获得最新的更新](https://dotnet.microsoft.com/zh-cn/apps/aspnet/web-apps/blazor)。
+
+让我们不要忘记.NET Core中所做的所有性能改进，以及像Span<T>这样的结构的引入。根据TechEmpower基准测试，NET Core 2.2是第三快的Web服务器(纯文本响应)。该团队承诺在下一个版本中会有更好的性能。
+
+看起来 ASP.NET 的未来是光明的，即使在它第一次发布20年之后！
+
+有趣的是，Razor组件是ASP.NET Core 3.0的一部分，我们又回到了一个封装模板和逻辑的页面模型，能够对UX事件做出反应。尽管这一次它实际上是在相同的进程中运行，除了浏览器中的一个小客户机之外，呈现通过SignalR连接推送的DOM更新。
+
+#### 6、结论
+
+20年是很长的一段时间。在这些年里，我们看到 ASP.NET 在最初发布之后崛起，与Web的变化步伐作斗争、纠正它的过程，最终将自己重塑为运行在 Linux 上最快的服务器之一。
+
+一路走来，由于 ASP.NET 团队的努力，一个带有“非本地发明”综合症的生态系统的封闭源代码微软产品在很大程度上已经变成了一个开源社区。
+
+我希望你能喜欢这次怀旧之旅，我只想知道未来会带来什么！
 
 
 
