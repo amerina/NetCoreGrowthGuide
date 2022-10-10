@@ -7,4 +7,4 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MongoWebAPI
-build_property.ProjectDir = F:\StepByStep\MongoWebAPI\MongoWebAPI\MongoWebAPI\
+build_property.ProjectDir = F:\吴朝阳\GitSource\NetCoreGrowthGuide\ToolStep\MongoDBBasic\MongoWebAPI\

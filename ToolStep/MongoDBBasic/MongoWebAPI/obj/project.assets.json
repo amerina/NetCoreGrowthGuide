@@ -5268,11 +5268,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\StepByStep\\MongoWebAPI\\MongoWebAPI\\MongoWebAPI\\MongoWebAPI.csproj",
+      "projectUniqueName": "F:\\吴朝阳\\GitSource\\NetCoreGrowthGuide\\ToolStep\\MongoDBBasic\\MongoWebAPI\\MongoWebAPI.csproj",
       "projectName": "MongoWebAPI",
-      "projectPath": "F:\\StepByStep\\MongoWebAPI\\MongoWebAPI\\MongoWebAPI\\MongoWebAPI.csproj",
+      "projectPath": "F:\\吴朝阳\\GitSource\\NetCoreGrowthGuide\\ToolStep\\MongoDBBasic\\MongoWebAPI\\MongoWebAPI.csproj",
       "packagesPath": "C:\\Users\\wzyan\\.nuget\\packages\\",
-      "outputPath": "F:\\StepByStep\\MongoWebAPI\\MongoWebAPI\\MongoWebAPI\\obj\\",
+      "outputPath": "F:\\吴朝阳\\GitSource\\NetCoreGrowthGuide\\ToolStep\\MongoDBBasic\\MongoWebAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
