@@ -1180,6 +1180,28 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 3. [控制反转](https://baike.baidu.com/item/控制反转/1158025)
 
+
+
+## 2、WCF发展史
+
+
+
+
+
+参考：
+
+1、[Introduction to WCF (dotnettricks.com)](https://www.dotnettricks.com/learn/wcf/introduction-to-wcf)
+
+2、[Windows Communication Foundation - Wikipedia](https://en.wikipedia.org/wiki/Windows_Communication_Foundation)
+
+3、[Windows Communication Foundation - WCF | Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/framework/wcf/)
+
+
+
+
+
+
+
 ## 2、模块化系统
 
 
@@ -1192,7 +1214,17 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 ## 6、仓储模式
 
-## 7、动态WebAPI实现
+## 7、Rest API
+
+
+
+## 8、Docker
+
+
+
+9、Kubernetes
+
+## 9、动态WebAPI实现
 
 
 
@@ -1615,3 +1647,6 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 14. [CQRS Guide](https://www.eventstore.com/cqrs-pattern)
 15. [在微服务中应用简化的 CQRS 和 DDD 模式 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns)
 
+
+
+10、Insomnia or Postman
