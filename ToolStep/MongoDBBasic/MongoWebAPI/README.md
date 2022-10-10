@@ -108,6 +108,14 @@ db.Books.find({}).pretty()
 
 
 
+12、添加身份认证支持
+
+
+
+
+
+
+
 参考：
 
 1、[Create a web API with ASP.NET Core and MongoDB | Microsoft Learn](https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-mongo-app?view=aspnetcore-5.0&tabs=visual-studio)
