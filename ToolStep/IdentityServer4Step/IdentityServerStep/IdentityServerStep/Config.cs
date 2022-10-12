@@ -60,6 +60,7 @@ namespace IdentityServerStep
         public static IEnumerable<ApiResource> ApiResources =>
             new List<ApiResource>
             {
+                //可以一个客户定义一个APIResource
                 new ApiResource("api", "Sample API")
                 {
                     //API所属Scope

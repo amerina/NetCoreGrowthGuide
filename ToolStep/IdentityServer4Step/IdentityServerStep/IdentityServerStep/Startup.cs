@@ -28,7 +28,7 @@ namespace IdentityServerStep
             services.AddControllers();
 
             //加载资源和客户端定义发生在 Startup.cs 中
-            var builder = services.AddIdentityServer()
+            services.AddIdentityServer()
                //这仅适用于没有证书可以使用的开发场景
                .AddDeveloperSigningCredential()        
                .AddInMemoryApiScopes(Config.ApiScopes)
@@ -38,8 +38,6 @@ namespace IdentityServerStep
                .AddInMemoryIdentityResources(Config.IdentityResources)
                //添加测试用户
                .AddTestUsers(Config.Users);
-
-            builder.AddDeveloperSigningCredential();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

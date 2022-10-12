@@ -39,6 +39,7 @@ namespace CustomerClientA.Controllers
                 {
                     return Content("获取发现文档失败-Error：" + disco.Error);
                 }
+                //客户端授权模式获取Token
                 var token = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
                 {
                     Address = disco.TokenEndpoint,
@@ -47,6 +48,20 @@ namespace CustomerClientA.Controllers
                     ClientSecret = "secret",
                     Scope = "APIScope"
                 });
+
+                //密码授权模式获取Token
+                //var token = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
+                //{
+                //    Address = disco.TokenEndpoint,
+                //    //下面2个属性对应的是 IdentityServer定义的测试用户，这里应是 Action 参数传递进来的，为了方便直接写死的
+                //    UserName = "apiUser",
+                //    Password = "apiUserPassword",
+                //    //下面3个属性对应的是 IdentityServer定义的客户端
+                //    ClientId = "ClientB",
+                //    ClientSecret = "secret",
+                //    Scope = "SecretAPIScope offline_access"
+                //});
+
                 if (token.IsError)
                 {
                     return Content("获取 AccessToken 失败。error：" + disco.Error);

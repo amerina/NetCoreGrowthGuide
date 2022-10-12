@@ -640,8 +640,9 @@ Password=apiUserPassword
                        options.Authority = "https://localhost:5001";
                        //需要https
                        options.RequireHttpsMetadata = true;
-                       //这里要和 IdentityServer 定义的Scope 保持一致
-                       options.Audience = "APIScope";
+                       //这里要和 IdentityServer 定义的APISource保持一致
+                       //可以理解为当前客户端在IndentityServer定义的APISource
+                       options.Audience = "api";
                        //token 默认容忍5分钟过期时间偏移，这里设置为0，
                        //这里就是为什么定义客户端设置了过期时间为5秒，过期后仍可以访问数据
                        options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
@@ -759,7 +760,15 @@ app.UseAuthentication();
 
 12、运行项目
 
+首先访问到https://localhost:5003/Hello/Token
 
+获取Token并存储到Cache中
+
+![10](Image\10.png)
+
+然后访问https://localhost:5003/Hello/AccessProtectAPI
+
+![11](Image\11.png)
 
 
 

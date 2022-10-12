@@ -25,7 +25,7 @@ namespace CustomerClientA
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        //This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -39,8 +39,9 @@ namespace CustomerClientA
                        options.Authority = "https://localhost:5001";
                        //需要https
                        options.RequireHttpsMetadata = true;
-                       //这里要和 IdentityServer 定义的Scope 保持一致
-                       options.Audience = "APIScope";
+                       //这里要和 IdentityServer 定义的APISource保持一致
+                       //可以理解为当前客户端在IndentityServer定义的APISource
+                       options.Audience = "api";
                        //token 默认容忍5分钟过期时间偏移，这里设置为0，
                        //这里就是为什么定义客户端设置了过期时间为5秒，过期后仍可以访问数据
                        options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
