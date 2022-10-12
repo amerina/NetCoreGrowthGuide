@@ -770,6 +770,10 @@ app.UseAuthentication();
 
 ![11](Image\11.png)
 
+## 12、授权码模式
+
+
+
 
 
 

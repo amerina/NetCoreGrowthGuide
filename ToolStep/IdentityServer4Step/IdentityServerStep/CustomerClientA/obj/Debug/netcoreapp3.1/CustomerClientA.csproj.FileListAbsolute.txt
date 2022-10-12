@@ -8,7 +8,6 @@ F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\bin\Debug\netcoreapp3.1\CustomerClientA.pdb
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\bin\Debug\netcoreapp3.1\IdentityModel.dll
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
-F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\obj\Debug\netcoreapp3.1\CustomerClientA.csproj.AssemblyReference.cache
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\obj\Debug\netcoreapp3.1\CustomerClientA.GeneratedMSBuildEditorConfig.editorconfig
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\obj\Debug\netcoreapp3.1\CustomerClientA.AssemblyInfoInputs.cache
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\CustomerClientA\obj\Debug\netcoreapp3.1\CustomerClientA.AssemblyInfo.cs

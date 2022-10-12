@@ -28,4 +28,3 @@ F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\IdentityServerStep\obj\Debug\netcoreapp3.1\IdentityServerStep.dll
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\IdentityServerStep\obj\Debug\netcoreapp3.1\IdentityServerStep.pdb
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\IdentityServerStep\obj\Debug\netcoreapp3.1\IdentityServerStep.genruntimeconfig.cache
-F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep\IdentityServerStep\obj\Debug\netcoreapp3.1\IdentityServerStep.csproj.AssemblyReference.cache

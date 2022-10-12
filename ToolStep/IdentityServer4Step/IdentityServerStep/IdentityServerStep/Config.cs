@@ -130,14 +130,19 @@ namespace IdentityServerStep
                         //设置客户端允许访问的API范围
                         AllowedScopes = new List<string>
                         {
-                            "SecretAPIScope",
+                            "APIScope",
                             StandardScopes.OfflineAccess, //如果要获取refresh_tokens ,必须在scopes中加上OfflineAccess
                             //如果要获取id_token,必须在scopes中加上OpenId和Profile，
                             //id_token需要通过refresh_tokens获取AccessToken的时候才能拿到（还未找到原因）
                             StandardScopes.OpenId,
                             StandardScopes.Profile//如果要获取id_token,必须在scopes中加上OpenId和Profile
                         }
-                    }
+                    },
+
+                    //客户端C走授权码模式
+                    //授权码模式需要客户端与认证服务器交互
+                    //认证服务器需要MVC结构,另开示例
+
                 };
 
 
