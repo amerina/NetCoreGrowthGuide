@@ -50,6 +50,7 @@ namespace IdentityServerStep
                 app.UseDeveloperExceptionPage();
             }
 
+            //使用IdentityServer4 中间件
             app.UseIdentityServer();
 
             app.UseHttpsRedirection();

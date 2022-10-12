@@ -63,23 +63,20 @@ namespace IdentityServerStep
                 new ApiResource("api", "Sample API")
                 {
                     //API所属Scope
-                    Scopes = { "APIScope"},
-                    ApiSecrets = { new Secret("secret".Sha256()) }
+                    Scopes = { "APIScope"}
 
                 },
                 new ApiResource("api1", "Sample API1")
                 {
                     //API所属Scope
-                    Scopes = { "APIScope"},
-                    ApiSecrets = { new Secret("secret".Sha256()) }
+                    Scopes = { "APIScope"}
 
                 },
 
                 new ApiResource("secretAPI", "Secret API")
                 {
                      //API所属Scope
-                    Scopes = { "SecretAPIScope"},
-                    ApiSecrets = { new Secret("secret".Sha256()) }
+                    Scopes = { "SecretAPIScope"}
                 }
 
             };
@@ -108,6 +105,8 @@ namespace IdentityServerStep
                     },
 
                     //客户端B走账号密码模式
+                    //这种模式下要求客户端不得存储密码,但我们并不能确保客户端是否存储了密码,所以该模式仅仅适用于受信任的客户端
+                    //该模式不推荐使用
                     new Client()
                     {
                         //客户端ID

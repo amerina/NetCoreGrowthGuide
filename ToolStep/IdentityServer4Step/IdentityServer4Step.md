@@ -406,6 +406,8 @@ namespace IdentityServerStep
 
 将看到IdentityServer发现文档。客户端和 API 将使用这些信息来下载所需要的配置数据。
 
+项目第一次启动根目录会生成一个tempkey.jwk文件 
+
 ```json
 {
 //发行网址，也就是说我们的权限验证站点
@@ -532,6 +534,237 @@ Password=apiUserPassword
 
 
 
+------
+
+## 11、创建ClientA的实例
+
+1、创建.Net Core WebAPI项目：CustomerClientA
+
+![06](Image\06.png)
+
+
+
+2、需要添加 NuGet 包 IdentityModel
+
+3、创建一个控制器HelloController获取Token
+
+```c#
+ [ApiController]
+ [Route("[controller]")]
+ public class HelloController : ControllerBase
+    {
+        private static readonly string IdentityServerBaseUrl = "https://localhost:5001";
+
+        public async Task<IActionResult> Token()
+        {
+            using (var client = new HttpClient())
+            {
+                //即
+                //https://localhost:5001/.well-known/openid-configuration
+                //下的发现文档
+                var disco = await client.GetDiscoveryDocumentAsync(IdentityServerBaseUrl);
+                if (disco.IsError)
+                {
+                    return Content("获取发现文档失败-Error：" + disco.Error);
+                }
+                var token = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
+                {
+                    Address = disco.TokenEndpoint,
+                    //ClientId、ClientSecret、Scope 这里要和 API 里定义的Client一模一样
+                    ClientId = "ClientA",
+                    ClientSecret = "secret",
+                    Scope = "APIScope"
+                });
+                if (token.IsError)
+                {
+                    return Content("获取 AccessToken 失败。error：" + disco.Error);
+                }
+                return Content("获取 AccessToken 成功。Token:" + token.AccessToken);
+            }
+        }
+    }
+```
+
+4、修改解决方案属性,设置多项目启动
+
+![07](Image\07.png)
+
+5、修改launchSettings.json文件
+
+```json
+   "CustomerClientA": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      //修改applicationUrl端口,默认端口与IdentityServer冲突
+      "applicationUrl": "https://localhost:5003;http://localhost:5002",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+```
+
+6、运行项目
+
+导航到https://localhost:5003/Hello
+
+![08](Image\08.png)
+
+7、新建ProtectAPIController
+
+注意:Controller添加了认证特性，只有通过认证的用户可以访问当前API
+
+```
+  [Route("[controller]")]
+  [ApiController]
+  [Authorize]
+  public class ProtectAPIController : ControllerBase
+    {
+        [HttpGet]
+        public string Get()
+        {
+            var roles = User.Claims.Where(l => l.Type == ClaimTypes.Role);
+            return "访问成功，当前用户角色 " + string.Join(',', roles.Select(l => l.Value));
+        }
+    }
+```
+
+8、添加JWT 认证
+
+```
+//添加JWT授权
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                   .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                   {
+                       // IdentityServer 地址
+                       options.Authority = "https://localhost:5001";
+                       //需要https
+                       options.RequireHttpsMetadata = true;
+                       //这里要和 IdentityServer 定义的Scope 保持一致
+                       options.Audience = "APIScope";
+                       //token 默认容忍5分钟过期时间偏移，这里设置为0，
+                       //这里就是为什么定义客户端设置了过期时间为5秒，过期后仍可以访问数据
+                       options.TokenValidationParameters.ClockSkew = TimeSpan.Zero;
+                       options.Events = new JwtBearerEvents
+                       {
+                           //AccessToken 验证失败
+                           OnChallenge = op =>
+                           {
+                               //跳过所有默认操作
+                               op.HandleResponse();
+                               //下面是自定义返回消息
+                               //op.Response.Headers.Add("token", "401");
+                               op.Response.ContentType = "application/json";
+                               op.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                               op.Response.WriteAsync(JsonConvert.SerializeObject(new
+                               {
+                                   status = StatusCodes.Status401Unauthorized,
+                                   msg = "token无效"
+                               }));
+                               return Task.CompletedTask;
+                           }
+                       };
+                   });
+```
+
+9、添加认证中间件
+
+```
+//添加认证中间件
+app.UseAuthentication();
+```
+
+10、运行项目
+
+导航到https://localhost:5003/ProtectAPI
+
+![09](Image\09.png)
+
+11、修改HelloController
+
+```
+    /// <summary>
+    /// https://localhost:5003/Hello
+    /// </summary>
+    [ApiController]
+    [Route("[controller]")]
+    public class HelloController : ControllerBase
+    {
+        //内存缓存 需要提前注册  services.AddMemoryCache();
+        private IMemoryCache _memoryCache;
+
+        private static readonly string IdentityServerBaseUrl = "https://localhost:5001";
+        private static readonly string APIBaseUrl = "https://localhost:5003";
+
+        public HelloController(IMemoryCache memoryCache)
+        {
+            _memoryCache = memoryCache;
+        }
+
+        public async Task<IActionResult> Token()
+        {
+            using (var client = new HttpClient())
+            {
+                //即
+                //https://localhost:5001/.well-known/openid-configuration
+                //下的发现文档
+                var disco = await client.GetDiscoveryDocumentAsync(IdentityServerBaseUrl);
+                if (disco.IsError)
+                {
+                    return Content("获取发现文档失败-Error：" + disco.Error);
+                }
+                var token = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest()
+                {
+                    Address = disco.TokenEndpoint,
+                    //ClientId、ClientSecret、Scope 这里要和 API 里定义的Client一模一样
+                    ClientId = "ClientA",
+                    ClientSecret = "secret",
+                    Scope = "APIScope"
+                });
+                if (token.IsError)
+                {
+                    return Content("获取 AccessToken 失败。error：" + disco.Error);
+                }
+                //将token 临时存储到 缓存中
+                _memoryCache.Set("AccessToken", token.AccessToken);
+
+                return Content("获取 AccessToken 成功。Token:" + token.AccessToken);
+            }
+        }
+
+        public async Task<IActionResult> AccessProtectAPI()
+        {
+            string token, apiurl = APIBaseUrl + "ProtectAPI";
+            _memoryCache.TryGetValue("AccessToken", out token);
+            if (string.IsNullOrEmpty(token))
+            {
+                return Content("token is null");
+            }
+            using (var client = new HttpClient())
+            {
+                client.SetBearerToken(token);
+                var response = await client.GetAsync(apiurl);
+                var result = await response.Content.ReadAsStringAsync();
+                if (!response.IsSuccessStatusCode)
+                {
+                    _memoryCache.Remove("AccessToken");
+                    return Content($"获取 {apiurl} 失败。StatusCode：{response.StatusCode} \r\n Token:{token} \r\n result:{result}");
+                }
+                return Content($"获取 {apiurl} 成功。StatusCode：{response.StatusCode} \r\n Token:{token} \r\n result:{result}");
+            }
+        }
+
+    }
+```
+
+12、运行项目
+
+
+
+
+
+
+
 
 
 参考：
@@ -539,4 +772,6 @@ Password=apiUserPassword
 1、[欢迎使用 IdentityServer4](https://identityserver4docs.readthedocs.io/zh_CN/latest/index.html)
 
 2、[理解OAuth 2.0](https://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html)
+
+3、[IdentityServer4 客户端授权模式(Client Credentials)](https://www.cnblogs.com/Zing/p/13361386.html)
 
