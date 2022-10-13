@@ -49,7 +49,49 @@ OAuth 2.0协议规范了下授权的流程,五种模式:
 
 
 
-## 4、Step By Step Sample
+**API Scope**
+
+作用域Scope是 OAuth 的核心特性，它允许您表达访问的范围Scope。客户机在启动协议时请求作用域，声明它们想要的访问范围。然后 IdentityServer 必须决定在标记中包含哪些作用域Scope。仅仅因为客户要求的东西并不意味着他们就应该得到它！您可以使用内置的抽象和扩展点来做出这种决定。最终，IdentityServer 向客户机发出一个令牌，然后客户机使用该令牌访问 api。Api 可以检查令牌中包含的作用域，以便做出授权决策。
+
+作用域没有协议强加的结构——它们只是空格分隔的字符串。这允许在设计系统使用的作用域时具有灵活性。
+
+
+
+**API Client**
+
+客户端可以配置许多选项。这里至少需要包含
+
+1. 一个 ClientId，它将应用程序标识给 IdentityServer，以便它知道哪个客户机正试图连接到它。
+2. 一个密码Secret，你可以把它看作是客户端的密码。
+3. 允许客户端请求的范围Scope列表。
+
+ 
+
+ **Discovery document**
+
+ 发现文档是 OpenID Connect 和 OAuth 中的标准端点
+
+
+
+
+
+## 4、ASP.NET Core Identity
+
+ASP.NET Core Identity用于构建ASP.NET Core Web应用程序的成员资格系统，包括成员资格，登录和用户数据（包括登录信息、角色和声明）
+
+ASP.NET Core Identity 将用户界面 (UI) 登录功能添加到 ASP.NET Core Web 应用
+
+
+
+## 5、JWT
+
+Json web token (JWT), 是为了在网络应用环境间传递声明而执行的一种基于JSON的开放标准（RFC 7519）。该token被设计为紧凑且安全的，特别适用于分布式站点的单点登录（SSO）场景。JWT的声明一般被用来在身份提供者和服务提供者间传递被认证的用户身份信息，以便于从资源服务器获取资源，也可以增加一些额外的其它业务逻辑所必须的声明信息，该token也可直接被用于认证，也可被加密。
+
+
+
+
+
+## 6、Step By Step Sample
 
 ### 1、创建认证服务项目:
 
@@ -61,7 +103,7 @@ OAuth 2.0协议规范了下授权的流程,五种模式:
 
 
 
-## 2、引入最新IdentityServer4库 版本4.1.2
+### 2、引入最新IdentityServer4库 版本4.1.2
 
 ![02](Image\02.png)
 
@@ -69,7 +111,7 @@ OAuth 2.0协议规范了下授权的流程,五种模式:
 
 
 
-## 3.创建一个Config配置类
+### 3.创建一个Config配置类
 
 Config类用来配置受保护的API、可访问的客户端等信息
 
@@ -77,7 +119,7 @@ Config类用来配置受保护的API、可访问的客户端等信息
 
 
 
-## 4、定义 API Scope
+### 4、定义 API Scope
 
 API 是系统中要保护的资源，一组API组成一个Scope
 
@@ -123,7 +165,7 @@ public static IEnumerable<ApiResource> ApiResources =>
             };
 ```
 
-## 5、定义客户端
+### 5、定义客户端
 
 定义能够访问上述 API Scope的客户端。在客户端A场景中，客户端不会有用户参与交互(譬如一个WCF客户端访问API)，将使用 IdentityServer 中所谓的客户端密码（Client Secret）来认证：
 
@@ -180,7 +222,7 @@ public static IEnumerable<ApiResource> ApiResources =>
                 };
 ```
 
-## 6、添加用户
+### 6、添加用户
 
 对于客户端B需要用户提供用户名与密码
 
@@ -204,7 +246,7 @@ public static List<TestUser> Users => new List<TestUser>()
         };
 ```
 
-## 7、完整Config代码
+### 7、完整Config代码
 
 ```c#
  public class Config
@@ -342,7 +384,7 @@ public static List<TestUser> Users => new List<TestUser>()
 
 
 
-## 8、添加IdentityServer中间件
+### 8、添加IdentityServer中间件
 
 
 
@@ -400,7 +442,7 @@ namespace IdentityServerStep
 
 
 
-## 9、启动，运行
+### 9、启动，运行
 
 运行服务器并将浏览器导航到 https://localhost:5001/.well-known/openid-configuration
 
@@ -501,7 +543,7 @@ namespace IdentityServerStep
 }
 ```
 
-## 10、通过PostMan模拟客户端访问IdentityServer服务
+### 10、通过PostMan模拟客户端访问IdentityServer服务
 
 请求地址：http://localhost:5000/connect/token
 
@@ -536,7 +578,7 @@ Password=apiUserPassword
 
 ------
 
-## 11、创建ClientA的实例
+### 11、创建ClientA的实例
 
 1、创建.Net Core WebAPI项目：CustomerClientA
 
@@ -770,7 +812,7 @@ app.UseAuthentication();
 
 ![11](Image\11.png)
 
-## 12、授权码模式
+### 12、授权码模式
 
 1、创建 ASP.NET Core MVC应用程序
 
@@ -1085,7 +1127,7 @@ public IActionResult Logout()
 
 ![20](Image\20.png)
 
-## 13、使用访问令牌
+### 13、使用访问令牌
 
 1、新建WebAPI项目:WebAPIClientC
 
@@ -1175,7 +1217,7 @@ public async Task<IActionResult> UseTokenCallAPI()
 
 
 
-## 14、添加JavaScript 客户端
+### 14、添加JavaScript 客户端
 
 用户将登录到 IdentityServer，使用 IdentityServer 颁发的访问令牌调用 Web API，然后注销 IdentityServer。 所有这一切都将由在浏览器中运行的 JavaScript 驱动。
 
@@ -1429,7 +1471,7 @@ public void Configure(IApplicationBuilder app)
 
 
 
-15、了解ASP.NET Core 上的 Identity 
+## 7、了解ASP.NET Core 上的 Identity 
 
 ASP.NET Core Identity：
 
@@ -1453,7 +1495,7 @@ IdentityServer4 是适用于 ASP.NET Core 的 OpenID Connect 和 OAuth 2.0 框�
 
 
 
-参考：
+## 8、参考
 
 1、[欢迎使用 IdentityServer4](https://identityserver4docs.readthedocs.io/zh_CN/latest/index.html)
 
