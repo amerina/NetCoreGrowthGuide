@@ -73,6 +73,17 @@ namespace WebAPIClientC
                     policy.RequireClaim("scope", "SecretAPIScope");
                 });
             });
+
+            services.AddCors(options =>
+            {
+                // 这定义了一个名为 ``default`` 的 CORS 策略
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("https://localhost:5008")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +97,8 @@ namespace WebAPIClientC
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("default");
 
             app.UseAuthentication();
             app.UseAuthorization();
