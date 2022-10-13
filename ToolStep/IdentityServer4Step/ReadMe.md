@@ -772,9 +772,346 @@ app.UseAuthentication();
 
 ## 12、授权码模式
 
+1、创建 ASP.NET Core MVC应用程序
+
+ ![12](Image\12.png)
 
 
 
+移除wwwroot、Controller、Views文件夹
+
+2、下载IdentityServer4示例Server程序[IdentityServer/IdentityServer4.Quickstart.UI](https://github.com/IdentityServer/IdentityServer4.Quickstart.UI/tree/main)
+
+拷贝wwwroot、Quickstart(修改为Controller)、Views文件夹
+
+
+
+3、新增Config类
+
+配置客户端为授权码模式
+
+```c#
+    public class Config
+    {
+        /// <summary>
+        /// 添加对 OpenID Connect 身份范围的支持
+        /// https://identityserver4docs.readthedocs.io/zh_CN/latest/quickstarts/2_interactive_aspnetcore.html
+        /// 添加对标准 openid （subject id）和 profile （名字、姓氏等）范围的支持
+        /// </summary>
+        public static IEnumerable<IdentityResource> IdentityResources =>
+            new IdentityResource[]
+            {
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
+            };
+
+        /// <summary>
+        ///  In-memory user object for testing. Not intended for modeling users in production.
+        /// </summary>
+        public static List<TestUser> Users => new List<TestUser>()
+        {
+            new TestUser()
+            {
+                //用户名
+                 Username="apiUser",
+                 //密码
+                 Password="apiUserPassword",
+                 //用户Id
+                 SubjectId="0",
+                 //用户Claim
+                 Claims = new List<Claim>()
+                 {
+                     new Claim(ClaimTypes.Role,"admin")
+                 }
+            }
+        };
+
+        /// <summary>
+        /// Models access to an API scope
+        /// </summary>
+        public static IEnumerable<ApiScope> ApiScopes =>
+            new List<ApiScope>
+            {
+                new ApiScope("APIScope"),
+                new ApiScope("SecretAPIScope")
+            };
+
+        /// <summary>
+        /// Models a web API resource.
+        /// </summary>
+        public static IEnumerable<ApiResource> ApiResources =>
+            new List<ApiResource>
+            {
+                //可以一个客户定义一个APIResource
+                new ApiResource("api", "Sample API")
+                {
+                    //API所属Scope
+                    Scopes = { "APIScope"}
+
+                },
+                new ApiResource("api1", "Sample API1")
+                {
+                    //API所属Scope
+                    Scopes = { "APIScope"}
+
+                },
+
+                new ApiResource("secretAPI", "Secret API")
+                {
+                     //API所属Scope
+                    Scopes = { "SecretAPIScope"}
+                }
+
+            };
+
+        public static IEnumerable<Client> Clients =>
+             new List<Client>
+                {
+                    //客户端C走授权码模式
+                    new Client{
+                       ClientId="ClientC",
+                       //授权码模式
+                       AllowedGrantTypes=GrantTypes.Code,
+                       ClientSecrets=
+                       {
+                           new Secret("secret".Sha256()) //客户端验证密钥
+                       },
+                       // 登陆以后我们重定向的地址(客户端地址)，
+                       // {客户端地址}/signin-oidc是系统默认的不用改，也可以改，这里就用默认的
+                       RedirectUris = { "https://localhost:5005/signin-oidc" },
+                       //注销重定向的url
+                       PostLogoutRedirectUris = { "https://localhost:5005/signout-callback-oidc" },
+                       //是否允许申请 Refresh Tokens
+                       //参考地址 https://identityserver4.readthedocs.io/en/latest/topics/refresh_tokens.html
+                       AllowOfflineAccess=true,
+                       //将用户claims 写人到IdToken,客户端可以直接访问
+                       AlwaysIncludeUserClaimsInIdToken=true,
+                       //客户端访问权限
+                       AllowedScopes =
+                       {
+                           "SecretAPIScope",
+                           StandardScopes.OpenId,
+                           StandardScopes.Email,
+                           StandardScopes.Address,
+                           StandardScopes.Phone,
+                           StandardScopes.Profile,
+                           StandardScopes.OfflineAccess
+                       }
+                   }
+
+
+                };
+
+
+
+    }
+```
+
+4、修改Startup类
+
+ConfigureServices添加：
+
+```
+ services.AddIdentityServer(options =>
+            {
+                //默认的登陆页面是/account/login
+                options.UserInteraction.LoginUrl = "/login";
+                //授权确认页面 默认/consent
+                //options.UserInteraction.ConsentUrl = "";
+                options.Events.RaiseErrorEvents = true;
+                options.Events.RaiseInformationEvents = true;
+                options.Events.RaiseFailureEvents = true;
+                options.Events.RaiseSuccessEvents = true;
+
+                // see https://identityserver4.readthedocs.io/en/latest/topics/resources.html
+                options.EmitStaticAudienceClaim = true;
+            })
+            //not recommended for production - you need to store your key material somewhere secure
+            .AddDeveloperSigningCredential()
+            // in-memory, code config
+            .AddInMemoryApiResources(Config.ApiResources)
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryClients(Config.Clients)
+            .AddTestUsers(Config.Users)
+            .AddInMemoryIdentityResources(Config.IdentityResources);
+```
+
+Config方法添加：
+
+```
+ app.UseIdentityServer();
+```
+
+
+
+5、运行项目
+
+![13](Image\13.png)
+
+
+
+6、新增MVC Client
+
+创建MVC项目命名为:MVCClientC
+
+![14](Image\14.png)
+
+
+
+7、要向 MVC 应用程序添加对 OpenID Connect 身份验证的支持，首先需要将包含 OpenID Connect 处理程序的 nuget 包添加到项目中(选择3.1版本)
+
+```c#
+Microsoft.AspNetCore.Authentication.OpenIdConnect
+```
+
+8、修改Startup
+
+ConfigureServices
+
+```c#
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
+services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = "Cookies";
+        options.DefaultChallengeScheme = "oidc";
+    })
+    .AddCookie("Cookies")
+    .AddOpenIdConnect("oidc", options =>
+    {
+        options.Authority = "https://localhost:5001";
+
+        options.ClientId = "mvc";
+        options.ClientSecret = "secret";
+        options.ResponseType = "code";
+
+        options.SaveTokens = true;
+    });
+```
+
+Configure
+
+```c#
+app.UseStaticFiles();
+
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapDefaultControllerRoute()
+        .RequireAuthorization();
+});
+```
+
+`RequireAuthorization` 方法禁用对整个应用程序的匿名访问。
+
+9、修改主页视图以显示用户的声明以及 cookie 属性:
+
+ClientC->View->Index
+
+```asp
+@using Microsoft.AspNetCore.Authentication
+
+<h2>Claims</h2>
+
+<dl>
+    @foreach (var claim in User.Claims)
+    {
+        <dt>@claim.Type</dt>
+        <dd>@claim.Value</dd>
+    }
+</dl>
+
+<h2>Properties</h2>
+
+<dl>
+    @foreach (var prop in (await Context.AuthenticateAsync()).Properties.Items)
+    {
+        <dt>@prop.Key</dt>
+        <dd>@prop.Value</dd>
+    }
+</dl>
+```
+
+10、分别设置MVCClientC与IdentityServer自托管
+
+![15](Image\15.png)
+
+
+
+11、现在客户端一切就绪-运行项目
+
+客户端会自动导航导航到IdentityServer登录页面
+
+![16](Image\16.png)
+
+
+
+
+
+登陆后IdentityServer 将重定向回 MVC 客户端，在那里 OpenID Connect 身份验证处理程序处理响应，并通过设置 cookie 在本地登录用户。 最后，MVC 视图将显示 cookie 的内容。
+
+![17](Image\17.png)
+
+
+
+12、向 MVC 客户端添加注销
+
+使用 IdentityServer 这样的身份验证服务，仅清除本地应用程序 cookie 是不够的。 此外，您还需要往返 IdentityServer 以清除中央单点登录会话。
+
+确切的协议步骤在 OpenID Connect 处理程序中实现， 只需将以下代码添加到某个控制器即可触发注销:
+
+```c#
+//添加到HomeController
+public IActionResult Logout()
+{
+    return SignOut("Cookies", "oidc");
+}
+```
+
+
+
+运行MVCClientC项目,导航到:https://localhost:5005/Home/LogOut
+
+![18](Image\18.png)
+
+
+
+这将清除本地 cookie，然后重定向到 IdentityServer。 IdentityServer 将清除其 cookie，然后为用户提供一个链接以返回到 MVC 应用程序。
+
+点击Here,因为用户登录信息已经清除会自动重定向到登录页面:
+
+![20](Image\20.png)
+
+## 13、使用访问令牌
+
+可以使用可以在 `Microsoft.AspNetCore.Authentication` 命名空间中找到的标准 ASP.NET Core 扩展方法 来访问会话中的令牌:
+
+```c#
+var accessToken = await HttpContext.GetTokenAsync("access_token");
+```
+
+要使用访问令牌访问 API，您需要做的就是检索令牌，并将其设置在您的 HttpClient 上:
+
+```C#
+public async Task<IActionResult> UseTokenCallAPI()
+{
+    var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+    var client = new HttpClient();
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+    var content = await client.GetStringAsync("https://localhost:6001/identity");
+
+    ViewBag.Json = JArray.Parse(content).ToString();
+    return View("Json");
+}
+```
+
+创建一个名为 Json.cshtml 的视图，输出结果
+
+确保 API 正在运行，启动 MVC 客户端并在身份验证后调用 `[- MVCClientC](https://localhost:5005/home/UseTokenCallAPI`
 
 
 
@@ -787,4 +1124,6 @@ app.UseAuthentication();
 2、[理解OAuth 2.0](https://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html)
 
 3、[IdentityServer4 客户端授权模式(Client Credentials)](https://www.cnblogs.com/Zing/p/13361386.html)
+
+4、[使用 ASP.NET Core 的交互式应用程序](https://identityserver4docs.readthedocs.io/zh_CN/latest/quickstarts/2_interactive_aspnetcore.html#id1)
 
