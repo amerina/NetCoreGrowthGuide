@@ -1429,6 +1429,30 @@ public void Configure(IApplicationBuilder app)
 
 
 
+15、了解ASP.NET Core 上的 Identity 
+
+ASP.NET Core Identity：
+
+- 一个 API，它支持用户界面 (UI) 登录功能。
+- 管理用户、密码、配置文件数据、角色、声明、令牌、电子邮件确认等等。
+
+
+
+ASP.NET Core Identity 将用户界面 (UI) 登录功能添加到 ASP.NET Core Web 应用。 若要保护 Web API 和 SPA，请使用以下项之一：
+
+- [Azure Active Directory](https://learn.microsoft.com/zh-cn/azure/api-management/api-management-howto-protect-backend-with-aad)
+- [Azure Active Directory B2C](https://learn.microsoft.com/zh-cn/azure/active-directory-b2c/active-directory-b2c-custom-rest-api-netfw) (Azure AD B2C)
+- IdentityServer4 
+
+IdentityServer4 是适用于 ASP.NET Core 的 OpenID Connect 和 OAuth 2.0 框架。 IdentityServer4 支持以下安全功能：
+
+- 身份验证即服务 (AaaS)
+- 跨多个应用程序类型的单一登录/注销 (SSO)
+- API 的访问控制
+- Federation Gateway
+
+
+
 参考：
 
 1、[欢迎使用 IdentityServer4](https://identityserver4docs.readthedocs.io/zh_CN/latest/index.html)
@@ -1438,4 +1462,6 @@ public void Configure(IApplicationBuilder app)
 3、[IdentityServer4 客户端授权模式(Client Credentials)](https://www.cnblogs.com/Zing/p/13361386.html)
 
 4、[使用 ASP.NET Core 的交互式应用程序](https://identityserver4docs.readthedocs.io/zh_CN/latest/quickstarts/2_interactive_aspnetcore.html#id1)
+
+5、[ASP.NET Core 上的 Identity 简介 | Microsoft Learn](https://learn.microsoft.com/zh-cn/aspnet/core/security/authentication/identity?view=aspnetcore-6.0&tabs=visual-studio)
 
