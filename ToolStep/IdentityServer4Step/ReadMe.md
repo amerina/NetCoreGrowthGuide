@@ -1087,6 +1087,66 @@ public IActionResult Logout()
 
 ## 13、使用访问令牌
 
+1、新建WebAPI项目:WebAPIClientC
+
+​	  创建IdentityController，获取已认证用户Claim信息
+
+```c#
+	[Route("identity")]
+    [Authorize]
+    public class IdentityController : ControllerBase
+    {
+        public JsonResult Get()
+        {
+            return new JsonResult(from c in User.Claims select new { c.Type, c.Value });
+        }
+    }
+```
+
+2、修改Startup
+
+ConfigureServices:
+
+```c#
+// accepts any access token issued by identity server
+            services.AddAuthentication("Bearer")
+                .AddJwtBearer("Bearer", options =>
+                {
+                    options.Authority = "https://localhost:5001";
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateAudience = false
+                    };
+                });
+
+            // adds an authorization policy to make sure the token is for scope 'api1'
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ApiScope", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("scope", "SecretAPIScope");
+                });
+            });
+```
+
+Configure:
+
+```c#
+app.UseAuthentication();
+
+app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers()
+                         .RequireAuthorization("ApiScope"); ;
+            });
+```
+
+
+
+3、修改MVCClientC项目添加UseTokenCallAPI方法
+
 可以使用可以在 `Microsoft.AspNetCore.Authentication` 命名空间中找到的标准 ASP.NET Core 扩展方法 来访问会话中的令牌:
 
 ```c#
@@ -1111,7 +1171,7 @@ public async Task<IActionResult> UseTokenCallAPI()
 
 创建一个名为 Json.cshtml 的视图，输出结果
 
-确保 API 正在运行，启动 MVC 客户端并在身份验证后调用 `[- MVCClientC](https://localhost:5005/home/UseTokenCallAPI`
+确保 API 正在运行，启动 MVC 客户端并在身份验证后调用 https://localhost:5005/home/UseTokenCallAPI
 
 
 

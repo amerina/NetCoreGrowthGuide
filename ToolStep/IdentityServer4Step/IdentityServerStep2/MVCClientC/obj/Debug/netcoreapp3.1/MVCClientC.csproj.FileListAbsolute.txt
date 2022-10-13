@@ -43,3 +43,4 @@ F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep2\MVCClientC\obj\Debug\netcoreapp3.1\MVCClientC.dll
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep2\MVCClientC\obj\Debug\netcoreapp3.1\MVCClientC.pdb
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep2\MVCClientC\obj\Debug\netcoreapp3.1\MVCClientC.genruntimeconfig.cache
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\IdentityServer4Step\IdentityServerStep2\MVCClientC\bin\Debug\netcoreapp3.1\IdentityModel.dll

@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace WebAPIClientC
 {
@@ -34,16 +37,37 @@ namespace WebAPIClientC
                 {
                     options.Authority = "https://localhost:5001";
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = false
-                    };
+                    options.Audience = "secretAPI";
+                    //options.TokenValidationParameters = new TokenValidationParameters
+                    //{
+                    //    ValidateAudience = false
+                    //};
+
+                    //options.Events = new JwtBearerEvents
+                    //{
+                    //    //AccessToken 验证失败
+                    //    OnChallenge = op =>
+                    //    {
+                    //        //跳过所有默认操作
+                    //        op.HandleResponse();
+                    //        //下面是自定义返回消息
+                    //        //op.Response.Headers.Add("token", "401");
+                    //        op.Response.ContentType = "application/json";
+                    //        op.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    //        op.Response.WriteAsync(JsonConvert.SerializeObject(new
+                    //        {
+                    //            status = StatusCodes.Status401Unauthorized,
+                    //            msg = "token无效"
+                    //        }));
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
                 });
 
-            // adds an authorization policy to make sure the token is for scope 'api1'
+            // adds an authorization policy to make sure the token is for scope 'SecretAPIScope'
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("ApiScope", policy =>
+                options.AddPolicy("SecretAPIScope", policy =>
                 {
                     policy.RequireAuthenticatedUser();
                     policy.RequireClaim("scope", "SecretAPIScope");
@@ -69,7 +93,7 @@ namespace WebAPIClientC
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers()
-                         .RequireAuthorization("ApiScope"); ;
+                         .RequireAuthorization("SecretAPIScope"); ;
             });
         }
     }
