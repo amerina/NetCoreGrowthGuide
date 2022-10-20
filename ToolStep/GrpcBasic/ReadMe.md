@@ -8,11 +8,15 @@ gRPC 是一种新式的高性能框架，它发展了由来已久的远程过程
 
 ## 2、gRPC 的优势
 
-1. 传输协议:HTTP/2 
+gRPC 的主要优点是：
 
-2. 序列化格式:Protobuf
+- 现代高性能轻量级 RPC 框架。
+- 协定优先 API 开发，默认使用协议缓冲区，允许与语言无关的实现。
+- 可用于多种语言的工具，以生成强类型服务器和客户端。
+- 支持客户端、服务器和双向流式处理调用。
+- 使用 Protobuf 二进制序列化减少对网络的使用。
 
-   
+
 
 gRPC 使用 HTTP/2 作为传输协议。 虽然与 HTTP 1.1 也能兼容，但 HTTP/2 具有许多高级功能：
 
@@ -40,6 +44,16 @@ Protobuf 编译器 `protoc` 使用 proto 文件为目标平台生成客户端和
 
 
 
+Protobuf有如下优点：
+
+- 足够简单
+- 序列化后体积很小:消息大小只需要XML的1/10 ~ 1/3
+- 解析速度快:解析速度比XML快20 ~ 100倍
+- 多语言支持
+- 更好的兼容性,Protobuf设计的一个原则就是要能够很好的支持向下或向上兼容
+
+
+
 ## 4、gRPC 的使用场景
 
 建议在以下场景中使用 gRPC：
@@ -61,4 +75,8 @@ Protobuf 编译器 `protoc` 使用 proto 文件为目标平台生成客户端和
 1. [gRPC](https://grpc.io/)
 2. [gRPC | Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/architecture/cloud-native/grpc)
 3. [Introduction to gRPC](https://grpc.io/docs/what-is-grpc/introduction/)
+4. [适用于 WCF 开发人员的 ASP.NET Core gRPC](https://learn.microsoft.com/zh-cn/dotnet/architecture/grpc-for-wcf-developers/)
+5.  [Protobuf 样式指南](https://developers.google.com/protocol-buffers/docs/style)
+6. [Overview for gRPC on .NET](https://learn.microsoft.com/en-us/aspnet/core/grpc/?view=aspnetcore-6.0)
+7. [grpc-dotnet/example](https://github.com/grpc/grpc-dotnet/tree/master/examples)
 
