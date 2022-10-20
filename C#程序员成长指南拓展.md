@@ -1629,6 +1629,59 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 
 
 
+#### 4、Service Mesh
+
+- Service Mesh：微服务的网络通信基础设施，负责（系统内部的）服务间的通讯
+- API Gateway： 负责将服务以 API 的形式暴露（给系统外部），以实现业务功能
+
+
+
+![ServiceMesh](Image\ServiceMesh.png)
+
+从功能和职责上说：
+
+- 位于最底层的是拆分好的原子微服务，以服务的形式提供各种能力
+- 在原子微服务上是（可选的）组合服务，某些场景下需要将若干微服务的能力组合起来形成新的服务
+- 原子微服务和组合服务部署于 **系统内部**，在采用 servicemesh 的情况下，由 servicemesh 提供服务间通讯的能力
+- API Gateway 用于将系统内部的这些服务暴露给 **系统外部**，以 API 的形式接受外部请求。
+
+从部署上说：
+
+- Servicemesh 部署在系统内部：因为原子微服务和组合服务通常不会直接暴露给外部系统
+- API Gateway 部署在系统的边缘：一方面暴露在系统之外，对外提供 API 供外部系统访问；一方面部署在系统内部，以访问内部的各种服务。
+
+
+
+云原生模型在原先的微服务模型中加入了两个额外的元素：
+
+容器（比如Docker）和
+
+编排层（如Kubernetes）。
+
+容器提供了资源隔离和依赖管理，编排层对底层的硬件进行抽象池化。这三个组件让应用程序在云环境中具备了伸缩能力和处理局部故障的能力。
+
+
+
+
+
+
+
+
+
+参考：
+
+[什么是服务网格](https://www.infoq.cn/news/2017/11/WHAT-SERVICE-MESH-WHY-NEED/)
+
+[Service Mesh和API Gateway关系](https://www.infoq.cn/article/4FJXNTHJMio6g75uSX0h)
+
+
+
+
+
+
+
+
+
 ### 8、参考
 
 1. [常用 Web 应用程序体系结构 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures)
@@ -1645,8 +1698,10 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 12. [CommandQuerySeparation (martinfowler.com)](https://martinfowler.com/bliki/CommandQuerySeparation.html)
 13. [CQRS (martinfowler.com)](https://www.martinfowler.com/bliki/CQRS.html)
 14. [CQRS Guide](https://www.eventstore.com/cqrs-pattern)
-15. [在微服务中应用简化的 CQRS 和 DDD 模式 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns)
+15. [API 网关 - .Net Core 微服务](http://www.csharpkit.com/apigateway.html)
+16. [在微服务中应用简化的 CQRS 和 DDD 模式 | Microsoft Docs](https://docs.microsoft.com/zh-cn/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns)
 
 
 
 10、Insomnia or Postman
+
