@@ -1662,12 +1662,6 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 
 
 
-
-
-
-
-
-
 参考：
 
 [什么是服务网格](https://www.infoq.cn/news/2017/11/WHAT-SERVICE-MESH-WHY-NEED/)
@@ -1676,7 +1670,7 @@ Order Service 创建一个 Order，这个订单处于待定Pending状态，然�
 
 
 
-
+5、
 
 
 
