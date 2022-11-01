@@ -147,13 +147,109 @@
 ### 5、Redis API的使用
 
 - 通用命令
+
+  - 通用命令
+
+    - keys：一般不在生产环境中使用
+
+      ```powershell
+      --遍历所有key
+      keys *
+      
+      --通配符匹配,如keys he*
+      keys [pattern]
+      
+      ```
+
+      用来：热备从节点、scan
+
+    - dbsize：计算Key的总数
+
+    - exists key：检查Key是否存在
+
+    - del key [key...]：删除指定key-value
+
+    - expire key seconds：key在seconds秒后过期
+
+      ```
+      expire key seconds
+      ttl key --查看key剩余的过期时间
+      persist key --去掉key的过期时间
+      ```
+
+    - type key：返回key的类型
+
+  - 数据结构和内部编码
+
+    ![02](Image\02.png)
+
+    
+
+  - 单线程架构
+
+    - 纯内存
+    - 非阻塞IO
+    - 避免线程切换和竞态消耗
+
 - 字符串类型
+
+  - 结构和命令
+
+    ```
+    get key --获取Key对应的Value
+    set key --设置Key
+    del key --删除Key
+    ```
+
+    ```
+    incr key --Key自增1,如果Key不存在自增后get(key)=1
+    decr key --Key自减1,如果Key不存在自减后get(key)=-1
+    incrby key k --Key自增k,如果Key不存在自增后get(key)=k
+    decr key k --Key自减k,如果Key不存在自减后get(key)=-k
+    ```
+
+    ```
+    set key value --不管key是否存在都设置
+    setnx key value --key不存在才设置
+    set key value xx --key存在才设置,即key更新操作
+    ```
+
+    ```powershell
+    mget key1,key2... --批量获取key,原子操作
+    mset key1 value1 key2 value2 --批量设置key-value
+    ```
+
+    
+
+  - 示例
+
+    记录网站每个用户个人主页的访问量？
+
+    ```powershell
+    incr userid:pageView
+    ```
+
+    
+
+  - 内部编码
+
 - 哈希类型
+
 - 列表类型
+
 - 集合类型
+
 - 有序集合类型
 
+### 6、
 
+
+
+### 7、
+
+
+
+### 8、
 
 
 
