@@ -268,7 +268,11 @@
     hkeys key --返回hash key对应多有field
     ```
 
-    
+    ```
+    hsetnx key field value --设置hash key对应field的value(如果field已经存在则失败)
+    hincrby key field intCounter --hash key对应的field的value自增intCounter
+    hincrbyfloat key field floatCounter --hincrby浮点数
+    ```
 
   - 示例
 
@@ -282,6 +286,44 @@
     
 
 - 列表类型
+
+  - 结构和命令
+
+    ![04](Image\04.png)
+
+    ```
+    rpush key value1 value2 ...valueN --从列表右端插入值(1-N个)
+    lpush key value1 value2 ...valueN --从列表作端插入值(1-N个)
+    ```
+
+    ```
+    linsert key befor|after value newValue --在list指定的值前|后插入newValue
+    lpop key --从列表左边弹出一个item
+    rpop key --从列表右边弹出一个item
+    
+    lrem key count value 
+    #根据count值，从列表中删除所有value相等的项
+    (1)count>0,从左到右删除最多count个value相等的项
+    (2)count<0,从右到左删除最多count个value相等的项
+    (3)count=0,删除所有value相等的项
+    
+    ltrim key start end --按照索引范围修剪列表
+    
+    lrange key start end(包含end) --获取列表指定索引范围内所有item
+    
+    lindex key index --获取列表指定索引item
+    llen key --获取列表长度
+    
+    lset key index newvalue --设置新值
+    ```
+
+    
+
+  - 353
+
+  
+
+  
 
 - 集合类型
 
