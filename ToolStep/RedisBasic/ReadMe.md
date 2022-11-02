@@ -210,16 +210,27 @@
 
     ```
     set key value --不管key是否存在都设置
-    setnx key value --key不存在才设置
+    setnx key value --key不存在才设置,即key新增操作
     set key value xx --key存在才设置,即key更新操作
+    exists key --判断key是否存在
     ```
 
-    ```powershell
+    ```
     mget key1,key2... --批量获取key,原子操作
     mset key1 value1 key2 value2 --批量设置key-value
     ```
 
-    
+    ```
+    getset key newvalue --set key newvalue并返回旧的Value
+    append key vcalue --将value追加到旧的value
+    strlen key --返回字符串的长度(注意中文)
+    ```
+
+    ```
+    incrbyfloat key 3.5 --增加key对应的值3.5
+    getrange key start end --获取字符串指定下标所有的值
+    setrange key index value --设置指定下标对应的值
+    ```
 
   - 示例
 
@@ -229,11 +240,46 @@
     incr userid:pageView
     ```
 
+- 哈希类型
+
+  - 结构和命令
+
+    <img src="Image\03.png" alt="03" style="zoom:80%;" />
+
+    ```
+    hget key field --获取hash key对应的field的value
+    hset key field value --设置hash key对应field的value
+    hdel key field --删除hash key对应field的value
+    ```
+
+    ```
+    hexists key field --判断hash key是否有field
+    hlen key --获取hash key field的数量
+    ```
+
+    ```
+    hmget key field1 field2...fieldN --批量获取hash key的一批field对应的值
+    hmset key field1 value1 field2 value2...filedN valueN --批量设置hash key的一批field value
+    ```
+
+    ```
+    hgetall key --返回hash key对应所有field和value
+    hvals key --返回hash key对应所有field的value
+    hkeys key --返回hash key对应多有field
+    ```
+
     
 
-  - 内部编码
+  - 示例
 
-- 哈希类型
+    记录网站每个用户个人主页的访问量？
+
+    ```
+    command    key       field    value
+    hincrby user:1:info pageview count
+    ```
+
+    
 
 - 列表类型
 
