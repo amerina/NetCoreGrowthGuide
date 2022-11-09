@@ -1,0 +1,16 @@
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.exe
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.deps.json
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.runtimeconfig.json
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.runtimeconfig.dev.json
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.dll
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\ClientDemo.pdb
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.csproj.AssemblyReference.cache
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.GeneratedMSBuildEditorConfig.editorconfig
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.AssemblyInfoInputs.cache
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.AssemblyInfo.cs
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.csproj.CoreCompileInputs.cache
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.csproj.CopyComplete
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.dll
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.pdb
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\APIGateway\APIGatewayStep\ClientDemo\obj\Debug\netcoreapp3.1\ClientDemo.genruntimeconfig.cache

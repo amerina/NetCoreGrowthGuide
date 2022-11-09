@@ -21,7 +21,7 @@
 
 
 
-### 2、服务治理与服务发现
+### 2、Consul服务治理与服务发现
 
 Consul做服务治理和服务发现。
 
@@ -186,7 +186,7 @@ GitHub地址：https://github.com/yangzhongke/RuPeng.RestTemplateCore
 
 服务的注册者、消费者都是网站内部服务器之间的事情，对于终端用户是不涉及这些的。终端用户是不访问consul的。对终端用户来讲是对的Web服务器，Web服务器是服务的消费者。 一个服务实例注册一次，可以注册同服务的多个实例，也可以注册多个服务。
 
-### 3、熔断降级
+### 3、Polly-熔断降级
 
 熔断就是“保险丝”。当出现某些状况时，切断服务，从而防止应用程序不断地尝试执行可能会失败的操作给系统造成“雪崩”，或者大量的超时等待导致系统卡死。 
 
@@ -1032,7 +1032,25 @@ JWT由三块组成，可以把用户名、用户Id等保存到Payload部分
 
 用JWT做权限验证的好处：无状态，更有利于分布式系统，不需要集中的Session机制服务器；可以在nginx、CDN等静态文件处理服务器上校验权限；获取用户信息直接从JWT中就可以读取，效率高；
 
-#### 2、Ocelot+Identity Server
+#### 2、Ocelot+Consul+Identity Server
 
+不是所有项目都适合微服务架构，互联网项目及结构复杂的企业信息系统才可以考虑微服务架构。
 
+设计微服务架构，模块拆分的原则：可以独立运行，尽量服务间不要依赖，即使依赖层级也不要太深，不要想着还要join。按业务划分、按模块划分。
 
+扩展知识：
+1、分布式跟踪、日志服务、监控等对微服务来说非常重要
+2、gRPC 另外一个RPC框架，gRPC的.Net Core支持异步。
+
+3、https://github.com/neuecc/MagicOnion可以参考下这位日本mvp写的grpc封装，不需要定义接口文件。
+
+4、nanofabric https://github.com/geffzhang/NanoFabric 简单分析
+5、Surging https://github.com/dotnetcore/surging
+
+6、service fabric https://azure.microsoft.com/zh-cn/documentation/learning-paths/service-fabric/
+7、Spring Cloud入门视频：http://www.rupeng.com/Courses/Chapter/755
+8、steeltoe http://steeltoe.io/ 参考文章 https://mp.weixin.qq.com/s/g9w-qgT2YHyDX8OE5q-OHQ
+9、限流算法 https://mp.weixin.qq.com/s/bck0Q2lDj_J9pLhFEhqm9w
+10、https://github.com/PolicyServer/PolicyServer.Local 认证 + 授权 是两个服务，identityserver 解决了认证 ，PolicyServer 解决授权
+11、Using Polly with HttpClient factory from ASPNET Core 2.1 https://github.com/App-vNext/Polly/wiki/Polly-and-HttpClientFactory
+12、CSharpKit 微服务工具包 http://www.csharpkit.com/
