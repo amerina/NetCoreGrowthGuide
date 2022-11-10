@@ -6,6 +6,8 @@
 
 [Events, Delegates and Event Handler in C# - Dot Net Tutorials](https://dotnettutorials.net/lesson/events-delegates-and-event-handler-in-csharp/)
 
+
+
 ### 事件、委托与Labmda表达式结构
 
 C#中的事件、委托和Lambda表达式:
@@ -481,37 +483,399 @@ C#中的委托分为两种类型：
 
 ### C#中的多播委托
 
+在本文中，我将通过示例讨论C#中的多播委托。请阅读我们之前的文章，其中我们讨论了C#中的委托和示例。作为本文的一部分，我们将详细讨论以下几点：
+
+1. 什么是多播委托?
+2. 如何创建多播委托？
+3. 创建多播委托的不同方式
+4. 带有返回类型的多播委托
+5. 带输出参数的多播委托 
+
+#### 什么是C#中的委托?
+
+委托是类型安全的函数指针。它意味着委托持有方法或函数的引用，当我们调用委托时，它所引用的方法将被执行。委托签名和它所指向的方法必须具有相同的签名。在创建委托实例时，需要将方法作为参数传递给委托构造函数。同样，在C#中有两种类型的委托:
+
+1. 单播委托:委托指向单个函数或方法。
+2. 多播委托：委托指向多个函数或方法。
+
+我们已经在前一篇文章中讨论了单播委托。今天，我们将讨论C#中的多播委托。
+
+#### 什么是多播委托?
+
+C#中的多播委托是保存多个处理函数引用的委托。当我们调用多播委托时，委托引用的所有函数都将被调用。如果您想使用委托调用多个方法，那么所有的方法签名应该是相同的。
+
+一个多播委托就是一个由多个管道或多个委托组成的数组。调用委托的顺序与它们在调用列表中的放置顺序相同。InvocationList只是委托或管道的数组，其中每个管道将把数据转储到不同的方法中。如果这一点目前还不清楚，不要担心，我们将尝试通过多个例子来理解这一点。
+
+**译者Notes：**
+
+还是声音传播的例子，如图
+
+<img src="Image\26.png" alt="00" style="zoom:50%;" />
 
 
 
+#### 理解多播委托示例
+
+让我们看一个例子来理解C#中的多播委托。请看下面的例子，它没有使用委托。在下面的示例中，我们创建了两个方法，然后从主方法中创建类的实例，然后调用这两个方法。
+
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    public class Rectangle
+    {
+        public void GetArea(double Width, double Height)
+        {
+            Console.WriteLine($"Area is {Width * Height}");
+        }
+        public void GetPerimeter(double Width, double Height)
+        {
+            Console.WriteLine($"Perimeter is {2 * (Width + Height)}");
+        }
+        static void Main(string[] args)
+        {
+            Rectangle rect = new Rectangle();
+            rect.GetArea(23.45, 67.89);
+            rect.GetPerimeter(23.45, 67.89);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\27.png)
+
+在上面的例子中，我们创建了Rectangle类的一个实例，然后调用这两个方法。现在我想创建一个单独的委托，它将调用上面的两个方法(即GetArea和GetPerimeter)。这两个方法具有相同的签名，但方法名不同，因此我们可以创建一个单独的委托来保存上述两个方法的引用。当我们调用委托时，它会调用上面两个方法。当我们这样做时，它在C#中被称为多播委托。
+
+#### 多播委托示例
+
+在下面的例子中，我们已经创建了一个委托，它的签名与两个方法(即GetArea和GetPerimeter)相同。然后我们创建委托的实例，并使用+=操作符绑定两个方法。类似地，您可以使用-=操作符从委托中删除函数。一旦我们将两个方法与委托实例绑定，当我们调用委托时，两个方法都将被执行。**在本例中，在幕后，当我们向委托添加多个方法时，就会添加多个管道。**换句话说，我们现在可以说InvocationList现在包含两个委托或两个管道，其顺序与我们添加方法的顺序相同。在本例中，第一个委托或管道将把数据转储到GetArea方法中，第二个管道将把数据转储到GetPerimeter方法中，当您运行应用程序时，您将看到GetArea方法首先被执行，然后GetPerimeter方法将被执行。在InvocationList中，您将看到我们在这个例子中有两个管道或委托具有相同的名称。
+
+```C#
+using System;
+namespace MulticastDelegateDemo
+{
+    public delegate void RectangleDelegate(double Width, double Height);
+    public class Rectangle
+    {
+        public void GetArea(double Width, double Height)
+        {
+            Console.WriteLine($"Area is {Width * Height}");
+        }
+        public void GetPerimeter(double Width, double Height)
+        {
+            Console.WriteLine($"Perimeter is {2 * (Width + Height)}");
+        }
+        static void Main(string[] args)
+        {
+            Rectangle rect = new Rectangle();
+            RectangleDelegate rectDelegate = new RectangleDelegate(rect.GetArea);
+            // RectangleDelegate rectDelegate = rect.GetArea;
+
+            // binding a method with delegate object
+            // In this example rectDelegate is a multicast delegate. 
+            // You use += operator to chain delegates together.
+
+            rectDelegate += rect.GetPerimeter;
+
+            Delegate[] InvocationList = rectDelegate.GetInvocationList();
+            Console.WriteLine("InvocationList:");
+            foreach (var item in InvocationList)
+            {
+                Console.WriteLine($"  {item}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Invoking Multicast Delegate:");
+            rectDelegate(23.45, 67.89);
+            //rectDelegate.Invoke(13.45, 76.89);
+            
+            Console.WriteLine();
+            Console.WriteLine("Invoking Multicast Delegate After Removing one Pipeline:");
+            //Removing a method from delegate object
+            rectDelegate -= rect.GetPerimeter;
+            rectDelegate.Invoke(13.45, 76.89);
+
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\28.png)
+
+#### 创建多播委托的另一种方法
+
+在下面的示例中，我将向您展示静态和非静态方法的使用，以及在C#中创建和调用多播委托的不同方法。
+
+请看下面的例子。我们创建了一个委托，它接受两个整数参数，但不返回任何东西。然后在程序类中，我们定义了四个方法，这四个方法都接受两个整数形参，不返回任何东西，即void。然后我们创建了委托的四个实例并绑定了这四个方法。最后，我们创建第五个委托实例，并使用+操作符将所有四个委托实例绑定到该实例。现在，第五个委托成为一个多播委托。在本例中，对于委托5,InvocationList有4个委托或者你可以说4个管道，每个管道或委托将把数据转储到不同的方法中。当我们调用第五个委托实例时所有四个方法都会被执行。如果要删除一个方法绑定，那么只需使用-=操作符并指定要删除的委托实例。
+
+```c#
+using System;
+
+namespace MulticastDelegateDemo
+{
+    public delegate void MathDelegate(int No1, int No2);
+
+    public class Program
+    {
+        //Static Method
+        public static void Add(int x, int y)
+        {
+            Console.WriteLine($"Addition of {x} and {y} is : {x + y}");
+        }
+        //Static Method
+        public static void Sub(int x, int y)
+        {
+            Console.WriteLine($"Subtraction of {x} and {y} is : {x - y}");
+        }
+        //Non-Static Method
+        public void Mul(int x, int y)
+        {
+            Console.WriteLine($"Multiplication of {x} and {y} is : {x * y}");
+        }
+        //Non-Static Method
+        public void Div(int x, int y)
+        {
+            Console.WriteLine($"Division of {x} and {y} is : {x / y}");
+        }
+
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+            //Static Method within the same class can be access directly
+            MathDelegate del1 = new MathDelegate(Add);
+            //Static Method can be access using class name
+            MathDelegate del2 = new MathDelegate(Program.Sub);
+            //Non-Static Method must be access through object 
+            MathDelegate del3 = new MathDelegate(p.Mul); 
+            MathDelegate del4 = new MathDelegate(p.Div); ;
+
+            //In this example del5 is a multicast delegate. 
+            //We can use +(plus) operator to chain delegates together and 
+            //-(minus) operator to remove a delegate.
+            MathDelegate del5 = del1 + del2 + del3 + del4;
+
+            Delegate[] InvocationList = del5.GetInvocationList();
+            Console.WriteLine("InvocationList:");
+            foreach (var item in InvocationList)
+            {
+                Console.WriteLine($" {item}");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Invoking Multicast Delegate::");
+            del5.Invoke(20, 5);
+            Console.WriteLine();
+
+            Console.WriteLine("Invoking Multicast Delegate After Removing one Delegate:");
+            del5 -= del2;
+            del5(22, 7);
+
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\29.png)
 
 
 
+#### 带有返回类型的多播委托
 
+多播委托调用方法的顺序与将方法添加到调用列表(Invocation List)的顺序相同(我们已经看到过)。到目前为止，我们所讨论的使用多播委托的例子没有返回任何东西，即返回类型为void。现在，如果委托有返回类型会发生什么?
 
+如果委托的返回类型不是void，并且委托是多播委托，则只返回最后调用的方法的值。同样，如果委托有一个out参数，输出参数的值将是由调用列表中最后调用的方法分配的值。
 
+#### 了解带返回类型的多播委托示例
 
+让我们通过一个例子来理解C#中带有返回类型的多播委托。请看下面的例子。在这里，我们创建了一个委托，它不接受任何参数，但返回类型是int。然后我们创建了两个静态方法，第一个静态方法返回1，第二个静态方法返回2。然后我们创建委托实例，首先绑定MethodOne，然后绑定MethodTwo。当我们调用委托时，首先MethodOne被执行然后MethodTwo被执行它返回2因为在InvocationList中最后一个被调用的方法是MethodTwo，它返回2。
 
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    // Deletegate's return type is int
+    public delegate int SampleDelegate();
+    public class Program
+    {
+        static void Main()
+        {
+            SampleDelegate del = new SampleDelegate(MethodOne);
+            del += MethodTwo;
+            
+            // The Value Returned By Delegate will be 2, returned by the MethodTwo(),
+            // as it is the last method in the invocation list.
+            int ValueReturnedByDelegate = del();
+            Console.WriteLine($"Returned Value = {ValueReturnedByDelegate}");
 
+            Console.ReadKey();
+        }
+        // This method returns one
+        public static int MethodOne()
+        {
+            Console.WriteLine("MethodOne is Executed");
+            return 1;
+        }
 
+        // This method returns two
+        public static int MethodTwo()
+        {
+            Console.WriteLine("MethodTwo is Executed");
+            return 2;
+        }
+    }
+}
+```
 
+输出：
 
+![00](Image\30.png)
 
+#### 了解带Out参数的多播委托示例
 
+现在我们将看到一个使用out参数的C#多播委托示例。请看下面的例子。在这里，我们创建了一个委托，它取出一个参数，不返回任何东西，即void。然后我们创建了两个静态方法，这两个静态方法都有一个参数。第一个静态方法将值1赋给out参数，第二个静态方法将值2赋给out参数。然后我们创建委托实例，首先绑定MethodOne，然后绑定MethodTwo。当我们调用委托时，首先MethodOne被执行然后MethodTwo被执行它返回2因为最后一个调用的方法是MethodTwo它给out参数赋值2。
 
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    // Deletegate has an int output parameter
+    public delegate void SampleDelegate(out int Integer);
 
+    public class Program
+    {
+        static void Main()
+        {
+            SampleDelegate del = new SampleDelegate(MethodOne);
+            del += MethodTwo;
 
+            // The ValueFromOutPutParameter will be 2, initialized by MethodTwo(),
+            // as it is the last method in the invocation list.
+            int ValueFromOutPutParameter = -1;
+            del(out ValueFromOutPutParameter);
 
+            Console.WriteLine($"Returned Value = {ValueFromOutPutParameter}");
+            Console.ReadKey();
+        }
 
+        // This method sets ouput parameter Number to 1
+        public static void MethodOne(out int Number)
+        {
+            Console.WriteLine("MethodOne is Executed");
+            Number = 1;
+        }
 
+        // This method sets ouput parameter Number to 2
+        public static void MethodTwo(out int Number)
+        {
+            Console.WriteLine("MethodTwo is Executed");
+            Number = 2;
+        }
+    }
+}
+```
 
+输出
 
+![00](Image\30.png)
 
-
-
-
+在下一篇文章中，我将讨论一个在C#中使用委托的实时示例。在这篇文章中，我尝试用例子来解释C#中的多播委托。我希望您喜欢这篇文章，并通过示例理解C#中多播委托的需求和使用。
 
 ### C#中的实时委托示例
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### 
 
 ### C#中的泛型委托
 
