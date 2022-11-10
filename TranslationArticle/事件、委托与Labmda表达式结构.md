@@ -789,71 +789,297 @@ namespace MulticastDelegateDemo
 
 在下一篇文章中，我将讨论一个在C#中使用委托的实时示例。在这篇文章中，我尝试用例子来解释C#中的多播委托。我希望您喜欢这篇文章，并通过示例理解C#中多播委托的需求和使用。
 
-### C#中的实时委托示例
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 实际工作中的委托示例
+
+在本文中，我将用实际示例讨论C#中的委托。委托是C#开发人员需要了解的最重要的概念之一。在很多面试中，大多数面试官会要求你解释委托在你参与的实际项目中的使用情况。
+
+C#中的委托被框架开发人员广泛使用。让我们通过两个实际示例来理解C#中的委托。
+
+#### 实例1
+
+假设我们有一个叫做Worker的类，这个类有一个叫做DoWork的方法。我们的业务需求是，当我们调用DoWork方法时，我们需要向使用者发送关于已完成工作百分比的通知，而且一旦工作完成，我们还需要发送通知。例如，1小时做了多少工作，2小时做了多少工作，3小时做了多少工作，以此类推，直到工作完成?**DoWork方法不知道将通知发送给谁。DoWork方法的调用者应该决定将通知发送给谁。这意味着在这里我们需要使用回调函数。**
+
+这是一个我们需要使用委托理想的场景。因此，创建一个名为Worker.cs的类文件，然后将以下代码复制并粘贴到其中。可以看到我们已经创建了两个委托。**您可以在任何地方创建委托，也可以在类内或直接在名称空间内创建委托。这是因为在幕后，委托只是类。**DoWork方法有四个参数，在这四个参数中，有两个参数是委托类型的。然后在方法中使用for循环，每次循环执行时，我们都会处理一些工作，并通过调用委托通知用户一次。循环执行已经完成，这意味着我们的工作已经完成，然后我们调用工作已完成委托来通知用户工作已经完成。
+
+```c#
+using System.Threading;
+namespace DelegatesRealTimeExample
+{
+    public delegate void WorkPerformedHandler(int hours, string workType);
+    public delegate void WorkCompletedHandler(string workTyp);
+    public class Worker
+    {
+        public void DoWork(int hours, string workType, WorkPerformedHandler del1, WorkCompletedHandler del2)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                //Do Some Processing
+                Thread.Sleep(1000);
+                //Notfiy how much works have been done
+                del1(i+1, workType);
+            }
+
+            //Notfiy the consumer that work has been completed
+            del2(workType);
+        }
+    }
+}
+```
+
+现在，按照以下方式修改Program类。在这里，我们创建了两个具有与委托相同签名的回调方法。然后我们创建委托的实例，还创建Worker类的实例，并通过将所需的值与两个委托实例一起传递来调用DoWork方法。
+
+```c#
+using System;
+namespace DelegatesRealTimeExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            WorkPerformedHandler del1 = new WorkPerformedHandler(Worker_WorkPerformed);
+            WorkCompletedHandler del2 = new WorkCompletedHandler(Worker_WorkCompleted);
+
+            Worker worker = new Worker();
+            worker.DoWork(5, "Generating Report", del1, del2);
+            Console.ReadKey();
+        }
+
+        //Delegate Signature must match with the method signature
+        static void Worker_WorkPerformed(int hours, string workType)
+        {
+            Console.WriteLine($"{hours} Hours compelted for {workType}");
+        }
+
+        static void Worker_WorkCompleted(string workType)
+        {
+            Console.WriteLine($"{workType} work compelted");
+        }
+    }
+}
+```
+
+现在，运行应用程序，您将看到每次执行循环时，它都会发送通知，一旦工作完成，它将发送另一个通知，如下图所示。
+
+![00](Image\31.png)
+
+现在，如果你转到Worker类并在DoWork方法中将委托实例设为NULL
+
+```c#
+using System.Threading;
+namespace DelegatesRealTimeExample
+{
+    public delegate void WorkPerformedHandler(int hours, string workType);
+    public delegate void WorkCompletedHandler(string workTyp);
+    public class Worker
+    {
+        public void DoWork(int hours, string workType, WorkPerformedHandler del1, WorkCompletedHandler del2)
+        {
+            del1 = null; //Allowing to set null
+            del2 = null; //Allowing to set null
+
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                //Do Some Processing
+                Thread.Sleep(1000);
+                //Notfiy how much works have been done
+                del1(i + 1, workType);
+            }
+
+            //Notfiy the consumer that work has been completed
+            del2(workType);
+        }
+    }
+}
+```
+
+**因此，如果Worker类没有创建实例，如果Worker类不知道向谁发送通知，那么它应该不允许将委托实例设为空。我们如何限制它?**
+
+**通过在C#中使用事件**，我们将在下一篇文章中讨论。
+
+#### 实例2
+
+现在，我们将看到C#中委托的另一个实例。假设我们有一个名为Employee的类，如下所示。
+
+```c#
+namespace DelegateRealtimeExample
+{
+    public class Employee
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public int Experience { get; set; }
+        public int Salary { get; set; }
+    }
+}
+```
+
+现在我想在Employee类中编写一个方法，可以用来晋升员工。我们将要编写的方法将接受一个Employee对象列表作为参数，然后打印所有有资格获得晋升的员工的名字。
+
+但员工升职的逻辑不应该被硬编码。有时我们会根据员工的经验来提拔他们，有时我们会根据他们的薪水来提拔他们，或者根据其他一些原因，比如员工的表现。因此，提升员工的逻辑不应该硬编码在方法中。
+
+我们如何才能做到这一点?在委托的帮助下，这可以很容易地实现。因此，现在我需要设计如下所示的Employee类。
+
+```c#
+using System;
+using System.Collections.Generic;
+
+namespace DelegateRealtimeExample
+{
+    public delegate bool EligibleToPromotion(Employee EmployeeToPromotion);
+
+    public class Employee
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public int Experience { get; set; }
+        public int Salary { get; set; }
+
+        public static void PromoteEmployee(List<Employee> lstEmployees, EligibleToPromotion IsEmployeeEligible)
+        {
+            foreach (Employee employee in lstEmployees)
+            {
+                if (IsEmployeeEligible(employee))
+                {
+                    Console.WriteLine($"Employee {employee.Name} Promoted");
+                }
+            }
+        }
+    }
+}
+```
+
+在上面的代码中，我们创建了一个名为EligibleToPromotion的委托。该委托接受Employee对象作为参数，并返回一个布尔值，指示该员工是否得到晋升。在Employee类中，我们还创建了PromoteEmpoloyee方法，该方法采用Employees列表和EligibleToPromotion类型的Delegate作为参数。
+
+然后，PromoteEmployee方法循环遍历每个雇员的对象并将其传递给委托。如果委托返回true，则提升Employee，否则不提升。因此，在这个方法中，我们没有硬编码任何关于如何提升员工的逻辑。
+
+现在，使用Employee类的客户端可以灵活地确定他们希望如何提升员工的逻辑。首先创建员工对象emp1、emp2和emp3。填充各自对象的属性。然后创建一个employee List来保存所有3名员工，如下所示。
+
+```c#
+using System;
+using System.Collections.Generic;
+
+namespace DelegateRealtimeExample
+{
+    public class Program
+    {
+        static void Main()
+        {
+            Employee emp1 = new Employee()
+            {
+                ID = 101,
+                Name = "Pranaya",
+                Gender = "Male",
+                Experience = 5,
+                Salary = 10000
+            };
+
+            Employee emp2 = new Employee()
+            {
+                ID = 102,
+                Name = "Priyanka",
+                Gender = "Female",
+                Experience = 10,
+                Salary = 20000
+            };
+
+            Employee emp3 = new Employee()
+            {
+                ID = 103,
+                Name = "Anurag",
+                Experience = 15,
+                Salary = 30000
+            };
+
+            List<Employee> lstEmployess = new List<Employee>();
+            lstEmployess.Add(emp1);
+            lstEmployess.Add(emp2);
+            lstEmployess.Add(emp3);
+
+            EligibleToPromotion eligibleTopromote = new EligibleToPromotion(Program.Promote);
+            Employee.PromoteEmployee(lstEmployess, eligibleTopromote);
+
+            Console.ReadKey();
+        }
+
+        public static bool Promote(Employee employee)
+        {
+            if (employee.Salary > 10000)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}
+```
+
+注意我们创建的Promote方法。这种方法符合我们如何提升员工的逻辑。然后将该方法作为参数传递给委托。另外，请注意此方法与EligibleToPromotion委托具有相同的签名。这非常重要，因为如果签名不同，则不能将Promote方法作为参数传递给委托。这就是为什么委托被称为类型安全函数指针的原因。现在，运行应用程序，您将看到以下输出：
+
+![00](Image\32.png)
+
+
+
+因此，如果我们没有委托的概念，就不可能将函数作为参数传递。由于Employee类中的Promote方法使用了委托，因此可以动态地决定我们希望如何提升员工的逻辑。
+
+C# 3.0中引入了Lambda表达式。因此，您可以使用lambda表达式，而不是创建一个函数->然后创建一个委托的实例->然后将该函数作为参数传递给委托。下面的示例使用Lambda表达式重写。现在不再需要Promote方法了。
+
+```C#
+using System;
+using System.Collections.Generic;
+namespace DelegateRealtimeExample
+{
+    public class Program
+    {
+        static void Main()
+        {
+            Employee emp1 = new Employee()
+            {
+                ID = 101,
+                Name = "Pranaya",
+                Gender = "Male",
+                Experience = 5,
+                Salary = 10000
+            };
+
+            Employee emp2 = new Employee()
+            {
+                ID = 102,
+                Name = "Priyanka",
+                Gender = "Female",
+                Experience = 10,
+                Salary = 20000
+            };
+
+            Employee emp3 = new Employee()
+            {
+                ID = 103,
+                Name = "Anurag",
+                Experience = 15,
+                Salary = 30000
+            };
+
+            List<Employee> lstEmployess = new List<Employee>();
+            lstEmployess.Add(emp1);
+            lstEmployess.Add(emp2);
+            lstEmployess.Add(emp3);
+
+            Employee.PromoteEmployee(lstEmployess, x => x.Experience > 5);
+            Console.ReadKey();
+        }
+    }
+} 
+```
+
+在下一篇文章中，我将讨论C#中的泛型委托及其示例。在本文中，我试图解释C#中的委托实例。我希望您喜欢这篇C#委托实例文章。
+
+### C#中的泛型委托
 
 
 
@@ -877,13 +1103,45 @@ namespace MulticastDelegateDemo
 
 ### 
 
-### C#中的泛型委托
+### 
 
 ### C#中的异步委托
 
 ### C#中的Lambda表达式
 
 ### C#中的Event示例
+
+在本文中，我将通过示例讨论C#中的事件和委托。请阅读我们之前的文章，其中我们讨论了C#中的Lambda表达式和示例。本文将是一篇很长的文章，请保持耐心并阅读全文，我希望在本文结束时，您能够理解事件的确切含义以及如何使用事件，以及在C#中事件是如何工作的。
+
+#### C#中的事件
+
+[Events - C# Programming Guide](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/)
+
+根据MSDN的解释，事件使类或对象能够在发生动作时通知其他类或对象。发送(或引发)事件的类称为发布者，接收(或处理)事件的类称为订阅者。单个事件可以有多个订阅者。通常，当某个操作发生时，发布者会引发一个事件。如果订阅者希望在操作发生时获得通知，则应该向事件注册并处理它。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
