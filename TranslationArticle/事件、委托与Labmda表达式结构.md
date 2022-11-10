@@ -1119,37 +1119,454 @@ namespace DelegateRealtimeExample
 
 根据MSDN的解释，事件使类或对象能够在发生动作时通知其他类或对象。发送(或引发)事件的类称为发布者，接收(或处理)事件的类称为订阅者。单个事件可以有多个订阅者。通常，当某个操作发生时，发布者会引发一个事件。如果订阅者希望在操作发生时获得通知，则应该向事件注册并处理它。
 
+我们已经讨论了委托以及如何在C#中创建和调用委托。现在，我们将讨论如何将委托与事件关联起来。因此，当事件发生时，我们可以将事件数据路由到事件监听者(B点)。相信我，这非常简单，在本文的最后，您将通过示例了解**如何创建事件，如何将事件与委托关联，如何引发事件，以及如何在C#中处理事件。**
 
+![00](Image\33.png)
 
+#### 定义一个事件
 
+在C#中，定义事件非常简单。我们需要做的是，使用event关键字。可以使用event关键字在类内部定义事件，其语法如下所示。
 
+首先，我们需要定义一个委托，如下图所示定义一个事件只需要使用该委托:
 
+![00](Image\34.png)
 
+如您所见，**事件是使用委托创建的。在这里，我们使用WorkPerformedHandler委托创建了WorkPerformed事件。**这一点很重要，因为事件本身并不真正做任何事情。你必须有一个管道或委托将数据从a点路由到B点，也就是从Event Raiser到事件处理程序Event Handler或事件监听器Event Listener。**事件实际上是委托的包装器。这就是定义事件的整个过程。**
 
+**现在，你可能会有一个问题，如果可以使用委托，那么为什么使用事件?**
 
+尽管我们可以像以前的文章中那样单独使用委托，但我们还使用事件的原因是它们很简单，而且它们是DotNet框架的重要组成部分，而且几乎是提供通知的标准方法，也是实现发布者和订阅者模式的最佳方法。
 
+在本例中，事件接收者可以转到并附加到WorkPerformed事件，但在幕后你可以**在事件定义中看到它们通过WorkPerformedHandler委托将自己添加到调用列表。**
 
+根据. Net框架的命名约定，我们通常需要在委托中添加单词Handler，比如在我们的例子中，它是WorkPerformedHandler。你可以给事件命名任何你想要的名字。这是在C#中定义事件的最简单的方法。
 
+现在，如果您希望更多地控制侦听器如何添加到调用列表或从调用列表中删除，那么我们需要使用添加和删除访问器，如下面的代码所示。但是在应用程序的大部分或示例代码中都找不到以下代码。
 
+![00](Image\35.png)
 
+这里，我们有一个名为_WorkPerformedHandler的私有字段，这只是我们的委托，使用这个委托，我们将从调用列表中添加和删除侦听器(即方法)，当事件被引发时，调用列表将被调用。在事件中，我们有添加访问器和删除访问器。添加访问器将将侦听器(严格来说是方法)添加到调用列表中，删除访问器将从调用列表中删除事件侦听器。
 
+如果你注意到，我们使用了Synchronized关键字这是因为我们想确保如果多个线程同时尝试修改，我们同步访问这里的代码块这将帮助我们解决线程问题。
 
+在添加访问器中，我们获取试图添加的目标方法名，该方法在调用列表被调用时调用。在这里Delegate.Combine将使用我们已经拥有的委托并在这里添加值。这与我们之前用多播委托所做的+=完全相同。在这里，变量值将保存我们想要添加到调用列表中的目标方法名。
 
+现在来看remove访问器，它将做与add访问器相同的事情，但在本例中，它将从调用列表中删除侦听器，而不是添加侦听器。这意味着它与我们先前在多播委托中讨论的-=相同。
 
+***注意:**如果您想要根据条件添加或删除侦听器，那么您需要使用添加和删除访问器。或者，如果您想对从调用列表中添加或删除哪些侦听器有更多的控制，那么您需要使用添加和删除访问器。但我个人从未在项目中使用添加和删除访问器。*
 
+#### 如何在C#中创建自定义事件的示例
 
+让我们来看看如何在C#中添加自定义事件。让我们添加一个名为Worker.cs的类文件，并复制并粘贴以下代码。
 
+```c#
+using System;
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    public delegate void WorkPerformedHandler(int hours, WorkType workType);
 
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event WorkPerformedHandler WorkPerformed;
 
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
 
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Raising Events
+        }
+    }
 
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
 
+这个Worker类负责做某种工作。这里我们添加了一个名为DoWork的方法，它有两个参数，即int hours和WorkType WorkType。现在，调用DoWork方法的人想知道工作的进展情况。在方法执行完成之前，我们不能从这个方法返回任何东西。但是在方法执行过程中，我们可以引发一个事件。但是，为了引发事件，我们需要一个delegate。这里，首先，我们定义了一个名为WorkPerformedHandler的委托它接受两个参数：
 
+```c#
+public delegate void WorkPerformedHandler(int hours, WorkType workType);
+```
 
+你可以在任何地方定义委托，因为在编译应用程序时，它将成为一个类。一旦我们定义了委托，然后我们通过使用WorkPerformedHandler委托定义一个事件我们给事件名称为WorkPerformed，这个事件会在工作进行时被引发：
 
+```
+public event WorkPerformedHandler WorkPerformed;
+```
 
+现在，我们还希望在工作完全完成时引发一个事件。为此，我们创建了另一个名为WorkCompleted的事件，这一次我们使用了内置的委托EventHandler。如果转到EventHandler的定义，就会看到它是一个委托：
 
+```
+public event EventHandler WorkCompleted;
+```
 
+**这就是我们在C#中定义自定义事件的方式。**现在，让我们继续并理解如何在C#中引发事件。
 
+#### 在C#中引发事件
 
+定义了事件之后，我们需要一种引发事件的方法。这一点很重要，否则监听器将无法获得事件数据。现在，我们将讨论C#中引发事件的不同过程或技术。
 
+事件是通过像方法一样调用事件而引发的。因此需要使用事件名，并传递参数值。为什么?**因为在事件背后，我们只有委托。**我们用什么方式调用委托同样地，我们需要调用(Invoke)一个事件或者你可以在C#中引发一个事件。
+
+但是在引发事件和调用事件之前，一定要检查调用列表(Invocation List)中是否有任何内容。因为如果幕后的委托是空的，如果你试图引发事件，那么你会得到一个异常。为什么呢?因为，如果你尝试在Null对象上调用一个方法，那么你知道我们在C#中会得到一个Null引用异常。同样的事情也适用于这里。
+
+下面的代码段展示了如何在C#中引发事件。在下面的代码中，我们使用if块检查WorkPerformed事件是否为空。这将检查是否有希望侦听的人附加到此事件。简单地说，我们正在检查是否有委托引用的任何方法。如果没有听众，那么我们就不会引发事件。这个if块语句可以通过使用null(?)操作符和Invoke方法来简化。
+
+![00](Image\36.png)
+
+如果WorkPerformed不是null，那么我们将引发事件。**引发事件意味着像调用方法一样调用事件，而在幕后，它只调用委托。在引发事件的同时，我们需要将数据传递给侦听器。**
+
+#### C#中另一种引发事件的方法
+
+另一个选项是访问事件的委托并直接调用它，如下面的代码所示。正如您在这里看到的，我们正在将事件转换为委托。**这是因为，如果你去看事件的定义，什么是事件的数据类型，它是委托，也就是WorkPerformedHandler。**因此，可以将事件转换为委托。然后我们需要检查委托实例不为空，如果它不为空，那么我们需要调用委托，就像调用方法一样，通过将数据传递给事件监听器。我们可以像这里展示的那样用模式匹配来简化这个类型转换。
+
+![00](Image\37.png)
+
+这些是你可以在C#中引发事件的不同技术。但是，通常情况下，我们不应该在DoWork方法中编写Raise事件代码。我们需要创建一个新方法，在该方法中，我们需要编写引发事件的代码，我们只需要从DoWork方法调用该方法，如下面的代码所示。
+
+![00](Image\38.png)
+
+在这里，我们创建了由DoWork方法调用的OnWorkPerformed方法。现在，我们已经创建了这个OnWorkPerformed方法作为protected和virtual，原因是如果Worker类的任何子类想要，那么就可以覆盖这个方法。现在，任何已附加到此事件的侦听器都将在引发此事件时得到通知。简单地说，添加到调用列表中的方法列表将被执行，所有这些方法将在调用事件时获得传递的数据。到目前为止，我们已经讨论了委托、如何创建事件以及如何引发事件。到目前为止的完整代码如下。
+
+```c#
+using System;
+using System.Threading;
+
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    public delegate void WorkPerformedHandler(int hours, WorkType workType);
+
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event WorkPerformedHandler WorkPerformed;
+
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
+
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                OnWorkPerformed(i+1, workType);
+                Thread.Sleep(3000);
+            }
+
+            //Notify the consumer that work has been completed
+            OnWorkCompleted();
+        }
+
+        protected virtual void OnWorkPerformed(int hours, WorkType workType)
+        {
+            //Raising Events only if Listeners are attached
+
+            //Approach1
+            //if(WorkPerformed != null)
+            //{
+            //    WorkPerformed(8, WorkType.GenerateReports);
+            //}
+
+            //Approach2
+            //WorkPerformed?.Invoke(8, WorkType.GenerateReports);
+
+            //Approach3
+            //WorkPerformedHandler del1 = WorkPerformed as WorkPerformedHandler;
+            //if(del1 != null)
+            //{
+            //    del1(8, WorkType.GenerateReports);
+            //}
+
+            //Approach4
+            if (WorkPerformed is WorkPerformedHandler del2)
+            {
+                del2(8, WorkType.GenerateReports);
+            }
+        }
+
+        protected virtual void OnWorkCompleted()
+        {
+            //Raising the Event
+            //Approach1
+            //EventHandler delegate takes two parameters i.e. object sender, EventArgs e
+            //Sender is the current class i.e. this keyword and we do not need to pass any data
+            //So, we need to pass Empty EventArgs
+            //WorkCompleted?.Invoke(this, EventArgs.Empty);
+
+            //Approach2
+            if (WorkCompleted is EventHandler del)
+            {
+                del(this, EventArgs.Empty);
+            }
+
+            //Note: You can also use other two Approached
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+让我们讨论一下上面代码中使用的每个方法:
+
+1. DoWork:这个方法接受int hours和WorkType WorkType作为参数，在这个方法中，我们运行一个基于int hours的循环。每次我们运行循环时，我们调用OnWorkPerformed方法，然后让循环休眠3秒，一旦循环完成，我们调用OnWorkCompleted。
+2. OnWorkPerformed:在这个方法中，我们引发事件并通知消费者(Consumer)工作正在进行。
+3. OnWorkCompleted:在此方法中，我们引发事件并通知事件消费者工作已完成。这个事件是使用内置的委托EventHandler创建的，它接受两个参数，即对象sender, EventArgs。这里，sender是当前类，即我们可以传递这个关键字，当工作完成时，我们不需要传递任何数据，我们只需要通知工作已完成。因此，我们需要将第二个参数作为空参数传递。这里我们传递EventArgs.Empty 作为第二个参数。
+
+#### 在C#中创建自定义EventArgs类
+
+当我们在.Net Framework中使用事件时，我们需要以特定的方式传递事件数据。到目前为止，我们只讨论了传递事件数据的简单方法，比如int和WorkType。但是，如果我们想要向侦听器传递超过20或30个数据呢?那么委托和事件处理程序(事件监听器)中的参数列表将变得混乱。而且，当我们引发事件时，传递20和30个值也很混乱。因此，在.Net框架中，我们有一个引发事件和传递事件数据的标准方法，即使用两个参数，即对象sender和EventArgs。
+
+![00](Image\39.png)
+
+我们如何创建我们的自定义EventArgs类以及我们如何在委托和事件中使用那个自定义EventArgs类来传递数据。EventArgs类用于许多委托和事件处理程序的签名中。例如，在Windows Form或Wen Form Application中，当我们双击按钮元素时，按钮单击事件将添加以下签名。你可以看到它将EventArgs作为参数。
+
+![00](Image\40.png)
+
+现在，如果我们需要传递自定义数据，那么我们需要根据业务需求扩展EventArgs类。所以，我们需要做的是，我们需要创建一个自定义EventArgs类继承EventArgs类然后添加我们所需的数据成员，如下图所示。
+
+![00](Image\41.png)
+
+正如您所看到的，这个类继承自属于System命名空间的EventArgs类。这里我们定义了两个属性，即Hours和WorkType。但是，根据您的业务需求，您可以定义任意数量的属性。现在，添加一个名为WorkPerformedEventArgs.cs的类文件：
+
+![00](Image\42.png)
+
+要使用自定义EventArgs类，委托签名必须在其签名中引用该类。所以，第一个参数是事件的sender，第二个参数是我们的自定义EventArgs，有了这个更改，委托签名必须而且应该如下所示:
+
+```
+public delegate void WorkPerformedHandler(object sender, WorkPerformedEventArgs e);
+```
+
+现在当我们引发事件时，我们需要传递两个参数，谁来handle这个事件，他也有这两个参数。
+
+**.NET框架包括通用的EventHandler&lt;T&gt;类，它可以用来代替自定义委托，其中T表示EventArgs。**因此，在创建事件时，我们可以直接使用通用的EventHandler&lt;T&gt;委托如下图所示。
+
+![00](Image\43.png)
+
+通过这些更改，在引发事件的同时，我们需要传递两个参数，如下面的代码所示。第一个参数是sender，在本例中是this关键字，第二个参数是我们的自定义EventArgs。
+
+![00](Image\44.png)
+
+现在，Worker类代码应该如下所示：
+
+```C#
+using System;
+using System.Threading;
+
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    //Custom Delegate
+    //public delegate void WorkPerformedHandler(object sender, WorkPerformedEventArgs e);
+
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event EventHandler<WorkPerformedEventArgs> WorkPerformed;
+
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
+
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                OnWorkPerformed(i+1, workType);
+                Thread.Sleep(3000);
+            }
+
+            //Notify the consumer that work has been completed
+            OnWorkCompleted();
+        }
+
+        protected virtual void OnWorkPerformed(int hours, WorkType workType)
+        {
+            //Raising Events only if Listeners are attached
+
+            //Approach1
+
+            if (WorkPerformed != null)
+            {
+                WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+                {
+                    Hours = hours,
+                    WorkType = workType
+                };
+                WorkPerformed(this, e);
+            }
+
+            //Approach2
+            //EventHandler<WorkPerformedEventArgs> del1 = WorkPerformed as EventHandler<WorkPerformedEventArgs;
+            //if (del1 != null)
+            //{
+            //    WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+            //    {
+            //        Hours = hours,
+            //        WorkType = workType
+            //    };
+            //    del1(this, e);
+            //}
+
+            //Approach3
+            //if (WorkPerformed is EventHandler<WorkPerformedEventArgs> del2)
+            //{
+            //    WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+            //    {
+            //        Hours = hours,
+            //        WorkType = workType
+            //    };
+            //    del2(this, e);
+            //}
+        }
+
+        protected virtual void OnWorkCompleted()
+        {
+            //Raising the Event
+            //Approach1
+            //EventHandler delegate takes two parameters i.e. object sender, EventArgs e
+            //Sender is the current class i.e. this keyword and we do not need to pass any data
+            //So, we need to pass Empty EventArgs
+            //WorkCompleted?.Invoke(this, EventArgs.Empty);
+
+            //Approach2
+            if (WorkCompleted is EventHandler del)
+            {
+                del(this, EventArgs.Empty);
+            }
+
+            //Note: You can also use other two Approaches
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+到目前为止，我们已经了解了**如何创建事件、如何创建自定义事件参数以及如何引发事件。**现在，让我们继续并理解最重要的事情，即如何在C#中处理事件。
+
+#### 在C#中处理事件
+
+现在，我们将讨论如何在C#中处理由event Raiser引发的事件。
+
+![00](Image\45.png)
+
+**在C#中实例化委托和Handling事件：**
+
+现在，我们将讨论将事件处理程序与事件连接起来的过程。我们已经讨论过，委托方法签名和事件处理程序方法签名应该而且必须相同，否则事件处理程序方法将无法从委托或管道获取数据。如果处理程序方法希望从管道接收数据，则处理程序必须具有与委托相同的参数数量、类型和顺序。为了更好的理解，请看下面的图片。
+
+![00](Image\46.png)
+
+在.Net框架中，我们可以使用+=操作符将事件附加到事件处理程序中:
+
+![00](Image\47.png)
+
+现在，让我们继续使用委托为WorkPerformed和WorkCompleted事件附加事件处理程序。请按如下所示修改Program类。在这里，我们创建了两个事件处理程序方法。然后用WorkPerformed事件附加Worker_WorkPerformed事件处理方法，并用WorkCompleted事件附加Worker_WorkCompleted方法。对于附加Worker_WorkPerformed事件处理程序，我们使用通用的事件处理程序委托，对于Worker_WorkCompleted事件处理程序方法，使用内置的事件处理程序委托。最后，我们调用DoWork方法来开始处理。
+
+```
+using System;
+namespace DelegatesDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Worker worker = new Worker();
+
+            //Attaching Worker_WorkPerformed with WorkPerformed Event
+            worker.WorkPerformed += 
+                new EventHandler<WorkPerformedEventArgs>(Worker_WorkPerformed);
+
+            //Attaching Worker_WorkCompleted with WorkCompleted Event
+            worker.WorkCompleted +=
+                new EventHandler(Worker_WorkCompleted);
+
+            worker.DoWork(4, WorkType.GenerateReports);
+            Console.ReadKey();
+        }
+
+        //Event Handler Method or Event Listener Method
+        static void Worker_WorkPerformed(object sender, WorkPerformedEventArgs e)
+        {
+            Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+        }
+
+        //Event Handler Method or Event Listener Method
+        static void Worker_WorkCompleted(object sender, EventArgs e)
+        {
+            Console.WriteLine($"Worker Work Completed");
+        }
+    }
+}
+```
+
+现在，运行应用程序，您应该会得到预期的输出:
+
+![00](Image\48.png)
+
+**在C#中使用匿名方法附加事件处理程序:**
+
+匿名方法是一种没有任何名称的方法。在C#中，我们还可以将匿名方法附加到事件上，而不是单独的方法。使用delegate关键字创建一个匿名方法。
+
+```c#
+using System;
+namespace DelegatesDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Worker worker = new Worker();
+
+            //Attaching Worker_WorkPerformed with WorkPerformed Event
+            worker.WorkPerformed += delegate (object sender, WorkPerformedEventArgs e)
+            {
+                Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+            };
+
+            //Attaching Worker_WorkCompleted with WorkCompleted Event
+            worker.WorkCompleted += delegate (object sender, EventArgs e)
+            {
+                Console.WriteLine($"Worker Work Completed");
+            };
+
+            worker.DoWork(4, WorkType.GenerateReports);
+            Console.ReadKey();
+        }
+
+        ////Event Handler Method or Event Listener Method
+        //static void Worker_WorkPerformed(object sender, WorkPerformedEventArgs e)
+        //{
+        //    Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+        //}
+
+        ////Event Handler Method or Event Listener Method
+        //static void Worker_WorkCompleted(object sender, EventArgs e)
+        //{
+        //    Console.WriteLine($"Worker Work Completed");
+        //}
+    }
+}
+```
+
+输出：
+
+![00](Image\49.png)
