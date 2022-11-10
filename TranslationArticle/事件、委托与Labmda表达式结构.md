@@ -6,7 +6,7 @@
 
 [Events, Delegates and Event Handler in C# - Dot Net Tutorials](https://dotnettutorials.net/lesson/events-delegates-and-event-handler-in-csharp/)
 
-
+[Local Event Bus | Documentation Center | ABP.IO](https://docs.abp.io/en/abp/latest/Local-Event-Bus)
 
 ### 事件、委托与Labmda表达式结构
 
@@ -1586,3 +1586,16 @@ namespace DelegatesDemo
 输出：
 
 ![00](Image\49.png)
+
+### ABP中的Event Bus
+
+Handler处理程序由ABP框架自动发现，并在事件发生时自动调用HandleEventAsync方法。
+
+
+
+分布式事件总线系统提供了一个可以被任何提供程序实现的**抽象**. 有四种开箱即用的提供程序:
+
+- LocalDistributedEventBus 是默认实现,实现作为进程内工作的分布式事件总线. 是的!如果没有配置真正的分布式提供程序,**默认实现的工作方式与[本地事件总线](https://docs.abp.io/zh-Hans/abp/latest/Local-Event-Bus)一样**.
+- RabbitMqDistributedEventBus通过[RabbitMQ](https://www.rabbitmq.com/)实现分布式事件总线. 请参阅[RabbitMQ集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-RabbitMQ-Integration)了解如何配置它.
+- KafkaDistributedEventBus通过[Kafka](https://kafka.apache.org/)实现分布式事件总线. 请参阅[Kafka集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-Kafka-Integration)了解如何配置它.
+- RebusDistributedEventBus 通过[Rebus](http://mookid.dk/category/rebus/)实现分布式事件总线. 请参阅[Rebus集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-Rebus-Integration)了解如何配置它.
