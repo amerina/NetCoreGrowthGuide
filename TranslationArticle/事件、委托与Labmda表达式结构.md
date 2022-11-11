@@ -1081,6 +1081,432 @@ namespace DelegateRealtimeExample
 
 ### C#中的泛型委托
 
+在本文中，我将通过示例讨论C#中的泛型委托。请阅读我们之前的文章，我们讨论了实际工作中的委托示例。作为本文的一部分，我们将详细讨论以下几点：
+
+1. C#中的泛型委托是什么?
+2. C#中泛型委托的类型
+3. 为什么我们需要泛型委托?
+4. C#中的Func泛型委托
+5. C#中的Action泛型委托
+6. C#中的Predicate泛型委托
+7. 通过示例理解泛型委托
+
+#### C#中的泛型委托是什么?
+
+C#中的泛型委托是作为.Net Framework 3.5的一部分引入的，它不需要定义委托实例来调用方法。要理解C#中的泛型委托，你应该具备委托的基本知识。
+
+#### C#中泛型委托的类型
+
+C#提供了三个内置的泛型委托:
+
+- **Func**
+- **Action**
+- **Predicate**
+
+#### 为什么我们需要泛型委托?
+
+让我们通过一个例子来理解C#中对泛型委托的需求。为了理解这一点，让我们首先理解如何使用委托来调用方法。假设我们有以下三个方法，我们希望使用委托调用这些方法:
+
+![00](Image\52.png)
+
+如您所见，AddNumber1方法接受三个参数并返回一个double类型的值。类似地，AddNumber2方法接受三个参数，但它不返回任何值，这里返回类型为void。第三个方法，即CheckLength方法接受一个字符串参数并返回一个布尔值。如果字符串长度大于5，则返回true，否则返回false。
+
+现在，如果我们想在C#中使用委托调用上述三个方法，那么我们需要创建三个委托，它们的签名应该与上述三个方法的签名匹配：
+
+![00](Image\53.png)
+
+如上图所示，我们创建了三个委托。现在，一旦我们创建了委托。然后，我们可以通过创建引用各自方法的每个委托的实例来调用方法，然后我们可以调用委托：
+
+![00](Image\54.png)
+
+#### C#中使用自定义委托调用方法示例
+
+下面是我们讨论示例的完整代码。
+
+```c#
+using System;
+namespace GenericDelegatesDemo
+{
+    public class GenericDelegates
+    {
+        public delegate double AddNumber1Delegate(int no1, float no2, double no3);
+        public delegate void AddNumber2Delegate(int no1, float no2, double no3);
+        public delegate bool CheckLengthDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            AddNumber1Delegate obj1 = new AddNumber1Delegate(AddNumber1);
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            AddNumber2Delegate obj2 = new AddNumber2Delegate(AddNumber2);
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            CheckLengthDelegate obj3 = new CheckLengthDelegate(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+
+        public static double AddNumber1(int no1, float no2, double no3)
+        {
+            return no1 + no2 + no3;
+        }
+
+        public static void AddNumber2(int no1, float no2, double no3)
+        {
+            Console.WriteLine(no1 + no2 + no3);
+        }
+
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\55.png)
+
+这就是我们使用委托调用方法的方法。脑海中浮现出一个问题，我们真的需要创建自定义委托来调用C#中的方法吗?
+
+我们真的需要在C#中创建自定义委托来调用方法吗?
+
+答案是否定的。C# .NET Framework提供了一些通用的委托，它们可以为我们完成这项工作。C#提供了三个泛型委托：
+
+1. **Func**
+2. **Action**
+3. **Predicate**
+
+现在，让我们尝试理解上述三个泛型委托。让我们通过示例来理解这些委托是什么，何时以及如何在C#中使用这些泛型委托。
+
+#### C#中的Func泛型委托
+
+C#中的Func泛型委托出现在System命名空间中。该委托接受一个或多个输入参数并返回一个输出参数。最后一个参数被认为是返回值。C#中的Func Generic Delegate最多可以接受16个不同或相同数据类型的输入参数。它必须有一个返回类型。返回类型是必选的，但输入参数不是必选的。
+
+
+
+**注意:**当你的委托需要返回某个值，无论是否接受任何输入参数，你都可以在C#中使用Func Generic委托。
+
+#### C#中的Action泛型委托
+
+C#中的Action Generic Delegate也出现在System命名空间中。它接受一个或多个输入参数，但不返回任何内容。该委托最多可以接受16个不同或相同数据类型的输入参数。
+
+
+
+**注意:**当你的委托没有返回任何值时，无论是否接受任何输入参数，你都可以在C#中使用Action Generic委托。
+
+#### C#中的Predicate泛型委托
+
+C#中的谓词(Predicate)泛型委托也出现在System命名空间中。该委托用于验证方法的某些条件，并返回布尔值的输出，或True或False。它接受一个输入参数，总是返回一个布尔值，这是必须的。这个委托最多可以接受一个输入参数，并且总是返回布尔类型的值。
+
+
+
+**注意:**当你的委托返回一个布尔值，只接受一个输入参数，你可以在C#中使用Predicate Generic委托。
+
+#### 理解C#中的泛型委托示例
+
+让我们通过一个例子来理解C#中的上述三种泛型委托。在第一个例子中，我们创建了三个方法，
+
+1. AddNumber1方法接受三个参数并返回一个double值。这里我们将使用Func泛型委托来实现与第一个示例中相同的功能。
+2. AddNumber2方法接受三个参数，但不返回任何值。在这里，我们将使用Action Generic Delegate来实现与第一个示例中实现的相同的功能。
+3. CheckLength方法接受一个字符串输入参数并返回一个布尔值。在这里，我们将使用Predicate Generic Delegate来实现与第一个示例中实现的相同的功能。
+
+让我们首先删除在应用程序中创建的三个delegate，看看如何使用泛型delegate转换相同的应用程序。
+
+#### 如何在C#使用Func泛型委托?
+
+在C#中使用Func泛型委托，只要你的委托返回一些值，无论是否接受任何输入参数。在我们的示例中，AddNumber1方法接受一些输入并返回一个输出。因此，AddNumber1方法签名与Func泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用AddNumber1方法，而是使用Func泛型委托来调用AddNumber1方法，如下面的代码所示。
+
+![00](Image\56.png)
+
+如上面代码所示，Func Generic Delegate接受四个参数，前三个是输入参数，最后一个是返回值。我们将AddNumber1方法传递给Func泛型委托构造函数，该方法将在调用Func委托时执行。
+
+#### 如何在C#中使用Action泛型委托?
+
+当你的委托不返回任何值时，无论是否接受任何输入参数，都会使用C#中的Action Generic Delegate。在我们的示例中，AddNumber2方法接受一些输入，但不返回任何值。因此，AddNumber2方法签名与Action泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用AddNumber2方法，而是使用Action泛型委托来调用AddNumber2方法，如下面的代码所示。
+
+![00](Image\57.png)
+
+如上面代码所示，Action Generic Delegate接受三个输入参数。我们向Action泛型委托构造函数传递AddNumber2方法，该方法将在调用Action委托时执行。Action泛型委托永远不会返回任何值。
+
+#### 如何在C#中使用Predicate泛型委托 ?
+
+只要你的委托返回一个布尔值，C#中的Predicate Generic Delegate就可以被使用，它只接受一个输入参数。在我们的示例中，CheckLength方法接受一个字符串类型的输入参数并返回一个布尔值。因此，CheckLength方法签名与Predicate泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用CheckLength方法，而是使用Predicate泛型委托来调用CheckLength方法，如下面的代码所示。
+
+![00](Image\58.png)
+
+如上面的代码所示，Predicate Generic Delegate接受一个字符串输入参数。向Predicate Generic Delegate构造函数传递CheckLength方法，该方法将在调用Predicate Generic Delegate时执行。该委托最多可以接受1个输入参数和0个返回值。默认情况下，它返回一个布尔值
+
+#### 通过示例理解C#中的Func, Action和Predicate泛型委托
+
+在下面的示例中，我们使用三个泛型委托而不是我们自己的自定义委托来调用这三个方法。
+
+ 
+
+```c#
+using System;
+namespace GenericDelegateDemo
+{
+    public class GenericDelegates
+    {
+        static void Main(string[] args)
+        {
+            Func<int, float, double, double> obj1 = new Func<int, float, double, double>(AddNumber1);
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            Action<int, float, double> obj2 = new Action<int, float, double>(AddNumber2);
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            Predicate<string> obj3 = new Predicate<string>(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+
+        public static double AddNumber1(int no1, float no2, double no3)
+        {
+            return no1 + no2 + no3;
+        }
+
+        public static void AddNumber2(int no1, float no2, double no3)
+        {
+            Console.WriteLine(no1 + no2 + no3);
+        }
+
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\59.png)
+
+
+
+#### C#中带有Lambda表达式的泛型委托
+
+让我们看看如何在C#中使用Lambda表达式和泛型委托。下面的示例与上一个示例相同。但在本例中，在创建泛型委托的实例时，我们使用的是lambda表达式而不是方法，当我们调用委托时，各自的lambda表达式将被执行。
+
+```C#
+using System;
+namespace GenericDelegateDemo
+{
+    public class GenericDelegates
+    {
+        static void Main(string[] args)
+        {
+            Func<int, float, double, double> obj1 = (x, y, z) =>
+            {
+                return x + y + z;
+            };
+
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            Action<int, float, double> obj2 = (x, y, z) =>
+            {
+                Console.WriteLine(x + y + z);
+            };
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            Predicate<string> obj3 = new Predicate<string>(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\59.png)
+
+使用C#泛型委托时要记住的几点:
+
+1. Func、Action和Predicate是泛型内建委托，出现在C# 3中引入的System命名空间中。
+2. 这三个委托都可以与C#中的方法、匿名方法和Lambda表达式一起使用。
+3. Func委托最多可以包含16个输入参数，并且必须有一个返回类型，该返回类型将是参数列表中的最后一个参数。
+4. Action委托最多可以包含16个输入参数，并且没有任何返回类型。
+5. Predicate委托应该满足方法的某些条件，并且必须只有一个输入参数。默认情况下，它有一个返回类型的输出参数，我们不需要将输出参数传递给Predicate。
+
+在下一篇文章中，我将通过示例讨论C#中的匿名方法。在这篇文章中，我尝试用例子来解释C#中的泛型委托。
+
+### C#中的匿名方法
+
+在本文中，我将通过示例讨论C#中的匿名方法。请阅读我们之前的文章，其中我们讨论了C#中的泛型委托及其示例。作为本文的一部分，我们将讨论以下几点：
+
+1. 什么是匿名方法?
+2. 为什么我们需要匿名方法?
+3. 了解匿名法的例子。
+4. 使用匿名方法有什么好处?
+5. 匿名方法访问外部函数中定义的变量
+6. 匿名方法的局限性是什么?
+
+**注意:**匿名方法只与委托相关。如果您还没有阅读我们的委托文章，请在继续阅读本文之前阅读它们，否则，您将很难理解匿名方法的概念。
+
+#### 什么是匿名方法?
+
+顾名思义，C#中的匿名方法是一种没有名称的方法。或者你可以说一个没有名字的代码块。C#中的匿名方法是使用delegate关键字定义的，可以分配给委托类型的变量。如果这一点现在还不清楚，不要担心，我们将通过多个例子来理解。
+
+#### 为什么我们需要匿名方法?
+
+在我们的C#中的委托文章中，我们讨论了如何将委托与方法绑定。要将委托与方法绑定，首先，我们需要创建委托的实例，当我们创建委托的实例时，我们需要将方法名作为参数传递给委托的构造函数，它是委托将指向的函数，当我们调用委托时，委托所指向的函数将被执行。也有可能将委托指向多个函数，在这种情况下，当我们调用委托实例时，将执行委托所指向的所有函数。
+
+#### 了解C#中的Delegate示例
+
+在理解匿名方法之前，让我们先看看如何使用委托来执行方法。因为要理解匿名方法，了解委托很重要因为匿名方法是用委托的。下面的示例演示如何声明委托、如何创建委托的实例以及如何调用委托。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " Welcome to Dotnet Tutorials";
+        }
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate gd = new GreetingsDelegate(AnonymousMethods.Greetings);
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在上面的例子中：
+
+1. 我们创建一个委托(GreetingsDelegate)
+2. 然后我们实例化委托，在实例化委托的同时，我们将方法名(greeting)作为参数传递给委托的构造函数
+3. 最后，我们调用委托
+
+到目前为止，这是我们将方法绑定到自定义委托并执行它的方法。C#中的匿名方法也与委托相关。在不将命名块(函数或方法)绑定到委托的情况下，我们还可以将代码块(未命名代码块)绑定到委托上，这在C#中是一个匿名方法。
+
+#### 了解C#中的匿名方法示例
+
+下面的示例与前面的示例相同，只是这里不是将委托与命名块(方法或函数)绑定，而是将委托与匿名方法绑定(也可以是未命名的代码块)。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate gd = delegate (string name)
+            {
+                return "Hello @" + name + " Welcome to Dotnet Tutorials";
+            };
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在本例中，如你所见我们将委托绑定到一个未命名的代码块，该代码块也称为匿名方法，在C#中，匿名方法是通过使用delegate关键字创建的，如果匿名方法需要任何输入参数，那么您可以在圆括号中传递参数。你可以看到，我们传递的是字符串名称参数。
+
+**注意:**如您所见，上面的代码块没有名称，它只包含方法主体，方法是使用delegate关键字定义的。我们不需要编写任何访问修饰符，如public, private, protected等。我们也不要求编写任何返回类型，如void、int、double等。**你需要记住的一点是匿名方法总是void类型而且你不能重用匿名方法。**在你定义匿名方法的地方，只有在那个地方它才会被使用。
+
+#### 使用匿名方法有什么好处?
+
+更少的编码。一般情况下，当代码量非常小且只能一次性使用时，建议使用匿名方法。现在，让我们继续，通过不同的场景，用不同的例子来理解匿名方法。
+
+#### 匿名方法访问外部函数中定义的变量
+
+首先，我们能否在匿名方法内部访问匿名方法外部定义的变量?是的，我们可以访问它。为了更好的理解，请看下面的例子。在下面的示例中，您可以看到我们在匿名方法内部访问Message变量，该变量在匿名方法外部声明。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            string Message = "Welcome to Dotnet Tutorials";
+
+            GreetingsDelegate gd = delegate (string name)
+            {
+                return "Hello @" + name + " " + Message;
+            };
+
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+Output: Hello @Pranaya Welcome to Dotnet Tutorials
+```
+
+#### 匿名方法的局限性是什么?
+
+- C#中的匿名方法不能包含任何跳转语句，如goto、break或continue。
+
+![00](Image\60.png)
+
+
+
+- C#中的匿名方法不能访问外部方法的ref或out参数。
+
+![00](Image\61.png)
+
+**C#中使用匿名方法时要记住的要点:**
+
+1. 匿名方法是使用delegate关键字定义的
+2. 必须将匿名方法分配给委托类型。
+3. 该方法可以访问外部变量或函数，但外部函数ref和out形参除外。
+4. 匿名方法可以作为参数传递。
+5. 此方法可以用作事件处理程序。我们已经在C#中的事件文章中讨论过这一点。
+
+#### C#中的匿名方法实例
+
+顾名思义，匿名方法是一种没有名称的方法，即它是一个未命名的代码块。C#中的匿名方法是通过使用delegate关键字定义的，可以将其赋值给我们已经讨论过的delegate类型的变量。简单地说，我们可以说匿名方法是一种没有名称的方法。让我们通过一个实时的例子来理解一个没有名字的方法在C#中如何存在。
 
 
 
@@ -1095,33 +1521,138 @@ namespace DelegateRealtimeExample
 
 
 
-
-
-
-
-
-
-### 
-
-### 
-
-### C#中的异步委托
 
 ### C#中的Lambda表达式
 
+在本文中，我将通过示例讨论C#中的Lambda表达式。请阅读我们之前的文章，其中我们讨论了C#中的匿名方法和示例。作为本文的一部分，我们将详细讨论以下几点：
 
+1. 什么是Lambda表达式?
+2. 为什么我们需要Lambda表达式?
+3. 如何创建Lambda表达式
+4. 使用Lambda表达式的示例
 
+#### 什么是Lambda表达式?
 
+**C#中的Lambda表达式是编写匿名函数的简写。所以，我们可以说Lambda表达式只是为了简化C#中的匿名函数，我们还讨论了匿名函数与委托相关，它们是通过使用delegate关键字创建的。**
 
+我们要做的是，首先我们会创建一个使用委托例子和使用一个命名块，即函数，然后我们会使用匿名方法转换相同的例子，最后我们会讨论使用匿名方法有什么，以及我们如何使用lambda表达式克服问题。
 
+#### C#中的Delegate使用方法示例
 
+在下面的例子中，我们创建了一个具有相同签名的委托和一个方法，然后将该方法注册到委托实例中，当我们调用委托时，向委托注册的方法将被执行。
 
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
 
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = new GreetingsDelegate(LambdaExpression.Greetings);
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
 
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " welcome to Dotnet Tutorials";
+        }
+    }
+}
+```
 
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
 
+#### C#中使用匿名方法进行委托
 
+在前面的例子中，我们在创建委托实例时使用了命名块(即Greetings方法)。除了命名块，我们还可以给出一个名为匿名方法的未命名块。**匿名方法是使用delegate关键字创建的，当我们调用委托时，匿名方法将被执行。**请看下面的例子。这个例子和上一个例子是一样的这个例子也会得到相同的结果。这里，我们使用的不是命名块，而是未命名块。
 
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = delegate (string name)
+            {
+                return "Hello @" + name + " welcome to Dotnet Tutorials";
+            };
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```c#
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在这里，你需要理解两件事。
+
+- 既然我们在C#中使用匿名方法减少代码量，那么为什么我们需要使用delegate关键字呢?
+- 第二件事是，既然委托知道它接受的返回类型和输入参数类型，那么为什么我们需要显式指定委托接受的参数类型呢?
+
+![00](Image\50.png)
+
+在我们的例子中，如何消除输入name参数的delegate关键字和字符串数据类型?
+
+- 我们可以通过使用C# 3.0中引入的Lambda表达式来克服这个问题。
+
+#### 如何在C#中创建Lambda表达式?
+
+要在C#中创建lambda表达式，我们需要在lambda操作符=&gt;的左侧指定输入参数(如果有的话)，并且需要将表达式或语句块放在左花括号和右花括号中。为了更好的理解，请看下图，它展示了如何将匿名方法转换为lambda表达式。在这里，您可以看到，我们已经用lambda操作符(=&gt;)替换了委托关键字，并且我们还删除了参数的数据类型，因为委托知道参数的类型。
+
+![00](Image\51.png)
+
+#### 理解C#中的Lambda表达式示例
+
+让我们在C#中使用Lambda表达式重写前面的示例。这一次，你也会得到相同的输出。
+
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = (name) =>
+            {
+                return "Hello @" + name + " welcome to Dotnet Tutorials";
+            };
+
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " welcome to Dotnet Tutorials";
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在下一篇文章中，我将通过示例讨论C#中的事件。在这篇文章中，我尝试用例子来解释C#中的Lambda表达式。我希望您现在已经理解了如何在C#中创建和使用Lambda表达式。
 
 
 
