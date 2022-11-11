@@ -1,4 +1,14 @@
-## 事件、委托与Labmda表达式结构
+[TOC]
+
+### 预言
+
+[Events - C# Programming Guide | Microsoft Learn](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/)
+
+[Events, Delegates and Event Handler in C# - Dot Net Tutorials](https://dotnettutorials.net/lesson/events-delegates-and-event-handler-in-csharp/)
+
+[Local Event Bus | Documentation Center | ABP.IO](https://docs.abp.io/en/abp/latest/Local-Event-Bus)
+
+### 事件、委托与Labmda表达式结构
 
 C#中的事件、委托和Lambda表达式:
 
@@ -156,6 +166,1347 @@ Delegate是一个专门的类，在接下来的文章中，您将看到.Net Fram
 
 ### C#中的委托
 
+在本文中，我将通过示例讨论C#中的委托。请阅读我们之前的文章，其中我们讨论了C#中的事件、委托和事件处理程序的角色和示例。作为本文的一部分，我们将详细讨论以下重点：
+
+1. C#中的委托是什么?
+2. 在C#如何使用委托调用方法 ?
+3. 使用委托的例子
+4. C#中使用委托的规则
+5. 委托的类型是什么?
+
+#### C#中的委托是什么?
+
+**简单地说，我们可以说C#中的委托是类型安全函数指针。这意味着它们持有一个方法或函数的引用，然后调用该方法执行。**如果现在还不清楚这一点，那么不要担心，一旦开始讨论使用委托的示例，我们就会讲到这一点。
+
+#### 如何在C#中创建自定义委托?
+
+当谈到创建自定义委托时，是一个非常简单的过程。可以通过使用delegate关键字来定义自定义委托。它是一种神奇的关键字，因为**在幕后，当编译器看到delegate关键字时，它实际上会生成一个继承自其他.Net Framework委托类的类**，这个我们稍后会讲到。
+
+C#中创建委托的语法非常类似于抽象方法声明。在抽象方法声明中，我们使用abstract关键字，而在delegate中，我们需要使用delegate关键字。C#中定义委托的语法如下:
+
+```C#
+<Access Modifier> delegate <Return Type> <Delegate Name> (Parameter List);
+```
+
+下面是一个委托的例子。你可能注意到我们使用了delegate关键字。**可以想到的这个特定委托是一个单向管道。它是空的，没有东西会返回。**数据只能向前移动。委托的名称是WorkPerformedHandler，它接受两个参数：第一个参数是整数hours，第二个参数是枚举worktype。如果删除delegate关键字，那么它看起来像一个方法。
+
+```
+public delegate void WorkPerformedHandler(int hours, WorkType workType);
+```
+
+**实际上，委托是将数据转储到事件处理程序中的方法的蓝图。**从视觉上看，它就像下图一样。委托是一种管道。我们想要的是将数据从a点转储到B点(B是我们的事件处理器方法)。
+
+![00](Image\14.png)
+
+
+
+现在，我们在程序的某个地方有数据我们想把这些数据路由到Handler方法。我们如何将数据路由到Handler方法中?我们将通过管道将存储在程序中某处的数据路由到这个Handler方法，即使用委托。在委托中，我们需要定义将数据从A点路由到B点(即Handler方法)的参数。
+
+![00](Image\15.png)
+
+在本例中，管道只接受两个参数，且必须为int和WorkType类型，否则将无法编译。现在我们有一种方式把数据从A点委托到b点，委托知道如何传递数据。你可以在这里看到定义委托非常简单。
+
+现在，让我们试着理解Handler方法必须做什么才能使其工作。**委托签名和处理程序方法签名必须匹配。**因为我们已经用两个参数定义了委托，或者说我们的管道有两个参数int和WorkType类型。现在，如果处理程序方法希望从管道接收数据，那么处理程序必须具有与委托相同的参数数量、类型和顺序。为了更好的理解，请看下图，它展示了委托和处理程序方法。
+
+![00](Image\16.png)
+
+如上图所示，委托的第一个参数是int, int也是Handler的第一个参数。委托的第二个参数是WorkType，为了从管道接收数据，Handler的第二个参数必须而且也应该是WorkType。这很重要，而且参数类型、顺序和编号必须相同，否则Handler方法将无法从管道接收数据。**参数名称并不重要。**您可以看到，我已经为委托提供了参数名称hours和workType，并为处理程序方法提供了不同的名称，这是可以的。
+
+**注意:**在使用C#委托时需要记住的一点是，委托的签名和它所指向的方法应该是相同的。因此，在创建委托时，委托的访问修饰符、返回类型和编号、类型和参数顺序必须且应该与委托想要引用的函数的访问修饰符、返回类型和编号、类型和参数顺序相同。**可以在类中定义委托，也可以像在名称空间下定义的其他类型一样定义委托。**
+
+*译者Note：*
+
+*NetCore的中间件就是由一系列委托组成，它们向下传递Context！委托指向B点*
+
+#### 在委托的幕后发生了什么?
+
+现在，我们将讨论我们的委托在幕后发生了什么，例如，我们将讨论.Net Framework中的委托基类。
+
+##### C#中的委托基类
+
+. Net框架中真正核心的类之一是Delegate，它提供了一些基本的功能。如果转到Delegate类的定义，就会看到它是一个抽象类，如下图所示。
+
+![00](Image\17.png)
+
+Delegate类提供了两个重要的属性:
+
+1. public MethodInfo Method {get;}:该属性用于获取委托所表示的方法。这意味着它返回一个System.Reflection.MethodInfo来描述委托所表示的方法。如果调用者没有访问委托所表示的方法的权限，它将抛出MemberAccessException，例如，如果方法是私有的。
+2. public object Target {get;}:该属性用于获取当前委托调用实例方法的类实例。这意味着如果委托代表一个实例方法，它将返回当前委托调用实例方法的对象;如果委托表示静态方法，则为空。
+
+**注意:管道必须将数据转储到某个地方，Method属性定义了将要转储数据的方法的名称。**Target将是方法所在的对象实例，如果是静态方法则为空。如果委托调用一个或多个实例方法，则Target属性返回调用列表中最后一个实例方法的目标。
+
+Delegate抽象类还有一个重要的虚方法GetInvocationList:
+
+1. public virtual Delegate[] GetInvocationList():该方法返回委托的调用列表。这意味着它返回一个代表当前委托调用列表的委托数组。
+
+##### C#中的MulticastDelegate基类
+
+让我们继续并理解另一个重要的核心类，即MulticastDelegate。如果您查看MulticastDelegate类的定义，那么您将看到这个类也是一个抽象类，并且这个类继承自Delegate抽象类，如下图所示。
+
+![00](Image\18.png)
+
+**现在我们创建的每个委托，一旦编译后，都将从Multicast委托继承。**一旦我们开始编程，我将通过使用ILDASM工具展示编译后的代码(即IL代码)来实际演示这一点。
+
+多播委托是一种保存多个委托的方式。例如，我想通过多个管道发送一条消息，这些管道将把相同的数据转储到多个Handler方法中。因此，正如我们前面讨论的那样，您的自定义委托将从多播委托继承。完整的层次结构如下所示。
+
+![00](Image\19.png)
+
+**注意:**需要记住的一点是，在声明委托的代码中，不能直接继承委托或多播委托类。**你需要使用delegate关键字，剩下的事情由编译器完成。**这些是编译器限制我们直接继承的特殊基类。**一旦编译器在签名中看到委托关键字，它就会自动生成继承自组播委托的类。**
+
+#### 如何在C#中使用委托?
+
+**如何使用委托意味着我们如何使用委托来移动数据。**为此，我们需要创建委托的实例。在创建实例时，我们需要指定要转储数据的Handler方法名称。如果Handler方法是静态方法，则可以直接访问该方法或使用类名;如果Handler方法是非静态方法，则需要使用对象名访问Handler方法。为了更好的理解，请看下面的图片。
+
+![00](Image\20.png)
+
+**当我们声明一个委托时，当编译器在幕后看到委托关键字时，它将创建一个从MulticastDelegate继承的类，由于这是一个类，我们可以使用new关键字创建委托的实例。**注意到构造函数，我们传递的是委托处理程序方法名。在我们的示例中，由于Handler方法是一个静态方法，并且由于我们正在创建的方法和实例都出现在同一个类中，所以我们可以传递方法名而不使用类名，即使使用类名，也不会有问题。但如果方法是非静态的，则需要创建该方法所属类的实例，并使用该实例，需要在委托构造函数内部调用该方法。
+
+#### 如何在C#中调用委托?
+
+调用委托非常简单。我们用同样地方式调用方法与委托，我们需要在括号内传递的参数值如下所示。在这里，我们将work hours设为5，将WorkType设为Golf。
+
+```c#
+del1(10, WorkType.Golf);
+```
+
+上面的语句将在运行时动态调用处理程序方法Manager_WorkPerformed。为了更好的理解，请看下面的图片。
+
+![00](Image\21.png)
+
+一旦我们创建了委托的实例，那么我们需要通过向参数提供所需的值来调用委托，以便在内部执行与委托绑定的方法。我们还可以使用Invoke方法来执行委托。例如:
+
+```C#
+del1.Invoke(10, WorkType.Golf);
+```
+
+完整的示例代码如下所示:
+
+```c#
+using System;
+namespace DelegatesDemo
+{
+    public delegate void WorkPerformedHandler(int hours, WorkType workType);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            WorkPerformedHandler del1 = 
+                        new WorkPerformedHandler(Manager_WorkPerformed);
+            del1(10, WorkType.Golf);
+            //del1.Invoke(50, WorkType.GotoMeetings);
+
+            Console.ReadKey();
+        }
+
+        public static void Manager_WorkPerformed(int workHours, WorkType wType)
+        {
+            Console.WriteLine("Work Performed by Event Handler");
+            Console.WriteLine($"Work Hours: {workHours}, Work Type: {wType}");
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+输出：
+
+![00](Image\22.png)
+
+现在可以看到Handler方法从管道接收数据，然后处理数据。现在，让我们使用ILDASM工具查看委托的IL Code，您将看到以下代码。正如您在下面的代码中看到的，它是从MulticastDelegate类扩展而来的一个密封类，并且这个类有一个构造函数。
+
+![00](Image\23.png)
+
+
+
+#### C#如何使用委托调用方法 ?
+
+**如果希望使用委托invoke或Call一个方法，则需要执行以下三个步骤：**
+
+1. **声明一个委托**
+2. **实例化委托**
+3. **调用委托**
+
+理解C#委托的另一个例子:
+
+委托用于调用回调函数。它的意思是我们调用一个函数时我们会把委托实例作为参数传递给那个函数，我们期望那个函数会在某个时间点调用委托这将调用委托实例引用的回调方法。
+
+正如你在下面的例子中看到的，我们有两个方法，即DoSomework和CallbackMethod。在Main方法中，我们希望调用DoSomework方法，但我们还希望DoSomework方法在运行时动态调用一个方法，该方法将在运行时提供。为此，我们希望DoSomework方法接受委托作为参数，并且在某些时候，我们需要在DoSomework方法中调用委托。这里，我们在主方法中创建一个委托的实例它引用CallbackMethod，并在运行时将那个委托实例作为值传递给DoSomework方法，当DoSomework方法调用委托时，这个方法是由委托指向的，在这种情况下，CallbackMethod方法会被执行。
+
+```C#
+using System;
+namespace DelegatesDemo
+{
+    public delegate void CallbackMethodHandler(string message);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Program obj = new Program();
+            CallbackMethodHandler del1 = new CallbackMethodHandler(obj.CallbackMethod);
+            //Here, I am calling the DoSomework function and I want the 
+            //DoSomework function to call the delegate at some point of time
+            //which will invoke the CallbackMethod method
+            DoSomework(del1);
+
+            Console.ReadKey();
+        }
+
+        public static void DoSomework(CallbackMethodHandler del)
+        {
+            Console.WriteLine("Processing some Task");
+            del("Pranaya");
+        }
+
+        public void CallbackMethod(string message)
+        {
+            Console.WriteLine("CallbackMethod Executed");
+            Console.WriteLine($"Hello: {message}, Good Morning");
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\24.png)
+
+
+
+#### 了解C#中Delegate类的重要属性和方法示例
+
+在本文的开头，我们讨论了两个重要的属性，即Method和Target，以及Delegate类的一个重要方法，即GetInvocationList。现在，让我们通过一个示例来了解这些属性和方法的用法。
+
+在下面的示例中，我们创建了一个委托，并创建了一个由委托引用的实例方法。然后在Main方法中，创建一个实例并调用属性和方法。这里，
+
+- 哪个方法是委托指向的，那个方法原型将由method属性返回，在我们的例子中，它将是**Void DoSomework(System.String)**。
+- Target属性将返回事件处理程序方法(例如SomeMethod)所属的完全限定类名，在我们的示例中是DelegatesDemo.SomeClass。
+- GetInvocationList方法将返回委托引用的委托列表，在本例中，只有一个委托，即DoSomeMethodHandler。
+
+在下一篇文章中，我们将了解多播委托，在这种情况下，它将返回多个委托。
+
+```c#
+using System;
+using System.Reflection;
+
+namespace DelegatesDemo
+{
+    public delegate void DoSomeMethodHandler(string message);
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            SomeClass obj = new SomeClass();
+            DoSomeMethodHandler del1 = new DoSomeMethodHandler(obj.DoSomework);
+
+            MethodInfo Method = del1.Method;
+            object Target = del1.Target;
+            Delegate[] InvocationList = del1.GetInvocationList();
+
+            Console.WriteLine($"Method Property: {Method}");
+            Console.WriteLine($"Target Property: {Target}");
+           
+            foreach (var item in InvocationList)
+            {
+                Console.WriteLine($"InvocationList: {item}");
+            }
+            
+            Console.ReadKey();
+        }
+    }
+
+    public class SomeClass
+    {
+        public void DoSomework(string message)
+        {
+            Console.WriteLine("DoSomework Executed");
+            Console.WriteLine($"Hello: {message}, Good Morning");
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\25.png)
+
+**注意:**如果方法是静态方法，那么Target属性将返回null。
+
+#### C#中使用委托的规则
+
+1. C#中的委托是用户定义的类型，因此在使用委托调用方法之前，必须先定义该委托。
+2. 委托的签名必须与方法的签名相匹配，否则我们将得到一个编译错误。这就是为什么委托被称为类型安全函数指针的原因。
+
+
+
+#### 委托的类型是什么?
+
+C#中的委托分为两种类型：
+
+1. 单播委托
+2. 多播委托
+
+如果委托用于调用单个方法，则称为单播委托。换句话说，我们可以说，只表示单个函数的委托称为单播委托。
+
+如果委托用于调用多个方法，那么它被称为多播委托。或者，表示多个函数的委托称为多播委托。
+
+#### 在哪里使用委托?
+
+委托在以下情况下使用:
+
+1. 事件处理程序Event Handlers
+2. 回调Callbacks
+3. 将方法作为方法参数传递
+4. LINQ
+5. 多线程Multithreading 
+
+
+
+#### 在C#中有多少种方法可以调用一个方法?
+
+在C#中，我们可以用两种方式调用在类中定义的方法:
+
+1. 如果方法是非静态方法，我们可以使用类的对象调用方法;如果方法是静态方法，我们可以通过类名调用方法。
+2. 我们还可以在C#中使用委托来调用方法。使用委托调用C#方法的执行速度要比第一个过程快，即使用对象或使用类名。
+
+我们在本文中讨论的示例为单播委托类型，因为该委托指向单一函数。在下一篇文章中，我将通过示例讨论C#中的多播委托。在本文中，我试图通过示例来解释C#中的delegate。我希望您理解C#中委托的需求和用法。
+
+
+
+### C#中的多播委托
+
+在本文中，我将通过示例讨论C#中的多播委托。请阅读我们之前的文章，其中我们讨论了C#中的委托和示例。作为本文的一部分，我们将详细讨论以下几点：
+
+1. 什么是多播委托?
+2. 如何创建多播委托？
+3. 创建多播委托的不同方式
+4. 带有返回类型的多播委托
+5. 带输出参数的多播委托 
+
+#### 什么是C#中的委托?
+
+委托是类型安全的函数指针。它意味着委托持有方法或函数的引用，当我们调用委托时，它所引用的方法将被执行。委托签名和它所指向的方法必须具有相同的签名。在创建委托实例时，需要将方法作为参数传递给委托构造函数。同样，在C#中有两种类型的委托:
+
+1. 单播委托:委托指向单个函数或方法。
+2. 多播委托：委托指向多个函数或方法。
+
+我们已经在前一篇文章中讨论了单播委托。今天，我们将讨论C#中的多播委托。
+
+#### 什么是多播委托?
+
+C#中的多播委托是保存多个处理函数引用的委托。当我们调用多播委托时，委托引用的所有函数都将被调用。如果您想使用委托调用多个方法，那么所有的方法签名应该是相同的。
+
+一个多播委托就是一个由多个管道或多个委托组成的数组。调用委托的顺序与它们在调用列表中的放置顺序相同。InvocationList只是委托或管道的数组，其中每个管道将把数据转储到不同的方法中。如果这一点目前还不清楚，不要担心，我们将尝试通过多个例子来理解这一点。
+
+**译者Notes：**
+
+还是声音传播的例子，如图
+
+<img src="Image\26.png" alt="00" style="zoom:50%;" />
+
+
+
+#### 理解多播委托示例
+
+让我们看一个例子来理解C#中的多播委托。请看下面的例子，它没有使用委托。在下面的示例中，我们创建了两个方法，然后从主方法中创建类的实例，然后调用这两个方法。
+
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    public class Rectangle
+    {
+        public void GetArea(double Width, double Height)
+        {
+            Console.WriteLine($"Area is {Width * Height}");
+        }
+        public void GetPerimeter(double Width, double Height)
+        {
+            Console.WriteLine($"Perimeter is {2 * (Width + Height)}");
+        }
+        static void Main(string[] args)
+        {
+            Rectangle rect = new Rectangle();
+            rect.GetArea(23.45, 67.89);
+            rect.GetPerimeter(23.45, 67.89);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\27.png)
+
+在上面的例子中，我们创建了Rectangle类的一个实例，然后调用这两个方法。现在我想创建一个单独的委托，它将调用上面的两个方法(即GetArea和GetPerimeter)。这两个方法具有相同的签名，但方法名不同，因此我们可以创建一个单独的委托来保存上述两个方法的引用。当我们调用委托时，它会调用上面两个方法。当我们这样做时，它在C#中被称为多播委托。
+
+#### 多播委托示例
+
+在下面的例子中，我们已经创建了一个委托，它的签名与两个方法(即GetArea和GetPerimeter)相同。然后我们创建委托的实例，并使用+=操作符绑定两个方法。类似地，您可以使用-=操作符从委托中删除函数。一旦我们将两个方法与委托实例绑定，当我们调用委托时，两个方法都将被执行。**在本例中，在幕后，当我们向委托添加多个方法时，就会添加多个管道。**换句话说，我们现在可以说InvocationList现在包含两个委托或两个管道，其顺序与我们添加方法的顺序相同。在本例中，第一个委托或管道将把数据转储到GetArea方法中，第二个管道将把数据转储到GetPerimeter方法中，当您运行应用程序时，您将看到GetArea方法首先被执行，然后GetPerimeter方法将被执行。在InvocationList中，您将看到我们在这个例子中有两个管道或委托具有相同的名称。
+
+```C#
+using System;
+namespace MulticastDelegateDemo
+{
+    public delegate void RectangleDelegate(double Width, double Height);
+    public class Rectangle
+    {
+        public void GetArea(double Width, double Height)
+        {
+            Console.WriteLine($"Area is {Width * Height}");
+        }
+        public void GetPerimeter(double Width, double Height)
+        {
+            Console.WriteLine($"Perimeter is {2 * (Width + Height)}");
+        }
+        static void Main(string[] args)
+        {
+            Rectangle rect = new Rectangle();
+            RectangleDelegate rectDelegate = new RectangleDelegate(rect.GetArea);
+            // RectangleDelegate rectDelegate = rect.GetArea;
+
+            // binding a method with delegate object
+            // In this example rectDelegate is a multicast delegate. 
+            // You use += operator to chain delegates together.
+
+            rectDelegate += rect.GetPerimeter;
+
+            Delegate[] InvocationList = rectDelegate.GetInvocationList();
+            Console.WriteLine("InvocationList:");
+            foreach (var item in InvocationList)
+            {
+                Console.WriteLine($"  {item}");
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Invoking Multicast Delegate:");
+            rectDelegate(23.45, 67.89);
+            //rectDelegate.Invoke(13.45, 76.89);
+            
+            Console.WriteLine();
+            Console.WriteLine("Invoking Multicast Delegate After Removing one Pipeline:");
+            //Removing a method from delegate object
+            rectDelegate -= rect.GetPerimeter;
+            rectDelegate.Invoke(13.45, 76.89);
+
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\28.png)
+
+#### 创建多播委托的另一种方法
+
+在下面的示例中，我将向您展示静态和非静态方法的使用，以及在C#中创建和调用多播委托的不同方法。
+
+请看下面的例子。我们创建了一个委托，它接受两个整数参数，但不返回任何东西。然后在程序类中，我们定义了四个方法，这四个方法都接受两个整数形参，不返回任何东西，即void。然后我们创建了委托的四个实例并绑定了这四个方法。最后，我们创建第五个委托实例，并使用+操作符将所有四个委托实例绑定到该实例。现在，第五个委托成为一个多播委托。在本例中，对于委托5,InvocationList有4个委托或者你可以说4个管道，每个管道或委托将把数据转储到不同的方法中。当我们调用第五个委托实例时所有四个方法都会被执行。如果要删除一个方法绑定，那么只需使用-=操作符并指定要删除的委托实例。
+
+```c#
+using System;
+
+namespace MulticastDelegateDemo
+{
+    public delegate void MathDelegate(int No1, int No2);
+
+    public class Program
+    {
+        //Static Method
+        public static void Add(int x, int y)
+        {
+            Console.WriteLine($"Addition of {x} and {y} is : {x + y}");
+        }
+        //Static Method
+        public static void Sub(int x, int y)
+        {
+            Console.WriteLine($"Subtraction of {x} and {y} is : {x - y}");
+        }
+        //Non-Static Method
+        public void Mul(int x, int y)
+        {
+            Console.WriteLine($"Multiplication of {x} and {y} is : {x * y}");
+        }
+        //Non-Static Method
+        public void Div(int x, int y)
+        {
+            Console.WriteLine($"Division of {x} and {y} is : {x / y}");
+        }
+
+        static void Main(string[] args)
+        {
+            Program p = new Program();
+            //Static Method within the same class can be access directly
+            MathDelegate del1 = new MathDelegate(Add);
+            //Static Method can be access using class name
+            MathDelegate del2 = new MathDelegate(Program.Sub);
+            //Non-Static Method must be access through object 
+            MathDelegate del3 = new MathDelegate(p.Mul); 
+            MathDelegate del4 = new MathDelegate(p.Div); ;
+
+            //In this example del5 is a multicast delegate. 
+            //We can use +(plus) operator to chain delegates together and 
+            //-(minus) operator to remove a delegate.
+            MathDelegate del5 = del1 + del2 + del3 + del4;
+
+            Delegate[] InvocationList = del5.GetInvocationList();
+            Console.WriteLine("InvocationList:");
+            foreach (var item in InvocationList)
+            {
+                Console.WriteLine($" {item}");
+            }
+            Console.WriteLine();
+
+            Console.WriteLine("Invoking Multicast Delegate::");
+            del5.Invoke(20, 5);
+            Console.WriteLine();
+
+            Console.WriteLine("Invoking Multicast Delegate After Removing one Delegate:");
+            del5 -= del2;
+            del5(22, 7);
+
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\29.png)
+
+
+
+#### 带有返回类型的多播委托
+
+多播委托调用方法的顺序与将方法添加到调用列表(Invocation List)的顺序相同(我们已经看到过)。到目前为止，我们所讨论的使用多播委托的例子没有返回任何东西，即返回类型为void。现在，如果委托有返回类型会发生什么?
+
+如果委托的返回类型不是void，并且委托是多播委托，则只返回最后调用的方法的值。同样，如果委托有一个out参数，输出参数的值将是由调用列表中最后调用的方法分配的值。
+
+#### 了解带返回类型的多播委托示例
+
+让我们通过一个例子来理解C#中带有返回类型的多播委托。请看下面的例子。在这里，我们创建了一个委托，它不接受任何参数，但返回类型是int。然后我们创建了两个静态方法，第一个静态方法返回1，第二个静态方法返回2。然后我们创建委托实例，首先绑定MethodOne，然后绑定MethodTwo。当我们调用委托时，首先MethodOne被执行然后MethodTwo被执行它返回2因为在InvocationList中最后一个被调用的方法是MethodTwo，它返回2。
+
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    // Deletegate's return type is int
+    public delegate int SampleDelegate();
+    public class Program
+    {
+        static void Main()
+        {
+            SampleDelegate del = new SampleDelegate(MethodOne);
+            del += MethodTwo;
+            
+            // The Value Returned By Delegate will be 2, returned by the MethodTwo(),
+            // as it is the last method in the invocation list.
+            int ValueReturnedByDelegate = del();
+            Console.WriteLine($"Returned Value = {ValueReturnedByDelegate}");
+
+            Console.ReadKey();
+        }
+        // This method returns one
+        public static int MethodOne()
+        {
+            Console.WriteLine("MethodOne is Executed");
+            return 1;
+        }
+
+        // This method returns two
+        public static int MethodTwo()
+        {
+            Console.WriteLine("MethodTwo is Executed");
+            return 2;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\30.png)
+
+#### 了解带Out参数的多播委托示例
+
+现在我们将看到一个使用out参数的C#多播委托示例。请看下面的例子。在这里，我们创建了一个委托，它取出一个参数，不返回任何东西，即void。然后我们创建了两个静态方法，这两个静态方法都有一个参数。第一个静态方法将值1赋给out参数，第二个静态方法将值2赋给out参数。然后我们创建委托实例，首先绑定MethodOne，然后绑定MethodTwo。当我们调用委托时，首先MethodOne被执行然后MethodTwo被执行它返回2因为最后一个调用的方法是MethodTwo它给out参数赋值2。
+
+```c#
+using System;
+namespace MulticastDelegateDemo
+{
+    // Deletegate has an int output parameter
+    public delegate void SampleDelegate(out int Integer);
+
+    public class Program
+    {
+        static void Main()
+        {
+            SampleDelegate del = new SampleDelegate(MethodOne);
+            del += MethodTwo;
+
+            // The ValueFromOutPutParameter will be 2, initialized by MethodTwo(),
+            // as it is the last method in the invocation list.
+            int ValueFromOutPutParameter = -1;
+            del(out ValueFromOutPutParameter);
+
+            Console.WriteLine($"Returned Value = {ValueFromOutPutParameter}");
+            Console.ReadKey();
+        }
+
+        // This method sets ouput parameter Number to 1
+        public static void MethodOne(out int Number)
+        {
+            Console.WriteLine("MethodOne is Executed");
+            Number = 1;
+        }
+
+        // This method sets ouput parameter Number to 2
+        public static void MethodTwo(out int Number)
+        {
+            Console.WriteLine("MethodTwo is Executed");
+            Number = 2;
+        }
+    }
+}
+```
+
+输出
+
+![00](Image\30.png)
+
+在下一篇文章中，我将讨论一个在C#中使用委托的实时示例。在这篇文章中，我尝试用例子来解释C#中的多播委托。我希望您喜欢这篇文章，并通过示例理解C#中多播委托的需求和使用。
+
+### 实际工作中的委托示例
+
+在本文中，我将用实际示例讨论C#中的委托。委托是C#开发人员需要了解的最重要的概念之一。在很多面试中，大多数面试官会要求你解释委托在你参与的实际项目中的使用情况。
+
+C#中的委托被框架开发人员广泛使用。让我们通过两个实际示例来理解C#中的委托。
+
+#### 实例1
+
+假设我们有一个叫做Worker的类，这个类有一个叫做DoWork的方法。我们的业务需求是，当我们调用DoWork方法时，我们需要向使用者发送关于已完成工作百分比的通知，而且一旦工作完成，我们还需要发送通知。例如，1小时做了多少工作，2小时做了多少工作，3小时做了多少工作，以此类推，直到工作完成?**DoWork方法不知道将通知发送给谁。DoWork方法的调用者应该决定将通知发送给谁。这意味着在这里我们需要使用回调函数。**
+
+这是一个我们需要使用委托理想的场景。因此，创建一个名为Worker.cs的类文件，然后将以下代码复制并粘贴到其中。可以看到我们已经创建了两个委托。**您可以在任何地方创建委托，也可以在类内或直接在名称空间内创建委托。这是因为在幕后，委托只是类。**DoWork方法有四个参数，在这四个参数中，有两个参数是委托类型的。然后在方法中使用for循环，每次循环执行时，我们都会处理一些工作，并通过调用委托通知用户一次。循环执行已经完成，这意味着我们的工作已经完成，然后我们调用工作已完成委托来通知用户工作已经完成。
+
+```c#
+using System.Threading;
+namespace DelegatesRealTimeExample
+{
+    public delegate void WorkPerformedHandler(int hours, string workType);
+    public delegate void WorkCompletedHandler(string workTyp);
+    public class Worker
+    {
+        public void DoWork(int hours, string workType, WorkPerformedHandler del1, WorkCompletedHandler del2)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                //Do Some Processing
+                Thread.Sleep(1000);
+                //Notfiy how much works have been done
+                del1(i+1, workType);
+            }
+
+            //Notfiy the consumer that work has been completed
+            del2(workType);
+        }
+    }
+}
+```
+
+现在，按照以下方式修改Program类。在这里，我们创建了两个具有与委托相同签名的回调方法。然后我们创建委托的实例，还创建Worker类的实例，并通过将所需的值与两个委托实例一起传递来调用DoWork方法。
+
+```c#
+using System;
+namespace DelegatesRealTimeExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            WorkPerformedHandler del1 = new WorkPerformedHandler(Worker_WorkPerformed);
+            WorkCompletedHandler del2 = new WorkCompletedHandler(Worker_WorkCompleted);
+
+            Worker worker = new Worker();
+            worker.DoWork(5, "Generating Report", del1, del2);
+            Console.ReadKey();
+        }
+
+        //Delegate Signature must match with the method signature
+        static void Worker_WorkPerformed(int hours, string workType)
+        {
+            Console.WriteLine($"{hours} Hours compelted for {workType}");
+        }
+
+        static void Worker_WorkCompleted(string workType)
+        {
+            Console.WriteLine($"{workType} work compelted");
+        }
+    }
+}
+```
+
+现在，运行应用程序，您将看到每次执行循环时，它都会发送通知，一旦工作完成，它将发送另一个通知，如下图所示。
+
+![00](Image\31.png)
+
+现在，如果你转到Worker类并在DoWork方法中将委托实例设为NULL
+
+```c#
+using System.Threading;
+namespace DelegatesRealTimeExample
+{
+    public delegate void WorkPerformedHandler(int hours, string workType);
+    public delegate void WorkCompletedHandler(string workTyp);
+    public class Worker
+    {
+        public void DoWork(int hours, string workType, WorkPerformedHandler del1, WorkCompletedHandler del2)
+        {
+            del1 = null; //Allowing to set null
+            del2 = null; //Allowing to set null
+
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                //Do Some Processing
+                Thread.Sleep(1000);
+                //Notfiy how much works have been done
+                del1(i + 1, workType);
+            }
+
+            //Notfiy the consumer that work has been completed
+            del2(workType);
+        }
+    }
+}
+```
+
+**因此，如果Worker类没有创建实例，如果Worker类不知道向谁发送通知，那么它应该不允许将委托实例设为空。我们如何限制它?**
+
+**通过在C#中使用事件**，我们将在下一篇文章中讨论。
+
+#### 实例2
+
+现在，我们将看到C#中委托的另一个实例。假设我们有一个名为Employee的类，如下所示。
+
+```c#
+namespace DelegateRealtimeExample
+{
+    public class Employee
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public int Experience { get; set; }
+        public int Salary { get; set; }
+    }
+}
+```
+
+现在我想在Employee类中编写一个方法，可以用来晋升员工。我们将要编写的方法将接受一个Employee对象列表作为参数，然后打印所有有资格获得晋升的员工的名字。
+
+但员工升职的逻辑不应该被硬编码。有时我们会根据员工的经验来提拔他们，有时我们会根据他们的薪水来提拔他们，或者根据其他一些原因，比如员工的表现。因此，提升员工的逻辑不应该硬编码在方法中。
+
+我们如何才能做到这一点?在委托的帮助下，这可以很容易地实现。因此，现在我需要设计如下所示的Employee类。
+
+```c#
+using System;
+using System.Collections.Generic;
+
+namespace DelegateRealtimeExample
+{
+    public delegate bool EligibleToPromotion(Employee EmployeeToPromotion);
+
+    public class Employee
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string Gender { get; set; }
+        public int Experience { get; set; }
+        public int Salary { get; set; }
+
+        public static void PromoteEmployee(List<Employee> lstEmployees, EligibleToPromotion IsEmployeeEligible)
+        {
+            foreach (Employee employee in lstEmployees)
+            {
+                if (IsEmployeeEligible(employee))
+                {
+                    Console.WriteLine($"Employee {employee.Name} Promoted");
+                }
+            }
+        }
+    }
+}
+```
+
+在上面的代码中，我们创建了一个名为EligibleToPromotion的委托。该委托接受Employee对象作为参数，并返回一个布尔值，指示该员工是否得到晋升。在Employee类中，我们还创建了PromoteEmpoloyee方法，该方法采用Employees列表和EligibleToPromotion类型的Delegate作为参数。
+
+然后，PromoteEmployee方法循环遍历每个雇员的对象并将其传递给委托。如果委托返回true，则提升Employee，否则不提升。因此，在这个方法中，我们没有硬编码任何关于如何提升员工的逻辑。
+
+现在，使用Employee类的客户端可以灵活地确定他们希望如何提升员工的逻辑。首先创建员工对象emp1、emp2和emp3。填充各自对象的属性。然后创建一个employee List来保存所有3名员工，如下所示。
+
+```c#
+using System;
+using System.Collections.Generic;
+
+namespace DelegateRealtimeExample
+{
+    public class Program
+    {
+        static void Main()
+        {
+            Employee emp1 = new Employee()
+            {
+                ID = 101,
+                Name = "Pranaya",
+                Gender = "Male",
+                Experience = 5,
+                Salary = 10000
+            };
+
+            Employee emp2 = new Employee()
+            {
+                ID = 102,
+                Name = "Priyanka",
+                Gender = "Female",
+                Experience = 10,
+                Salary = 20000
+            };
+
+            Employee emp3 = new Employee()
+            {
+                ID = 103,
+                Name = "Anurag",
+                Experience = 15,
+                Salary = 30000
+            };
+
+            List<Employee> lstEmployess = new List<Employee>();
+            lstEmployess.Add(emp1);
+            lstEmployess.Add(emp2);
+            lstEmployess.Add(emp3);
+
+            EligibleToPromotion eligibleTopromote = new EligibleToPromotion(Program.Promote);
+            Employee.PromoteEmployee(lstEmployess, eligibleTopromote);
+
+            Console.ReadKey();
+        }
+
+        public static bool Promote(Employee employee)
+        {
+            if (employee.Salary > 10000)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}
+```
+
+注意我们创建的Promote方法。这种方法符合我们如何提升员工的逻辑。然后将该方法作为参数传递给委托。另外，请注意此方法与EligibleToPromotion委托具有相同的签名。这非常重要，因为如果签名不同，则不能将Promote方法作为参数传递给委托。这就是为什么委托被称为类型安全函数指针的原因。现在，运行应用程序，您将看到以下输出：
+
+![00](Image\32.png)
+
+
+
+因此，如果我们没有委托的概念，就不可能将函数作为参数传递。由于Employee类中的Promote方法使用了委托，因此可以动态地决定我们希望如何提升员工的逻辑。
+
+C# 3.0中引入了Lambda表达式。因此，您可以使用lambda表达式，而不是创建一个函数->然后创建一个委托的实例->然后将该函数作为参数传递给委托。下面的示例使用Lambda表达式重写。现在不再需要Promote方法了。
+
+```C#
+using System;
+using System.Collections.Generic;
+namespace DelegateRealtimeExample
+{
+    public class Program
+    {
+        static void Main()
+        {
+            Employee emp1 = new Employee()
+            {
+                ID = 101,
+                Name = "Pranaya",
+                Gender = "Male",
+                Experience = 5,
+                Salary = 10000
+            };
+
+            Employee emp2 = new Employee()
+            {
+                ID = 102,
+                Name = "Priyanka",
+                Gender = "Female",
+                Experience = 10,
+                Salary = 20000
+            };
+
+            Employee emp3 = new Employee()
+            {
+                ID = 103,
+                Name = "Anurag",
+                Experience = 15,
+                Salary = 30000
+            };
+
+            List<Employee> lstEmployess = new List<Employee>();
+            lstEmployess.Add(emp1);
+            lstEmployess.Add(emp2);
+            lstEmployess.Add(emp3);
+
+            Employee.PromoteEmployee(lstEmployess, x => x.Experience > 5);
+            Console.ReadKey();
+        }
+    }
+} 
+```
+
+在下一篇文章中，我将讨论C#中的泛型委托及其示例。在本文中，我试图解释C#中的委托实例。我希望您喜欢这篇C#委托实例文章。
+
+### C#中的泛型委托
+
+在本文中，我将通过示例讨论C#中的泛型委托。请阅读我们之前的文章，我们讨论了实际工作中的委托示例。作为本文的一部分，我们将详细讨论以下几点：
+
+1. C#中的泛型委托是什么?
+2. C#中泛型委托的类型
+3. 为什么我们需要泛型委托?
+4. C#中的Func泛型委托
+5. C#中的Action泛型委托
+6. C#中的Predicate泛型委托
+7. 通过示例理解泛型委托
+
+#### C#中的泛型委托是什么?
+
+C#中的泛型委托是作为.Net Framework 3.5的一部分引入的，它不需要定义委托实例来调用方法。要理解C#中的泛型委托，你应该具备委托的基本知识。
+
+#### C#中泛型委托的类型
+
+C#提供了三个内置的泛型委托:
+
+- **Func**
+- **Action**
+- **Predicate**
+
+#### 为什么我们需要泛型委托?
+
+让我们通过一个例子来理解C#中对泛型委托的需求。为了理解这一点，让我们首先理解如何使用委托来调用方法。假设我们有以下三个方法，我们希望使用委托调用这些方法:
+
+![00](Image\52.png)
+
+如您所见，AddNumber1方法接受三个参数并返回一个double类型的值。类似地，AddNumber2方法接受三个参数，但它不返回任何值，这里返回类型为void。第三个方法，即CheckLength方法接受一个字符串参数并返回一个布尔值。如果字符串长度大于5，则返回true，否则返回false。
+
+现在，如果我们想在C#中使用委托调用上述三个方法，那么我们需要创建三个委托，它们的签名应该与上述三个方法的签名匹配：
+
+![00](Image\53.png)
+
+如上图所示，我们创建了三个委托。现在，一旦我们创建了委托。然后，我们可以通过创建引用各自方法的每个委托的实例来调用方法，然后我们可以调用委托：
+
+![00](Image\54.png)
+
+#### C#中使用自定义委托调用方法示例
+
+下面是我们讨论示例的完整代码。
+
+```c#
+using System;
+namespace GenericDelegatesDemo
+{
+    public class GenericDelegates
+    {
+        public delegate double AddNumber1Delegate(int no1, float no2, double no3);
+        public delegate void AddNumber2Delegate(int no1, float no2, double no3);
+        public delegate bool CheckLengthDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            AddNumber1Delegate obj1 = new AddNumber1Delegate(AddNumber1);
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            AddNumber2Delegate obj2 = new AddNumber2Delegate(AddNumber2);
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            CheckLengthDelegate obj3 = new CheckLengthDelegate(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+
+        public static double AddNumber1(int no1, float no2, double no3)
+        {
+            return no1 + no2 + no3;
+        }
+
+        public static void AddNumber2(int no1, float no2, double no3)
+        {
+            Console.WriteLine(no1 + no2 + no3);
+        }
+
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\55.png)
+
+这就是我们使用委托调用方法的方法。脑海中浮现出一个问题，我们真的需要创建自定义委托来调用C#中的方法吗?
+
+我们真的需要在C#中创建自定义委托来调用方法吗?
+
+答案是否定的。C# .NET Framework提供了一些通用的委托，它们可以为我们完成这项工作。C#提供了三个泛型委托：
+
+1. **Func**
+2. **Action**
+3. **Predicate**
+
+现在，让我们尝试理解上述三个泛型委托。让我们通过示例来理解这些委托是什么，何时以及如何在C#中使用这些泛型委托。
+
+#### C#中的Func泛型委托
+
+C#中的Func泛型委托出现在System命名空间中。该委托接受一个或多个输入参数并返回一个输出参数。最后一个参数被认为是返回值。C#中的Func Generic Delegate最多可以接受16个不同或相同数据类型的输入参数。它必须有一个返回类型。返回类型是必选的，但输入参数不是必选的。
+
+
+
+**注意:**当你的委托需要返回某个值，无论是否接受任何输入参数，你都可以在C#中使用Func Generic委托。
+
+#### C#中的Action泛型委托
+
+C#中的Action Generic Delegate也出现在System命名空间中。它接受一个或多个输入参数，但不返回任何内容。该委托最多可以接受16个不同或相同数据类型的输入参数。
+
+
+
+**注意:**当你的委托没有返回任何值时，无论是否接受任何输入参数，你都可以在C#中使用Action Generic委托。
+
+#### C#中的Predicate泛型委托
+
+C#中的谓词(Predicate)泛型委托也出现在System命名空间中。该委托用于验证方法的某些条件，并返回布尔值的输出，或True或False。它接受一个输入参数，总是返回一个布尔值，这是必须的。这个委托最多可以接受一个输入参数，并且总是返回布尔类型的值。
+
+
+
+**注意:**当你的委托返回一个布尔值，只接受一个输入参数，你可以在C#中使用Predicate Generic委托。
+
+#### 理解C#中的泛型委托示例
+
+让我们通过一个例子来理解C#中的上述三种泛型委托。在第一个例子中，我们创建了三个方法，
+
+1. AddNumber1方法接受三个参数并返回一个double值。这里我们将使用Func泛型委托来实现与第一个示例中相同的功能。
+2. AddNumber2方法接受三个参数，但不返回任何值。在这里，我们将使用Action Generic Delegate来实现与第一个示例中实现的相同的功能。
+3. CheckLength方法接受一个字符串输入参数并返回一个布尔值。在这里，我们将使用Predicate Generic Delegate来实现与第一个示例中实现的相同的功能。
+
+让我们首先删除在应用程序中创建的三个delegate，看看如何使用泛型delegate转换相同的应用程序。
+
+#### 如何在C#使用Func泛型委托?
+
+在C#中使用Func泛型委托，只要你的委托返回一些值，无论是否接受任何输入参数。在我们的示例中，AddNumber1方法接受一些输入并返回一个输出。因此，AddNumber1方法签名与Func泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用AddNumber1方法，而是使用Func泛型委托来调用AddNumber1方法，如下面的代码所示。
+
+![00](Image\56.png)
+
+如上面代码所示，Func Generic Delegate接受四个参数，前三个是输入参数，最后一个是返回值。我们将AddNumber1方法传递给Func泛型委托构造函数，该方法将在调用Func委托时执行。
+
+#### 如何在C#中使用Action泛型委托?
+
+当你的委托不返回任何值时，无论是否接受任何输入参数，都会使用C#中的Action Generic Delegate。在我们的示例中，AddNumber2方法接受一些输入，但不返回任何值。因此，AddNumber2方法签名与Action泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用AddNumber2方法，而是使用Action泛型委托来调用AddNumber2方法，如下面的代码所示。
+
+![00](Image\57.png)
+
+如上面代码所示，Action Generic Delegate接受三个输入参数。我们向Action泛型委托构造函数传递AddNumber2方法，该方法将在调用Action委托时执行。Action泛型委托永远不会返回任何值。
+
+#### 如何在C#中使用Predicate泛型委托 ?
+
+只要你的委托返回一个布尔值，C#中的Predicate Generic Delegate就可以被使用，它只接受一个输入参数。在我们的示例中，CheckLength方法接受一个字符串类型的输入参数并返回一个布尔值。因此，CheckLength方法签名与Predicate泛型委托签名相匹配。因此，在这里，我们不用创建自己的委托来调用CheckLength方法，而是使用Predicate泛型委托来调用CheckLength方法，如下面的代码所示。
+
+![00](Image\58.png)
+
+如上面的代码所示，Predicate Generic Delegate接受一个字符串输入参数。向Predicate Generic Delegate构造函数传递CheckLength方法，该方法将在调用Predicate Generic Delegate时执行。该委托最多可以接受1个输入参数和0个返回值。默认情况下，它返回一个布尔值
+
+#### 通过示例理解C#中的Func, Action和Predicate泛型委托
+
+在下面的示例中，我们使用三个泛型委托而不是我们自己的自定义委托来调用这三个方法。
+
+ 
+
+```c#
+using System;
+namespace GenericDelegateDemo
+{
+    public class GenericDelegates
+    {
+        static void Main(string[] args)
+        {
+            Func<int, float, double, double> obj1 = new Func<int, float, double, double>(AddNumber1);
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            Action<int, float, double> obj2 = new Action<int, float, double>(AddNumber2);
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            Predicate<string> obj3 = new Predicate<string>(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+
+        public static double AddNumber1(int no1, float no2, double no3)
+        {
+            return no1 + no2 + no3;
+        }
+
+        public static void AddNumber2(int no1, float no2, double no3)
+        {
+            Console.WriteLine(no1 + no2 + no3);
+        }
+
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\59.png)
+
+
+
+#### C#中带有Lambda表达式的泛型委托
+
+让我们看看如何在C#中使用Lambda表达式和泛型委托。下面的示例与上一个示例相同。但在本例中，在创建泛型委托的实例时，我们使用的是lambda表达式而不是方法，当我们调用委托时，各自的lambda表达式将被执行。
+
+```C#
+using System;
+namespace GenericDelegateDemo
+{
+    public class GenericDelegates
+    {
+        static void Main(string[] args)
+        {
+            Func<int, float, double, double> obj1 = (x, y, z) =>
+            {
+                return x + y + z;
+            };
+
+            double Result = obj1.Invoke(100, 125.45f, 456.789);
+            Console.WriteLine(Result);
+
+            Action<int, float, double> obj2 = (x, y, z) =>
+            {
+                Console.WriteLine(x + y + z);
+            };
+            obj2.Invoke(50, 255.45f, 123.456);
+
+            Predicate<string> obj3 = new Predicate<string>(CheckLength);
+            bool Status = obj3.Invoke("Pranaya");
+            Console.WriteLine(Status);
+
+            Console.ReadKey();
+        }
+        public static bool CheckLength(string name)
+        {
+            if (name.Length > 5)
+                return true;
+            return false;
+        }
+    }
+}
+```
+
+输出：
+
+![00](Image\59.png)
+
+使用C#泛型委托时要记住的几点:
+
+1. Func、Action和Predicate是泛型内建委托，出现在C# 3中引入的System命名空间中。
+2. 这三个委托都可以与C#中的方法、匿名方法和Lambda表达式一起使用。
+3. Func委托最多可以包含16个输入参数，并且必须有一个返回类型，该返回类型将是参数列表中的最后一个参数。
+4. Action委托最多可以包含16个输入参数，并且没有任何返回类型。
+5. Predicate委托应该满足方法的某些条件，并且必须只有一个输入参数。默认情况下，它有一个返回类型的输出参数，我们不需要将输出参数传递给Predicate。
+
+在下一篇文章中，我将通过示例讨论C#中的匿名方法。在这篇文章中，我尝试用例子来解释C#中的泛型委托。
+
+### C#中的匿名方法
+
+在本文中，我将通过示例讨论C#中的匿名方法。请阅读我们之前的文章，其中我们讨论了C#中的泛型委托及其示例。作为本文的一部分，我们将讨论以下几点：
+
+1. 什么是匿名方法?
+2. 为什么我们需要匿名方法?
+3. 了解匿名法的例子。
+4. 使用匿名方法有什么好处?
+5. 匿名方法访问外部函数中定义的变量
+6. 匿名方法的局限性是什么?
+
+**注意:**匿名方法只与委托相关。如果您还没有阅读我们的委托文章，请在继续阅读本文之前阅读它们，否则，您将很难理解匿名方法的概念。
+
+#### 什么是匿名方法?
+
+顾名思义，C#中的匿名方法是一种没有名称的方法。或者你可以说一个没有名字的代码块。C#中的匿名方法是使用delegate关键字定义的，可以分配给委托类型的变量。如果这一点现在还不清楚，不要担心，我们将通过多个例子来理解。
+
+#### 为什么我们需要匿名方法?
+
+在我们的C#中的委托文章中，我们讨论了如何将委托与方法绑定。要将委托与方法绑定，首先，我们需要创建委托的实例，当我们创建委托的实例时，我们需要将方法名作为参数传递给委托的构造函数，它是委托将指向的函数，当我们调用委托时，委托所指向的函数将被执行。也有可能将委托指向多个函数，在这种情况下，当我们调用委托实例时，将执行委托所指向的所有函数。
+
+#### 了解C#中的Delegate示例
+
+在理解匿名方法之前，让我们先看看如何使用委托来执行方法。因为要理解匿名方法，了解委托很重要因为匿名方法是用委托的。下面的示例演示如何声明委托、如何创建委托的实例以及如何调用委托。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " Welcome to Dotnet Tutorials";
+        }
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate gd = new GreetingsDelegate(AnonymousMethods.Greetings);
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在上面的例子中：
+
+1. 我们创建一个委托(GreetingsDelegate)
+2. 然后我们实例化委托，在实例化委托的同时，我们将方法名(greeting)作为参数传递给委托的构造函数
+3. 最后，我们调用委托
+
+到目前为止，这是我们将方法绑定到自定义委托并执行它的方法。C#中的匿名方法也与委托相关。在不将命名块(函数或方法)绑定到委托的情况下，我们还可以将代码块(未命名代码块)绑定到委托上，这在C#中是一个匿名方法。
+
+#### 了解C#中的匿名方法示例
+
+下面的示例与前面的示例相同，只是这里不是将委托与命名块(方法或函数)绑定，而是将委托与匿名方法绑定(也可以是未命名的代码块)。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate gd = delegate (string name)
+            {
+                return "Hello @" + name + " Welcome to Dotnet Tutorials";
+            };
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在本例中，如你所见我们将委托绑定到一个未命名的代码块，该代码块也称为匿名方法，在C#中，匿名方法是通过使用delegate关键字创建的，如果匿名方法需要任何输入参数，那么您可以在圆括号中传递参数。你可以看到，我们传递的是字符串名称参数。
+
+**注意:**如您所见，上面的代码块没有名称，它只包含方法主体，方法是使用delegate关键字定义的。我们不需要编写任何访问修饰符，如public, private, protected等。我们也不要求编写任何返回类型，如void、int、double等。**你需要记住的一点是匿名方法总是void类型而且你不能重用匿名方法。**在你定义匿名方法的地方，只有在那个地方它才会被使用。
+
+#### 使用匿名方法有什么好处?
+
+更少的编码。一般情况下，当代码量非常小且只能一次性使用时，建议使用匿名方法。现在，让我们继续，通过不同的场景，用不同的例子来理解匿名方法。
+
+#### 匿名方法访问外部函数中定义的变量
+
+首先，我们能否在匿名方法内部访问匿名方法外部定义的变量?是的，我们可以访问它。为了更好的理解，请看下面的例子。在下面的示例中，您可以看到我们在匿名方法内部访问Message变量，该变量在匿名方法外部声明。
+
+```c#
+using System;
+namespace DelegateDemo
+{
+    public class AnonymousMethods
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            string Message = "Welcome to Dotnet Tutorials";
+
+            GreetingsDelegate gd = delegate (string name)
+            {
+                return "Hello @" + name + " " + Message;
+            };
+
+            string GreetingsMessage = gd.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+Output: Hello @Pranaya Welcome to Dotnet Tutorials
+```
+
+#### 匿名方法的局限性是什么?
+
+- C#中的匿名方法不能包含任何跳转语句，如goto、break或continue。
+
+![00](Image\60.png)
+
+
+
+- C#中的匿名方法不能访问外部方法的ref或out参数。
+
+![00](Image\61.png)
+
+**C#中使用匿名方法时要记住的要点:**
+
+1. 匿名方法是使用delegate关键字定义的
+2. 必须将匿名方法分配给委托类型。
+3. 该方法可以访问外部变量或函数，但外部函数ref和out形参除外。
+4. 匿名方法可以作为参数传递。
+5. 此方法可以用作事件处理程序。我们已经在C#中的事件文章中讨论过这一点。
+
+#### C#中的匿名方法实例
+
+顾名思义，匿名方法是一种没有名称的方法，即它是一个未命名的代码块。C#中的匿名方法是通过使用delegate关键字定义的，可以将其赋值给我们已经讨论过的delegate类型的变量。简单地说，我们可以说匿名方法是一种没有名称的方法。让我们通过一个实时的例子来理解一个没有名字的方法在C#中如何存在。
 
 
 
@@ -171,44 +1522,611 @@ Delegate是一个专门的类，在接下来的文章中，您将看到.Net Fram
 
 
 
+### C#中的Lambda表达式
+
+在本文中，我将通过示例讨论C#中的Lambda表达式。请阅读我们之前的文章，其中我们讨论了C#中的匿名方法和示例。作为本文的一部分，我们将详细讨论以下几点：
+
+1. 什么是Lambda表达式?
+2. 为什么我们需要Lambda表达式?
+3. 如何创建Lambda表达式
+4. 使用Lambda表达式的示例
+
+#### 什么是Lambda表达式?
+
+**C#中的Lambda表达式是编写匿名函数的简写。所以，我们可以说Lambda表达式只是为了简化C#中的匿名函数，我们还讨论了匿名函数与委托相关，它们是通过使用delegate关键字创建的。**
+
+我们要做的是，首先我们会创建一个使用委托例子和使用一个命名块，即函数，然后我们会使用匿名方法转换相同的例子，最后我们会讨论使用匿名方法有什么，以及我们如何使用lambda表达式克服问题。
+
+#### C#中的Delegate使用方法示例
+
+在下面的例子中，我们创建了一个具有相同签名的委托和一个方法，然后将该方法注册到委托实例中，当我们调用委托时，向委托注册的方法将被执行。
+
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = new GreetingsDelegate(LambdaExpression.Greetings);
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " welcome to Dotnet Tutorials";
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+#### C#中使用匿名方法进行委托
+
+在前面的例子中，我们在创建委托实例时使用了命名块(即Greetings方法)。除了命名块，我们还可以给出一个名为匿名方法的未命名块。**匿名方法是使用delegate关键字创建的，当我们调用委托时，匿名方法将被执行。**请看下面的例子。这个例子和上一个例子是一样的这个例子也会得到相同的结果。这里，我们使用的不是命名块，而是未命名块。
+
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = delegate (string name)
+            {
+                return "Hello @" + name + " welcome to Dotnet Tutorials";
+            };
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```c#
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在这里，你需要理解两件事。
+
+- 既然我们在C#中使用匿名方法减少代码量，那么为什么我们需要使用delegate关键字呢?
+- 第二件事是，既然委托知道它接受的返回类型和输入参数类型，那么为什么我们需要显式指定委托接受的参数类型呢?
+
+![00](Image\50.png)
+
+在我们的例子中，如何消除输入name参数的delegate关键字和字符串数据类型?
+
+- 我们可以通过使用C# 3.0中引入的Lambda表达式来克服这个问题。
+
+#### 如何在C#中创建Lambda表达式?
+
+要在C#中创建lambda表达式，我们需要在lambda操作符=&gt;的左侧指定输入参数(如果有的话)，并且需要将表达式或语句块放在左花括号和右花括号中。为了更好的理解，请看下图，它展示了如何将匿名方法转换为lambda表达式。在这里，您可以看到，我们已经用lambda操作符(=&gt;)替换了委托关键字，并且我们还删除了参数的数据类型，因为委托知道参数的类型。
+
+![00](Image\51.png)
+
+#### 理解C#中的Lambda表达式示例
+
+让我们在C#中使用Lambda表达式重写前面的示例。这一次，你也会得到相同的输出。
+
+```c#
+using System;
+namespace LambdaExpressionDemo
+{
+    public class LambdaExpression
+    {
+        public delegate string GreetingsDelegate(string name);
+
+        static void Main(string[] args)
+        {
+            GreetingsDelegate obj = (name) =>
+            {
+                return "Hello @" + name + " welcome to Dotnet Tutorials";
+            };
+
+            string GreetingsMessage = obj.Invoke("Pranaya");
+            Console.WriteLine(GreetingsMessage);
+            Console.ReadKey();
+        }
+
+        public static string Greetings(string name)
+        {
+            return "Hello @" + name + " welcome to Dotnet Tutorials";
+        }
+    }
+}
+```
+
+```
+输出：Hello @Pranaya welcome to Dotnet Tutorials
+```
+
+在下一篇文章中，我将通过示例讨论C#中的事件。在这篇文章中，我尝试用例子来解释C#中的Lambda表达式。我希望您现在已经理解了如何在C#中创建和使用Lambda表达式。
 
 
 
+### C#中的Event示例
+
+在本文中，我将通过示例讨论C#中的事件和委托。请阅读我们之前的文章，其中我们讨论了C#中的Lambda表达式和示例。本文将是一篇很长的文章，请保持耐心并阅读全文，我希望在本文结束时，您能够理解事件的确切含义以及如何使用事件，以及在C#中事件是如何工作的。
+
+#### C#中的事件
+
+[Events - C# Programming Guide](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/events/)
+
+根据MSDN的解释，事件使类或对象能够在发生动作时通知其他类或对象。发送(或引发)事件的类称为发布者，接收(或处理)事件的类称为订阅者。单个事件可以有多个订阅者。通常，当某个操作发生时，发布者会引发一个事件。如果订阅者希望在操作发生时获得通知，则应该向事件注册并处理它。
+
+我们已经讨论了委托以及如何在C#中创建和调用委托。现在，我们将讨论如何将委托与事件关联起来。因此，当事件发生时，我们可以将事件数据路由到事件监听者(B点)。相信我，这非常简单，在本文的最后，您将通过示例了解**如何创建事件，如何将事件与委托关联，如何引发事件，以及如何在C#中处理事件。**
+
+![00](Image\33.png)
+
+#### 定义一个事件
+
+在C#中，定义事件非常简单。我们需要做的是，使用event关键字。可以使用event关键字在类内部定义事件，其语法如下所示。
+
+首先，我们需要定义一个委托，如下图所示定义一个事件只需要使用该委托:
+
+![00](Image\34.png)
+
+如您所见，**事件是使用委托创建的。在这里，我们使用WorkPerformedHandler委托创建了WorkPerformed事件。**这一点很重要，因为事件本身并不真正做任何事情。你必须有一个管道或委托将数据从a点路由到B点，也就是从Event Raiser到事件处理程序Event Handler或事件监听器Event Listener。**事件实际上是委托的包装器。这就是定义事件的整个过程。**
+
+**现在，你可能会有一个问题，如果可以使用委托，那么为什么使用事件?**
+
+**尽管我们可以像以前的文章中那样单独使用委托，但我们还使用事件的原因是它们很简单，而且它们是DotNet框架的重要组成部分，而且几乎是提供通知的标准方法，也是实现发布者和订阅者模式的最佳方法。**
+
+在本例中，事件接收者可以转到并附加到WorkPerformed事件，但在幕后你可以**在事件定义中看到它们通过WorkPerformedHandler委托将自己添加到调用列表。**
+
+根据. Net框架的命名约定，我们通常需要在委托中添加单词Handler，比如在我们的例子中，它是WorkPerformedHandler。你可以给事件命名任何你想要的名字。这是在C#中定义事件的最简单的方法。
+
+现在，如果您希望更多地控制侦听器如何添加到调用列表或从调用列表中删除，那么我们需要使用添加和删除访问器，如下面的代码所示。但是在应用程序的大部分或示例代码中都找不到以下代码。
+
+![00](Image\35.png)
+
+这里，我们有一个名为_WorkPerformedHandler的私有字段，这只是我们的委托，使用这个委托，我们将从调用列表中添加和删除侦听器(即方法)，当事件被引发时，调用列表将被调用。在事件中，我们有添加访问器和删除访问器。添加访问器将将侦听器(严格来说是方法)添加到调用列表中，删除访问器将从调用列表中删除事件侦听器。
+
+如果你注意到，我们使用了Synchronized关键字这是因为我们想确保如果多个线程同时尝试修改，我们同步访问这里的代码块这将帮助我们解决线程问题。
+
+在添加访问器中，我们获取试图添加的目标方法名，该方法在调用列表被调用时调用。在这里Delegate.Combine将使用我们已经拥有的委托并在这里添加值。这与我们之前用多播委托所做的+=完全相同。在这里，变量值将保存我们想要添加到调用列表中的目标方法名。
+
+现在来看remove访问器，它将做与add访问器相同的事情，但在本例中，它将从调用列表中删除侦听器，而不是添加侦听器。这意味着它与我们先前在多播委托中讨论的-=相同。
+
+***注意:**如果您想要根据条件添加或删除侦听器，那么您需要使用添加和删除访问器。或者，如果您想对从调用列表中添加或删除哪些侦听器有更多的控制，那么您需要使用添加和删除访问器。但我个人从未在项目中使用添加和删除访问器。*
+
+#### 如何在C#中创建自定义事件的示例
+
+让我们来看看如何在C#中添加自定义事件。让我们添加一个名为Worker.cs的类文件，并复制并粘贴以下代码。
+
+```c#
+using System;
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    public delegate void WorkPerformedHandler(int hours, WorkType workType);
+
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event WorkPerformedHandler WorkPerformed;
+
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
+
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Raising Events
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+这个Worker类负责做某种工作。这里我们添加了一个名为DoWork的方法，它有两个参数，即int hours和WorkType WorkType。现在，调用DoWork方法的人想知道工作的进展情况。在方法执行完成之前，我们不能从这个方法返回任何东西。但是在方法执行过程中，我们可以引发一个事件。但是，为了引发事件，我们需要一个delegate。这里，首先，我们定义了一个名为WorkPerformedHandler的委托它接受两个参数：
+
+```c#
+public delegate void WorkPerformedHandler(int hours, WorkType workType);
+```
+
+你可以在任何地方定义委托，因为在编译应用程序时，它将成为一个类。一旦我们定义了委托，然后我们通过使用WorkPerformedHandler委托定义一个事件我们给事件名称为WorkPerformed，这个事件会在工作进行时被引发：
+
+```
+public event WorkPerformedHandler WorkPerformed;
+```
+
+现在，我们还希望在工作完全完成时引发一个事件。为此，我们创建了另一个名为WorkCompleted的事件，这一次我们使用了内置的委托EventHandler。如果转到EventHandler的定义，就会看到它是一个委托：
+
+```
+public event EventHandler WorkCompleted;
+```
+
+**这就是我们在C#中定义自定义事件的方式。**现在，让我们继续并理解如何在C#中引发事件。
+
+#### 在C#中引发事件
+
+**定义了事件之后，我们需要一种引发事件的方法。这一点很重要，否则监听器将无法获得事件数据。**现在，我们将讨论C#中引发事件的不同过程或技术。
+
+事件是通过像方法一样调用事件而引发的。因此需要使用事件名，并传递参数值。为什么?**因为在事件背后，我们只有委托。**我们用什么方式调用委托同样地，我们需要调用(Invoke)一个事件或者你可以在C#中引发一个事件。
+
+但是在引发事件和调用事件之前，一定要检查调用列表(Invocation List)中是否有任何内容。因为如果幕后的委托是空的，如果你试图引发事件，那么你会得到一个异常。为什么呢?因为，如果你尝试在Null对象上调用一个方法，那么你知道我们在C#中会得到一个Null引用异常。同样的事情也适用于这里。
+
+下面的代码段展示了如何在C#中引发事件。在下面的代码中，我们使用if块检查WorkPerformed事件是否为空。这将检查是否有希望侦听的人附加到此事件。简单地说，我们正在检查是否有委托引用的任何方法。如果没有听众，那么我们就不会引发事件。这个if块语句可以通过使用null(?)操作符和Invoke方法来简化。
+
+![00](Image\36.png)
+
+如果WorkPerformed不是null，那么我们将引发事件。**引发事件意味着像调用方法一样调用事件，而在幕后，它只调用委托。在引发事件的同时，我们需要将数据传递给侦听器。**
+
+#### C#中另一种引发事件的方法
+
+另一个选项是访问事件的委托并直接调用它，如下面的代码所示。正如您在这里看到的，我们正在将事件转换为委托。**这是因为，如果你去看事件的定义，什么是事件的数据类型，它是委托，也就是WorkPerformedHandler。**因此，可以将事件转换为委托。然后我们需要检查委托实例不为空，如果它不为空，那么我们需要调用委托，就像调用方法一样，通过将数据传递给事件监听器。我们可以像这里展示的那样用模式匹配来简化这个类型转换。
+
+![00](Image\37.png)
+
+这些是你可以在C#中引发事件的不同技术。但是，通常情况下，我们不应该在DoWork方法中编写Raise事件代码。我们需要创建一个新方法，在该方法中，我们需要编写引发事件的代码，我们只需要从DoWork方法调用该方法，如下面的代码所示。
+
+![00](Image\38.png)
+
+在这里，我们创建了由DoWork方法调用的OnWorkPerformed方法。现在，我们已经创建了这个OnWorkPerformed方法作为protected和virtual，原因是如果Worker类的任何子类想要，那么就可以覆盖这个方法。现在，任何已附加到此事件的侦听器都将在引发此事件时得到通知。简单地说，添加到调用列表中的方法列表将被执行，所有这些方法将在调用事件时获得传递的数据。到目前为止，我们已经讨论了委托、如何创建事件以及如何引发事件。到目前为止的完整代码如下。
+
+```c#
+using System;
+using System.Threading;
+
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    public delegate void WorkPerformedHandler(int hours, WorkType workType);
+
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event WorkPerformedHandler WorkPerformed;
+
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
+
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                OnWorkPerformed(i+1, workType);
+                Thread.Sleep(3000);
+            }
+
+            //Notify the consumer that work has been completed
+            OnWorkCompleted();
+        }
+
+        protected virtual void OnWorkPerformed(int hours, WorkType workType)
+        {
+            //Raising Events only if Listeners are attached
+
+            //Approach1
+            //if(WorkPerformed != null)
+            //{
+            //    WorkPerformed(8, WorkType.GenerateReports);
+            //}
+
+            //Approach2
+            //WorkPerformed?.Invoke(8, WorkType.GenerateReports);
+
+            //Approach3
+            //WorkPerformedHandler del1 = WorkPerformed as WorkPerformedHandler;
+            //if(del1 != null)
+            //{
+            //    del1(8, WorkType.GenerateReports);
+            //}
+
+            //Approach4
+            if (WorkPerformed is WorkPerformedHandler del2)
+            {
+                del2(8, WorkType.GenerateReports);
+            }
+        }
+
+        protected virtual void OnWorkCompleted()
+        {
+            //Raising the Event
+            //Approach1
+            //EventHandler delegate takes two parameters i.e. object sender, EventArgs e
+            //Sender is the current class i.e. this keyword and we do not need to pass any data
+            //So, we need to pass Empty EventArgs
+            //WorkCompleted?.Invoke(this, EventArgs.Empty);
+
+            //Approach2
+            if (WorkCompleted is EventHandler del)
+            {
+                del(this, EventArgs.Empty);
+            }
+
+            //Note: You can also use other two Approached
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+让我们讨论一下上面代码中使用的每个方法:
+
+1. DoWork:这个方法接受int hours和WorkType WorkType作为参数，在这个方法中，我们运行一个基于int hours的循环。每次我们运行循环时，我们调用OnWorkPerformed方法，然后让循环休眠3秒，一旦循环完成，我们调用OnWorkCompleted。
+2. OnWorkPerformed:在这个方法中，我们引发事件并通知消费者(Consumer)工作正在进行。
+3. OnWorkCompleted:在此方法中，我们引发事件并通知事件消费者工作已完成。这个事件是使用内置的委托EventHandler创建的，它接受两个参数，即对象sender, EventArgs。这里，sender是当前类，即我们可以传递这个关键字，当工作完成时，我们不需要传递任何数据，我们只需要通知工作已完成。因此，我们需要将第二个参数作为空参数传递。这里我们传递EventArgs.Empty 作为第二个参数。
+
+#### 在C#中创建自定义EventArgs类
+
+当我们在.Net Framework中使用事件时，我们需要以特定的方式传递事件数据。到目前为止，我们只讨论了传递事件数据的简单方法，比如int和WorkType。但是，如果我们想要向侦听器传递超过20或30个数据呢?那么委托和事件处理程序(事件监听器)中的参数列表将变得混乱。而且，当我们引发事件时，传递20和30个值也很混乱。因此，在.Net框架中，我们有一个引发事件和传递事件数据的标准方法，即使用两个参数，即对象sender和EventArgs。
+
+![00](Image\39.png)
+
+我们如何创建我们的自定义EventArgs类以及我们如何在委托和事件中使用那个自定义EventArgs类来传递数据。EventArgs类用于许多委托和事件处理程序的签名中。例如，在Windows Form或Wen Form Application中，当我们双击按钮元素时，按钮单击事件将添加以下签名。你可以看到它将EventArgs作为参数。
+
+![00](Image\40.png)
+
+现在，如果我们需要传递自定义数据，那么我们需要根据业务需求扩展EventArgs类。所以，我们需要做的是，我们需要创建一个自定义EventArgs类继承EventArgs类然后添加我们所需的数据成员，如下图所示。
+
+![00](Image\41.png)
+
+正如您所看到的，这个类继承自属于System命名空间的EventArgs类。这里我们定义了两个属性，即Hours和WorkType。但是，根据您的业务需求，您可以定义任意数量的属性。现在，添加一个名为WorkPerformedEventArgs.cs的类文件：
+
+![00](Image\42.png)
+
+要使用自定义EventArgs类，委托签名必须在其签名中引用该类。所以，第一个参数是事件的sender，第二个参数是我们的自定义EventArgs，有了这个更改，委托签名必须而且应该如下所示:
+
+```
+public delegate void WorkPerformedHandler(object sender, WorkPerformedEventArgs e);
+```
+
+现在当我们引发事件时，我们需要传递两个参数，谁来handle这个事件，他也有这两个参数。
+
+**.NET框架包括通用的EventHandler&lt;T&gt;类，它可以用来代替自定义委托，其中T表示EventArgs。**因此，在创建事件时，我们可以直接使用通用的EventHandler&lt;T&gt;委托如下图所示。
+
+![00](Image\43.png)
+
+通过这些更改，在引发事件的同时，我们需要传递两个参数，如下面的代码所示。第一个参数是sender，在本例中是this关键字，第二个参数是我们的自定义EventArgs。
+
+![00](Image\44.png)
+
+现在，Worker类代码应该如下所示：
+
+```C#
+using System;
+using System.Threading;
+
+namespace DelegatesDemo
+{
+    //Step1: Define one delegate
+    //Custom Delegate
+    //public delegate void WorkPerformedHandler(object sender, WorkPerformedEventArgs e);
+
+    public class Worker
+    {
+        //Step2: Define one event to notify the work progress using the custom delegate
+        public event EventHandler<WorkPerformedEventArgs> WorkPerformed;
+
+        //Step2: Define another event to notify when the work is completed using buil-in EventHandler delegate
+        public event EventHandler WorkCompleted;
+
+        public void DoWork(int hours, WorkType workType)
+        {
+            //Do Work here and notify the consumer that work has been performed
+            for (int i = 0; i < hours; i++)
+            {
+                OnWorkPerformed(i+1, workType);
+                Thread.Sleep(3000);
+            }
+
+            //Notify the consumer that work has been completed
+            OnWorkCompleted();
+        }
+
+        protected virtual void OnWorkPerformed(int hours, WorkType workType)
+        {
+            //Raising Events only if Listeners are attached
+
+            //Approach1
+
+            if (WorkPerformed != null)
+            {
+                WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+                {
+                    Hours = hours,
+                    WorkType = workType
+                };
+                WorkPerformed(this, e);
+            }
+
+            //Approach2
+            //EventHandler<WorkPerformedEventArgs> del1 = WorkPerformed as EventHandler<WorkPerformedEventArgs;
+            //if (del1 != null)
+            //{
+            //    WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+            //    {
+            //        Hours = hours,
+            //        WorkType = workType
+            //    };
+            //    del1(this, e);
+            //}
+
+            //Approach3
+            //if (WorkPerformed is EventHandler<WorkPerformedEventArgs> del2)
+            //{
+            //    WorkPerformedEventArgs e = new WorkPerformedEventArgs()
+            //    {
+            //        Hours = hours,
+            //        WorkType = workType
+            //    };
+            //    del2(this, e);
+            //}
+        }
+
+        protected virtual void OnWorkCompleted()
+        {
+            //Raising the Event
+            //Approach1
+            //EventHandler delegate takes two parameters i.e. object sender, EventArgs e
+            //Sender is the current class i.e. this keyword and we do not need to pass any data
+            //So, we need to pass Empty EventArgs
+            //WorkCompleted?.Invoke(this, EventArgs.Empty);
+
+            //Approach2
+            if (WorkCompleted is EventHandler del)
+            {
+                del(this, EventArgs.Empty);
+            }
+
+            //Note: You can also use other two Approaches
+        }
+    }
+
+    public enum WorkType
+    {
+        Golf,
+        GotoMeetings,
+        GenerateReports
+    }
+}
+```
+
+到目前为止，我们已经了解了**如何创建事件、如何创建自定义事件参数以及如何引发事件。**现在，让我们继续并理解最重要的事情，即如何在C#中处理事件。
+
+#### 在C#中处理事件
+
+现在，我们将讨论如何在C#中处理由event Raiser引发的事件。
+
+![00](Image\45.png)
+
+**在C#中实例化委托和Handling事件：**
+
+现在，我们将讨论将事件处理程序与事件连接起来的过程。我们已经讨论过，委托方法签名和事件处理程序方法签名应该而且必须相同，否则事件处理程序方法将无法从委托或管道获取数据。如果处理程序方法希望从管道接收数据，则处理程序必须具有与委托相同的参数数量、类型和顺序。为了更好的理解，请看下面的图片。
+
+![00](Image\46.png)
+
+在.Net框架中，我们可以使用+=操作符将事件附加到事件处理程序中:
+
+![00](Image\47.png)
+
+现在，让我们继续使用委托为WorkPerformed和WorkCompleted事件附加事件处理程序。请按如下所示修改Program类。在这里，我们创建了两个事件处理程序方法。然后用WorkPerformed事件附加Worker_WorkPerformed事件处理方法，并用WorkCompleted事件附加Worker_WorkCompleted方法。对于附加Worker_WorkPerformed事件处理程序，我们使用通用的事件处理程序委托，对于Worker_WorkCompleted事件处理程序方法，使用内置的事件处理程序委托。最后，我们调用DoWork方法来开始处理。
+
+```
+using System;
+namespace DelegatesDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Worker worker = new Worker();
+
+            //Attaching Worker_WorkPerformed with WorkPerformed Event
+            worker.WorkPerformed += 
+                new EventHandler<WorkPerformedEventArgs>(Worker_WorkPerformed);
+
+            //Attaching Worker_WorkCompleted with WorkCompleted Event
+            worker.WorkCompleted +=
+                new EventHandler(Worker_WorkCompleted);
+
+            worker.DoWork(4, WorkType.GenerateReports);
+            Console.ReadKey();
+        }
+
+        //Event Handler Method or Event Listener Method
+        static void Worker_WorkPerformed(object sender, WorkPerformedEventArgs e)
+        {
+            Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+        }
+
+        //Event Handler Method or Event Listener Method
+        static void Worker_WorkCompleted(object sender, EventArgs e)
+        {
+            Console.WriteLine($"Worker Work Completed");
+        }
+    }
+}
+```
+
+现在，运行应用程序，您应该会得到预期的输出:
+
+![00](Image\48.png)
+
+**在C#中使用匿名方法附加事件处理程序:**
+
+匿名方法是一种没有任何名称的方法。在C#中，我们还可以将匿名方法附加到事件上，而不是单独的方法。使用delegate关键字创建一个匿名方法。
+
+```c#
+using System;
+namespace DelegatesDemo
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Worker worker = new Worker();
+
+            //Attaching Worker_WorkPerformed with WorkPerformed Event
+            worker.WorkPerformed += delegate (object sender, WorkPerformedEventArgs e)
+            {
+                Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+            };
+
+            //Attaching Worker_WorkCompleted with WorkCompleted Event
+            worker.WorkCompleted += delegate (object sender, EventArgs e)
+            {
+                Console.WriteLine($"Worker Work Completed");
+            };
+
+            worker.DoWork(4, WorkType.GenerateReports);
+            Console.ReadKey();
+        }
+
+        ////Event Handler Method or Event Listener Method
+        //static void Worker_WorkPerformed(object sender, WorkPerformedEventArgs e)
+        //{
+        //    Console.WriteLine($"Worker work {e.Hours} Hours compelted for {e.WorkType}");
+        //}
+
+        ////Event Handler Method or Event Listener Method
+        //static void Worker_WorkCompleted(object sender, EventArgs e)
+        //{
+        //    Console.WriteLine($"Worker Work Completed");
+        //}
+    }
+}
+```
+
+输出：
+
+![00](Image\49.png)
+
+### ABP中的Event Bus
+
+Handler处理程序由ABP框架自动发现，并在事件发生时自动调用HandleEventAsync方法。
 
 
 
+分布式事件总线系统提供了一个可以被任何提供程序实现的**抽象**. 有四种开箱即用的提供程序:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+- LocalDistributedEventBus 是默认实现,实现作为进程内工作的分布式事件总线. 是的!如果没有配置真正的分布式提供程序,**默认实现的工作方式与[本地事件总线](https://docs.abp.io/zh-Hans/abp/latest/Local-Event-Bus)一样**.
+- RabbitMqDistributedEventBus通过[RabbitMQ](https://www.rabbitmq.com/)实现分布式事件总线. 请参阅[RabbitMQ集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-RabbitMQ-Integration)了解如何配置它.
+- KafkaDistributedEventBus通过[Kafka](https://kafka.apache.org/)实现分布式事件总线. 请参阅[Kafka集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-Kafka-Integration)了解如何配置它.
+- RebusDistributedEventBus 通过[Rebus](http://mookid.dk/category/rebus/)实现分布式事件总线. 请参阅[Rebus集成文档](https://docs.abp.io/zh-Hans/abp/latest/Distributed-Event-Bus-Rebus-Integration)了解如何配置它.
