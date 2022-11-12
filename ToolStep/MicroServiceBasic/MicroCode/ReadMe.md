@@ -1,5 +1,15 @@
 [TOC]
 
+#### 0、Visual Studio Code
+
+```
+Ctrl+Space, Ctrl+I Trigger suggestion
+Ctrl+N New File
+
+Ctrl+` Show integrated terminal
+Ctrl+. Quick Fixes --此快捷键也是中英标点切换快捷键,输入法快捷键关掉即可
+```
+
 
 
 #### 1、新建项目添加依赖项
