@@ -176,9 +176,63 @@ SSL peer certificate or SSH remote key was not OK
 
 #### 11、添加Doker
 
+![02](..\Image\02.png)
+
+![02](..\Image\03.png)
 
 
 
+![02](..\Image\04.png)
+
+#### 12、添加Docker file
+
+[.NET samples | Docker Documentation](https://docs.docker.com/samples/dotnet/)
+
+1. 创建一个Dockerfile文件
+
+   ```dockerfile
+   # Get base SDK Image from Microsoft
+   FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+   WORKDIR /app
+   
+   # Copy the CSPROJ file and restore any dependecies(via NUGET)
+   COPY *.csproj ./
+   # Restore Package
+   RUN dotnet restore
+   
+   # Copy the project files and build our release
+   COPY . ./
+   RUN dotnet publish -c Release -o out
+   
+   # Generate runtime image
+   FROM mcr.microsoft.com/dotnet/aspnet:6.0
+   WORKDIR /app
+   COPY --from=build-env /app/out .
+   ENTRYPOINT ["dotnet","PlatformService.dll"]
+   ```
+
+2. Build Image构建映像
+
+   ```powershell
+   docker --version
+   ```
+
+   ```
+   --构建映像 Tag Name=platformservice
+   docker build -t wzyandi/platformservice .
+   ```
+
+   
+
+3. Run Image AS  A Container
+
+   ```powershell
+   docker run -p 8080:80 -d wzyandi/platformservice
+   ```
+
+   
+
+4. 46546
 
 
 
