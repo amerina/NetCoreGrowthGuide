@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nxbIeNBp1iRNquEhAJtRqGbN3ZaxffYoo8Tn8Ygp2EnR+B69mbWUsMY5SVHuPGSLy9sfIcz60oMLzkGpmI8tqg==",
+  "dgSpecHash": "3sBPEoHjy3v2ZGbYaOUADQq4s1l1oa/0H0wP8tBS+3BbXzG/wY/5K3AmPU8A/OUu2NRqmUkAKZiPJmkiijvhhQ==",
   "success": true,
-  "projectFilePath": "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\PlatformService.csproj",
+  "projectFilePath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\wzyan\\.nuget\\packages\\automapper\\12.0.0\\automapper.12.0.0.nupkg.sha512",
     "C:\\Users\\wzyan\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.0\\automapper.extensions.microsoft.dependencyinjection.12.0.0.nupkg.sha512",

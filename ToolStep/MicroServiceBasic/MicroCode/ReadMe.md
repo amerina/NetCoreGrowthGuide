@@ -8,6 +8,9 @@ Ctrl+N New File
 
 Ctrl+` Show integrated terminal
 Ctrl+. Quick Fixes --此快捷键也是中英标点切换快捷键,输入法快捷键关掉即可
+
+Ctril+C 关闭终端
+Ctrl+B 关闭左边Tab页
 ```
 
 
@@ -150,4 +153,34 @@ dotnet run
 public class PlatformCreateDto
 public class PlatformReadDto
 ```
+
+#### 8、添加Profiles-AutoMapper
+
+```
+public class PlatformsProfile : Profile
+```
+
+#### 9、添加Controller
+
+```
+public class PlatformsController:ControllerBase
+```
+
+#### 10、Insomnia查看Controller
+
+```
+如果提示错误：
+SSL peer certificate or SSH remote key was not OK
+注释：app.UseHttpsRedirection();
+```
+
+#### 11、添加Doker
+
+
+
+
+
+
+
+
 

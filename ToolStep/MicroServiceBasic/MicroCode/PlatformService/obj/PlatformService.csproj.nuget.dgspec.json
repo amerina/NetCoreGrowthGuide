@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\PlatformService.csproj": {}
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj": {}
   },
   "projects": {
-    "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\PlatformService.csproj": {
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\PlatformService.csproj",
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj",
         "projectName": "PlatformService",
-        "projectPath": "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\PlatformService.csproj",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj",
         "packagesPath": "C:\\Users\\wzyan\\.nuget\\packages\\",
-        "outputPath": "F:\\StepByStep\\MicroService\\MicroCode\\PlatformService\\obj\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
