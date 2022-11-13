@@ -217,7 +217,7 @@ SSL peer certificate or SSH remote key was not OK
    docker --version
    ```
 
-   ```
+   ```powershell
    --构建映像 Tag Name=platformservice
    docker build -t wzyandi/platformservice .
    ```
@@ -230,11 +230,43 @@ SSL peer certificate or SSH remote key was not OK
    docker run -p 8080:80 -d wzyandi/platformservice
    ```
 
+   ```powershell
+   --list running containers
+   docker ps 
+   ```
+
+   ```
+   CONTAINER ID 
+   a39b91c9ae9a
+   ```
+
+   ```
+   docker stop a39b91c9ae9a
+   ```
+
+   ```
+   cls  --清空命令行
+   ```
+
+   ```
+   docker start a39b91c9ae9a
+   ```
+
+   ```
+   docker push wzyandi/platformservice
+   ```
+
+   [docker desktop for windows 启用kubernetes](https://blog.csdn.net/Berzingou/article/details/106607782)
+
    
 
-4. 46546
+4. Docker启用Kubernetes一直不能启动
 
+   根据阿里解决方案一般肯定能够解决，给Docker一点时间启动
 
+   [AliyunContainerService/k8s-for-docker-desktop](https://github.com/AliyunContainerService/k8s-for-docker-desktop)
 
+   
 
+#### 13、添加Kubernetes
 
