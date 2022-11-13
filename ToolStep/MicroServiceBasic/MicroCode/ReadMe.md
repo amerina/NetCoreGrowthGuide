@@ -270,3 +270,4 @@ SSL peer certificate or SSH remote key was not OK
 
 #### 13、添加Kubernetes
 
+![02](..\Image\05.png)
