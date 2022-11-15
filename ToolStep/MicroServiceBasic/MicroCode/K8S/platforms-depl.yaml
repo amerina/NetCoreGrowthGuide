@@ -1,0 +1,19 @@
+#specifying api version
+apiVersion: apps/v1
+#what kind is it,we are deploying something into kubernetes
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1 #Kubernetes保证总是有1个节点在运行
+  selector: #selecting the template that we are creating
+    matchLabels:
+      app: platformservice
+  template: #defining the pod and the container that we're going to use
+    metadata:
+      labels:
+        app: platformservice
+    spec: #Specify the containers that we want to run
+      containers:
+        - name: platformservice
+          image: wzyandi/platformservice:latest   

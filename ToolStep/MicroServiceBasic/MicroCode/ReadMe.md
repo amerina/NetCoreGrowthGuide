@@ -271,3 +271,163 @@ SSL peer certificate or SSH remote key was not OK
 #### 13、添加Kubernetes
 
 ![02](..\Image\05.png)
+
+```
+--准备创建解决方案
+cd ..
+cd ..
+Code -r MicroCode
+```
+
+1、新建K8S文件夹->新建platforms-depl.yaml文件
+
+创建一个Pod
+
+![02](..\Image\06.png)
+
+```c#
+#specifying api version
+apiVersion: apps/v1
+#what kind is it,we are deploying something into kubernetes
+kind: Deployment
+metadata:
+  name: platforms-depl
+spec:
+  replicas: 1 #节点至少一个
+  selector: #selecting the template that we are creating
+    matchLabels:
+      app: platformservice
+  template: #defining the pod and the container that we're going to use
+    metadata:
+      labels:
+        app: platformservice
+    spec: #Specify the containers that we want to run
+      containers:
+        - name: platformservice
+          image: wzyandi/platformservice:latest  
+```
+
+
+
+```
+ kubectl version
+```
+
+```
+输出：
+Client Version: version.Info{Major:"1", Minor:"25", GitVersion:"v1.25.2", GitCommit:"5835544ca568b757a8ecae5c153f317e5736700e", GitTreeState:"clean", BuildDate:"2022-09-21T14:33:49Z", GoVersion:"go1.19.1", Compiler:"gc", Platform:"windows/amd64"}
+Kustomize Version: v4.5.7
+Server Version: version.Info{Major:"1", Minor:"25", GitVersion:"v1.25.2", GitCommit:"5835544ca568b757a8ecae5c153f317e5736700e", GitTreeState:"clean", BuildDate:"2022-09-21T14:27:13Z", GoVersion:"go1.19.1", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+```
+cd K8S
+```
+
+```
+kubectl apply -f platforms-depl.yaml
+```
+
+```
+输出：
+deployment.apps/platforms-depl created
+```
+
+```
+kubectl get deployments
+```
+
+```
+输出：
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+platforms-depl   1/1     1            1           80s
+```
+
+```
+kubectl get pods
+```
+
+```
+输出：
+NAME                              READY   STATUS    RESTARTS   AGE
+platforms-depl-769c6cffd5-t7pcg   1/1     Running   0          2m26s
+```
+
+```
+kubectl get deployments
+```
+
+```
+这次输出：
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+platforms-depl   1/1     1            1           3m5s
+```
+
+```
+kubectl delete deployment platforms-depl
+```
+
+```
+输出：
+deployment.apps "platforms-depl" deleted
+```
+
+2、创建一个Node Port
+
+![02](..\Image\07.png)
+
+新建platforms-np-srv.yaml文件
+
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: platformnpservice-src
+spec:
+  type: NodePort
+  selector:
+    app: platformservice
+  ports:
+    - name: platformservice
+      protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+```
+kubectl apply -f platforms-np-srv.yaml
+```
+
+```
+输出:
+service/platformnpservice-src created
+```
+
+```
+kubectl get services
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
