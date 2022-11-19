@@ -407,21 +407,143 @@ service/platformnpservice-src created
 kubectl get services
 ```
 
+#### 14、创建CommandsService
+
+```
+dotnet new webapi -n CommandsService
+```
+
+切换工作目录
+
+```
+cd C*
+```
+
+#### 15、添加依赖项
+
+添加AutoMapper依赖
+
+```powershell
+dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
+```
+
+添加EFCore依赖
+
+```powershell
+dotnet add package Microsoft.EntityFrameworkCore
+```
 
 
 
+```powershell
+dotnet add package Microsoft.EntityFrameworkCore.Design
+```
+
+添加内存数据库支持
+
+```powershell
+ dotnet add package Microsoft.EntityFrameworkCore.Inmemory
+```
+
+添加SqlServer支持
+
+```powershell
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+```
 
 
 
+```
+dotnet run
+```
+
+#### 16、新建Controller
+
+```
+using Microsoft.AspNetCore.Mvc;
+
+namespace CommandsService.Controllers
+{
+    [Route("api/c/[controller]")]
+    [ApiController]
+    public class PlatformsController:ControllerBase
+    {
+        public PlatformsController()
+        {
+            
+        }
+
+        [HttpPost]
+        public ActionResult TestInboundConnection()
+        {
+            Console.WriteLine("--> Inbound POST # Command Service");
+
+            return Ok("Inbound test of from Platforms Controller");
+        }
+    }
+}
+```
 
 
 
+#### 17、Insomnia查看Controller
+
+如果报错：**Error: SSL peer certificate or SSH remote key was not OK**
+
+[Insomnia : Error: SSL peer certificate or SSH remote key was not OK - Stack Overflow](https://stackoverflow.com/questions/72417847/insomnia-error-ssl-peer-certificate-or-ssh-remote-key-was-not-ok)
+
+或注释：
+
+```
+app.UseHttpsRedirection();
+```
 
 
 
+#### 18、Messaging
 
+Synchronous & Asynchronous Messaging
 
+1. **Synchronous Messaging**
 
+   - Request/Response Cycle
+   - Requester will "wait" for response
+   - Externally facing services usually synchronous(e.g. http requests)
+   - Services usually need to "know" about each other
+   - We are using 2 forms:
+     - Http
+     - Grpc
+   - **34**
+
+   **C#代码的异步Async**
+
+   - From a messaging perspective this method is still synchronous
+   - The client still has to wait for a response
+   - Async in this context means that the action will not wait for a long running operation
+   - It will hand back it's thread pool,where it can be reused
+   - When the operation finishes it will re-acquire a thread and complete,(and respond back to the requestor)
+   - So Async here is about thread exhaustion-the requestor still has to wait(the call is synchronous)
+
+   **服务间的同步消息**
+
+   - 服务间互相调用
+   - 可能导致长调用链
+
+   ![00](..\Image\08.png)
+
+   一个解决方案是服务间使用**Grpc**调用
+
+2. **Asynchronous Messaging**
+
+   - No Request/Response Cycle
+   - Requester does not wait
+   - Event model,e.g. publish-subscribe
+   - Typically used between services
+   - Event bus is often used(here is RabbitMQ)
+   - Service don't need to know about each other,just the bus
+   - Introduces its own range of complexities-not a magic bullet
+
+   ![00](..\Image\09.png)
 
 
 

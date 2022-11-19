@@ -1,5 +1,5 @@
 {
-  "FilePath": "f:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\PlatformService\\PlatformService.csproj",
+  "FilePath": "f:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\MicroCode\\CommandsService\\CommandsService.csproj",
   "Configuration": {
     "ConfigurationName": "MVC-3.0",
     "LanguageVersion": "6.0",
@@ -16295,7 +16295,7 @@
     ],
     "CSharpLanguageVersion": 1000
   },
-  "RootNamespace": "PlatformService",
+  "RootNamespace": "CommandsService",
   "Documents": [],
   "SerializationFormat": "0.2"
 }
