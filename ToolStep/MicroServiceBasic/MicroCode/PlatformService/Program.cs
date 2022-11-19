@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PlatformService.Data;
+using PlatformService.SyncDataServices.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
                  opt.UseInMemoryDatabase("InMem"));
 
 builder.Services.AddScoped<IPlatformRepo,PlatformRepo>();
+
+//当调用HttpClient时使用HttpClientFactory
+builder.Services.AddHttpClient<ICommandDataClient,HttpCommandDataClient>();
 
 builder.Services.AddControllers();
 
