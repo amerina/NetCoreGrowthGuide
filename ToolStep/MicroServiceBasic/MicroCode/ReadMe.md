@@ -549,7 +549,91 @@ Synchronous & Asynchronous Messaging
 
 #### 19、PlatformService新建SyncDataServices
 
+SyncDataServices文件夹下新建HttpCommandDataClient
 
+```
+public async Task SendPlatformToCommand(PlatformReadDto platform)
+        {
+            var httpContent = new StringContent(JsonSerializer.Serialize(platform),Encoding.UTF8,"application/json");
 
+            var response = await _httpClient.PostAsync($"{_configuration["CommandService"]}",httpContent);
 
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("--> Sync POST to CommandService was OK!");
+            }
+            else
+            {
+                Console.WriteLine("--> Sync POST to CommandService was NOT OK!");
+            }
+        }
+```
 
+#### 20、修改PlatformsController
+
+新建Platform时调用CommandsService
+
+```
+  try
+            {
+                await _commandDataClient.SendPlatformToCommand(platformReadDto);
+            }
+            catch (System.Exception ex)
+            {
+               Console.WriteLine($"--> Could not send synchronously:{ex.Message}");
+            }
+```
+
+#### 21、添加Docker file
+
+1. 创建一个Dockerfile文件
+
+   ```dockerfile
+   # Get base SDK Image from Microsoft
+   FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+   WORKDIR /app
+   
+   # Copy the CSPROJ file and restore any dependecies(via NUGET)
+   COPY *.csproj ./
+   # Restore Package
+   RUN dotnet restore
+   
+   # Copy the project files and build our release
+   COPY . ./
+   RUN dotnet publish -c Release -o out
+   
+   # Generate runtime image
+   FROM mcr.microsoft.com/dotnet/aspnet:6.0
+   WORKDIR /app
+   COPY --from=build-env /app/out .
+   ENTRYPOINT ["dotnet","CommandsService.dll"]
+   ```
+
+2. Build Image构建映像
+
+   ```powershell
+   docker --version
+   ```
+
+   ```powershell
+   --构建映像 Tag Name=platformservice
+   docker build -t wzyandi/commandservice .
+   ```
+
+   ```
+   docker push wzyandi/commandservice
+   ```
+
+   
+
+3. Run Image AS  A Container
+
+   ```powershell
+   docker run -p 8080:80 -d wzyandi/commandservice
+   ```
+
+   
+
+#### CommandsService in Kubernetes
+
+添加do
