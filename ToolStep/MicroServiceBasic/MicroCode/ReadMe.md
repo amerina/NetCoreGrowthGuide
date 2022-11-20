@@ -695,5 +695,73 @@ spec:
     targetPort: 80                 
 ```
 
+#### 24、add appeettings.Production.json
+
+```
+{
+    "CommandService":"http://commands-clusterip-src:80/api/c/Platforms"
+}
+```
+
+修改配置文件后需要重建Docker映像
+
+```
+docker build -t wzyandi/commandservice/platformservice .
+```
+
+```
+docker push wzyandi/platformservice
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
