@@ -713,6 +713,8 @@ docker build -t wzyandi/commandservice/platformservice .
 docker push wzyandi/platformservice
 ```
 
+**K8S默认使用Production环境所以会自动使用Production配置文件**
+
 #### 25、Deployment K8S
 
 ```
@@ -757,13 +759,18 @@ kubectl rollout restart deployment platforms-depl
 
 
 
+```
+kubectl apply -f commands-depl.yaml
+```
 
+```
+deployment.apps/commands-depl created
+service/commands-clusterip-src created
+```
 
-
-
-
-
-
+```
+kubectl get services
+```
 
 
 

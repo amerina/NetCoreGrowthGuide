@@ -22,7 +22,15 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-Console.WriteLine($"--> CommandService Endpoint {builder.Configuration["CommandService"]}");
+try
+{
+    Console.WriteLine($"--> CommandService Endpoint {builder.Configuration["CommandService"]}");
+}
+catch (System.Exception ex)
+{
+    Console.WriteLine($"--> Get Config CommandService failed.{ex.Message}");
+}
+
 
 var app = builder.Build();
 
