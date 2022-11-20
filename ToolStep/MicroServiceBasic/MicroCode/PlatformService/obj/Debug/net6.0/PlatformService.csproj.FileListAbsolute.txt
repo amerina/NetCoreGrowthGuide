@@ -169,7 +169,6 @@ F:\StepByStep\MicroService\MicroCode\PlatformService\obj\Debug\net6.0\PlatformSe
 F:\StepByStep\MicroService\MicroCode\PlatformService\obj\Debug\net6.0\PlatformService.genruntimeconfig.cache
 F:\StepByStep\MicroService\MicroCode\PlatformService\obj\Debug\net6.0\ref\PlatformService.dll
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\appsettings.Development.json
-F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\appsettings.json
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\PlatformService.exe
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\PlatformService.deps.json
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\PlatformService.runtimeconfig.json
@@ -253,3 +252,4 @@ F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformSe
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\obj\Debug\net6.0\PlatformService.pdb
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\obj\Debug\net6.0\PlatformService.genruntimeconfig.cache
 F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\obj\Debug\net6.0\ref\PlatformService.dll
+F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\MicroCode\PlatformService\bin\Debug\net6.0\appsettings.Production.json

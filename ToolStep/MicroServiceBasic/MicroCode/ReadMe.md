@@ -713,17 +713,47 @@ docker build -t wzyandi/commandservice/platformservice .
 docker push wzyandi/platformservice
 ```
 
+#### 25、Deployment K8S
+
+```
+kubectl get deployments
+```
+
+```
+kubectl get pods 
+```
+
+```
+kubectl get services  
+```
+
+```
+kubectl apply -f platforms-depl.yaml
+```
+
+```
+输出：
+deployment.apps/platforms-depl unchanged
+service/platforms-clusterip-src created
+```
+
+上面我们重构了Platform Image需要K8S获取新的Image重启
+
+```
+kubectl get deployments
+```
+
+```
+输出：
+NAME             READY   UP-TO-DATE   AVAILABLE   AGE     
+platforms-depl   1/1     1            1           4d21h
+```
 
 
 
-
-
-
-
-
-
-
-
+```
+kubectl rollout restart deployment platforms-depl
+```
 
 
 
