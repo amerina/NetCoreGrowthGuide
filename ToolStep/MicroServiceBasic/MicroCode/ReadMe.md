@@ -634,6 +634,66 @@ public async Task SendPlatformToCommand(PlatformReadDto platform)
 
    
 
-#### CommandsService in Kubernetes
+#### 22、Add Cluster IP Service
 
-添加do
+**platforms-depl.yaml**
+
+```
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platforms-clusterip-src
+spec:
+  type: ClusterIP
+  selector:
+    app: platformservice
+  ports:
+  - name: platformservice
+    protocol: TCP
+    port: 80
+    targetPort: 80  
+```
+
+#### 23、Create a new deployment for CommandsService
+
+新建commands-depl.yaml
+
+```
+#specifying api version
+apiVersion: apps/v1
+#what kind is it,we are deploying something into kubernetes
+kind: Deployment
+metadata:
+  name: commands-depl
+spec:
+  replicas: 1 #Kubernetes保证总是有1个节点在运行
+  selector: #selecting the template that we are creating
+    matchLabels:
+      app: commandservice
+  template: #defining the pod and the container that we're going to use
+    metadata:
+      labels:
+        app: commandservice
+    spec: #Specify the containers that we want to run
+      containers:
+        - name: commandservice
+          image: wzyandi/commandservice:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: commands-clusterip-src
+spec:
+  type: ClusterIP
+  selector:
+    app: commandservice
+  ports:
+  - name: commandservice
+    protocol: TCP
+    port: 80
+    targetPort: 80                 
+```
+
+
+
