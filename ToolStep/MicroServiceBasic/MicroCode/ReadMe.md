@@ -787,18 +787,22 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 国内网络环境可能获取是有问题的可以新建yaml文件,拷贝内容到本地然后apply
 
 ```
-kubectl apply -f deploy.yaml 
+kubectl apply -f ingress-nginx-deploy.yaml 
 ```
 
+```
+kubectl get namespace
+```
 
+```
+kubectl get pods --namespace=ingress-nginx
+```
 
+```
+kubectl get services --namespace=ingress-nginx  
+```
 
-
-
-
-
-
-
+#### 28、Create the Routing File
 
 
 
