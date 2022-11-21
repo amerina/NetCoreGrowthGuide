@@ -772,15 +772,23 @@ service/commands-clusterip-src created
 kubectl get services
 ```
 
+#### 26、Test in Insomnia
 
+#### 27、Add API Gateway
 
+[kubernetes/ingress-nginx: Ingress-NGINX Controller for Kubernetes (github.com)](https://github.com/kubernetes/ingress-nginx)
 
+[Installation Guide - NGINX Ingress Controller (kubernetes.github.io)](https://kubernetes.github.io/ingress-nginx/deploy/#docker-desktop)
 
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.5.1/deploy/static/provider/cloud/deploy.yaml
+```
 
+国内网络环境可能获取是有问题的可以新建yaml文件,拷贝内容到本地然后apply
 
-
-
-
+```
+kubectl apply -f deploy.yaml 
+```
 
 
 
