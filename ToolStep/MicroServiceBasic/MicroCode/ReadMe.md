@@ -852,6 +852,8 @@ Unable to connect to the server: dial tcp 127.0.0.1:6443: connectex: No connecti
 
 是因为没有启用Kubernetes
 
+如果无法启动重启系统
+
 #### 29、Test in Insomnia
 
 ```
@@ -859,3 +861,117 @@ http://acme.com/api/Platforms
 ```
 
 #### 30、Setting Sql Server
+
+```
+kubectl get storageclass
+```
+
+1. **Persistent Volume Claim**
+2. Persistent Volume
+3. Storage Class
+
+新建**local-pvc.yaml** file
+
+```
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mssql-claim
+spec:
+  resources:
+    requests:
+      storage: 200Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+
+```
+
+```
+kubectl apply -f local-pvc.yaml
+```
+
+```
+kubectl get pvc
+```
+
+```
+kubectl get storageclass
+```
+
+```
+kubectl create secret generic mssql --from-literal=SA_PASSWORD="password"
+
+输出：
+secret/mssql created
+```
+
+新建**mssql-plat-depl.yaml** 文件
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mssql-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mssql
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+        - name: mssql
+          image: mcr.microsoft.com/mssql/server:2019-latest
+          ports:
+            - containerPort: 1433
+          env:
+          - name: MSSQL_PID
+            value: "Express"
+          - name: ACCEPT_EULA
+            value: "Y"
+          - name: SA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mssql
+                key: SA_PASSWORD
+          volumeMounts:
+          - mountPath: /var/opt/mssql/data
+            name: mssqldb
+      volumes:
+        - name: mssqldb
+          persistentVolumeClaim:
+            claimName: mssql-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-clusterip-src
+spec:
+  type: ClusterIP
+  selector:
+    app: mssql
+  ports:
+  - name: mssql
+    protocol: TCP
+    port: 1433
+    targetPort: 1433                
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mssql-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: mssql
+  ports:
+  - protocol: TCP
+    port: 1433
+    targetPort: 1433      
+```
+
+[Microsoft Artifact Registry](https://mcr.microsoft.com/en-us/product/mssql/rhel/server/about)
