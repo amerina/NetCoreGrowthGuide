@@ -513,26 +513,25 @@ Synchronous & Asynchronous Messaging
    - We are using 2 forms:
      - Http
      - Grpc
-   - **34**
-
-   **C#代码的异步Async**
-
-   - From a messaging perspective this method is still synchronous
+   
+**C#代码的异步Async**
+   
+- From a messaging perspective this method is still synchronous
    - The client still has to wait for a response
    - Async in this context means that the action will not wait for a long running operation
    - It will hand back it's thread pool,where it can be reused
    - When the operation finishes it will re-acquire a thread and complete,(and respond back to the requestor)
    - So Async here is about thread exhaustion-the requestor still has to wait(the call is synchronous)
-
-   **服务间的同步消息**
-
-   - 服务间互相调用
+   
+**服务间的同步消息**
+   
+- 服务间互相调用
    - 可能导致长调用链
-
-   ![00](..\Image\08.png)
-
-   一个解决方案是服务间使用**Grpc**调用
-
+   
+![00](..\Image\08.png)
+   
+一个解决方案是服务间使用**Grpc**调用
+   
 2. **Asynchronous Messaging**
 
    - No Request/Response Cycle
@@ -975,3 +974,100 @@ spec:
 ```
 
 [Microsoft Artifact Registry](https://mcr.microsoft.com/en-us/product/mssql/rhel/server/about)
+
+```
+kubectl apply -f mssql-plat-depl.yaml
+```
+
+```
+输出：
+deployment.apps/mssql-depl created
+service/mssql-clusterip-src created
+service/mssql-loadbalancer created
+```
+
+
+
+#### 99：运行项目
+
+运行Platform项目
+
+```
+cd PlatformService
+dotnet run
+```
+
+运行Commands项目
+
+```
+cd CommandsService
+dotnet run
+```
+
+
+
+Pod AND Clusterip
+
+```
+kubectl apply -f platforms-depl.yaml
+```
+
+Node Pod
+
+```
+kubectl apply -f platforms-np-srv.yaml
+```
+
+Pod
+
+```
+kubectl apply -f commands-depl.yaml
+```
+
+API Gateway
+
+```
+kubectl apply -f ingress-nginx-deploy.yaml 
+```
+
+Routing
+
+```
+kubectl apply -f ingress-srv.yaml
+```
+
+Sql Server
+
+```
+kubectl apply -f mssql-plat-depl.yaml
+```
+
+```
+kubectl get services
+```
+
+```
+kubectl get pods
+```
+
+```
+kubectl get deployments 
+```
+
+```
+kubectl rollout restart deployment commands-depl.yaml
+```
+
+```
+kubectl delete deployment platforms-depl
+```
+
+```
+kubectl get pods --namespace=ingress-nginx
+```
+
+```
+kubectl get services --namespace=ingress-nginx 
+```
+
+检查各项服务Pods是否都已经启动
