@@ -804,13 +804,58 @@ kubectl get services --namespace=ingress-nginx
 
 #### 28、Create the Routing File
 
+```
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-src
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+  - host: acme.com
+    http:
+      paths:
+        - pathType: Prefix
+          path: /api/platforms
+          backend:
+            service:
+              name: platforms-clusterip-srv
+              port: 
+                number: 80
+        - pathType: Prefix
+          path: /api/c/platforms
+          backend:
+            service:
+              name: commands-clusterip-srv
+              port: 
+                number: 80
 
+```
 
+配置Host文件
 
+```
+127.0.0.1 acme.com
+```
 
+```
+kubectl apply -f ingress-srv.yaml
+```
 
+报错：
 
+```
+Unable to connect to the server: dial tcp 127.0.0.1:6443: connectex: No connection could be made because the target machine actively refused it.
+```
 
+是因为没有启用Kubernetes
 
+#### 29、Test in Insomnia
 
+```
+http://acme.com/api/Platforms
+```
 
+#### 30、Setting Sql Server
