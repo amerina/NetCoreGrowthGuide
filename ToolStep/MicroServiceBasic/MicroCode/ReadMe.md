@@ -514,8 +514,9 @@ Synchronous & Asynchronous Messaging
      - Http
      - Grpc
    
+
 **C#代码的异步Async**
-   
+
 - From a messaging perspective this method is still synchronous
    - The client still has to wait for a response
    - Async in this context means that the action will not wait for a long running operation
@@ -523,15 +524,17 @@ Synchronous & Asynchronous Messaging
    - When the operation finishes it will re-acquire a thread and complete,(and respond back to the requestor)
    - So Async here is about thread exhaustion-the requestor still has to wait(the call is synchronous)
    
+
 **服务间的同步消息**
-   
+
 - 服务间互相调用
    - 可能导致长调用链
    
+
 ![00](..\Image\08.png)
-   
+
 一个解决方案是服务间使用**Grpc**调用
-   
+
 2. **Asynchronous Messaging**
 
    - No Request/Response Cycle
@@ -820,14 +823,14 @@ spec:
           path: /api/platforms
           backend:
             service:
-              name: platforms-clusterip-srv
+              name: platforms-clusterip-src
               port: 
                 number: 80
         - pathType: Prefix
           path: /api/c/platforms
           backend:
             service:
-              name: commands-clusterip-srv
+              name: commands-clusterip-src
               port: 
                 number: 80
 
@@ -856,7 +859,9 @@ Unable to connect to the server: dial tcp 127.0.0.1:6443: connectex: No connecti
 #### 29、Test in Insomnia
 
 ```
-http://acme.com/api/Platforms
+http://acme.com:32563/api/Platforms
+
+//记得输入端口..或配置到Host文件
 ```
 
 #### 30、Setting Sql Server
@@ -899,7 +904,7 @@ kubectl get storageclass
 ```
 
 ```
-kubectl create secret generic mssql --from-literal=SA_PASSWORD="password"
+kubectl create secret generic mssql --from-literal=SA_PASSWORD="Famous901"
 
 输出：
 secret/mssql created
@@ -986,6 +991,28 @@ service/mssql-clusterip-src created
 service/mssql-loadbalancer created
 ```
 
+#### 31、Platform Service With Sql Server
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 #### 99：运行项目
@@ -1055,11 +1082,16 @@ kubectl get deployments
 ```
 
 ```
-kubectl rollout restart deployment commands-depl.yaml
+kubectl rollout restart deployment commands-depl
+kubectl rollout restart deployment platforms-depl
+kubectl rollout restart deployment mssql-depl
 ```
 
 ```
 kubectl delete deployment platforms-depl
+
+kubectl delete deployment --namespace=ingress-nginx ingress-srv 
+
 ```
 
 ```
@@ -1068,6 +1100,16 @@ kubectl get pods --namespace=ingress-nginx
 
 ```
 kubectl get services --namespace=ingress-nginx 
+
+kubectl get deployments --namespace=ingress-nginx 
+
+kubectl rollout restart deployment ingress-srv
 ```
 
 检查各项服务Pods是否都已经启动
+
+
+
+[使用 kubectl 管理 Secret | Kubernetes](https://kubernetes.io/zh-cn/docs/tasks/configmap-secret/managing-secret-using-kubectl/)
+
+[Kubectl Delete Deployment: Deleting Kubernetes Deployment (linuxhandbook.com)](https://linuxhandbook.com/kubectl-delete-deployment/)
