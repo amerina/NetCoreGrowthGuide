@@ -856,6 +856,10 @@ Unable to connect to the server: dial tcp 127.0.0.1:6443: connectex: No connecti
 
 如果无法启动重启系统
 
+
+
+Routing文件如果修改了不需要重新Apply,Docker会自动更新配置
+
 #### 29、Test in Insomnia
 
 ```
@@ -993,9 +997,13 @@ service/mssql-loadbalancer created
 
 #### 31、Platform Service With Sql Server
 
+添加调用
 
+```
+context.Database.Migrate();
+```
 
-
+生成Migrate
 
 
 

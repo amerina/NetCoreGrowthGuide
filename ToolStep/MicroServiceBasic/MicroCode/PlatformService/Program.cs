@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-
 if (builder.Environment.IsDevelopment())
 {
    Console.WriteLine("--> Using InMem Db");
@@ -61,6 +60,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 //初始化数据
-PrepDb.PrepPopulation(app);
+PrepDb.PrepPopulation(app,app.Environment.IsProduction());
 
 app.Run();
