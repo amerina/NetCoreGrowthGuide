@@ -1005,15 +1005,128 @@ context.Database.Migrate();
 
 生成Migrate
 
+```
+dotnet ef migrations add initialmigration
+```
+
+```
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace PlatformService.Migrations
+{
+    /// <inheritdoc />
+    public partial class initialmigration : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Platforms",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Publisher = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cost = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Platforms", x => x.Id);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Platforms");
+        }
+    }
+}
+
+```
+
+31、重建Docker Image
+
+有了以上修改需要重建Docker Image
+
+```
+docker build -t wzyandi/platformservice .
+```
+
+```
+docker push wzyandi/platformservice
+```
 
 
 
+```
+kubectl get deployments
+```
+
+如果映像在运行就，重启K8S platformService映像，如果发生错误需要删掉重建
+
+```
+kubectl rollout restart deployment platforms-depl
+```
+
+查看重启状态
+
+```
+platforms-depl-58994798d9-tlph8   0/1     Error               1 (54s ago)     96s
+```
+
+如果报错去Docker Doesktop查看报错信息
+
+```
+2022-11-26 19:04:48 Unhandled exception. Microsoft.Data.SqlClient.SqlException (0x80131904): A connection was successfully established with the server, but then an error occurred during the pre-login handshake. (provider: TCP Provider, error: 35 - An internal exception was caught)
+2022-11-26 19:04:48  ---> System.Security.Authentication.AuthenticationException: The remote certificate was rejected by the provided RemoteCertificateValidationCallback.
+```
 
 
 
+解决错误后需要删除Deployment重新创建
 
+```
+kubectl get deployments
+```
 
+```
+kubectl delete deployment platforms-depl
+```
 
+重建Docker Image
+
+```
+docker build -t wzyandi/platformservice .
+```
+
+```
+docker push wzyandi/platformservice
+```
+
+```
+cd ..
+cd k8s
+kubectl get deployments
+kubectl apply -f platforms-depl.yaml
+```
+
+输出：
+
+```
+deployment.apps/platforms-depl created
+service/platforms-clusterip-src unchanged
+```
+
+```
+kubectl get pods
+```
+
+输出：
 
 
 
