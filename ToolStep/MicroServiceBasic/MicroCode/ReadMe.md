@@ -1086,7 +1086,11 @@ platforms-depl-58994798d9-tlph8   0/1     Error               1 (54s ago)     96
 2022-11-26 19:04:48  ---> System.Security.Authentication.AuthenticationException: The remote certificate was rejected by the provided RemoteCertificateValidationCallback.
 ```
 
+修改数据库连接：
 
+```
+"PlatformsConn":"Server=localhost,1433;Initial Catalog=platformsdb;User ID=sa;Password=Famous901;"
+```
 
 解决错误后需要删除Deployment重新创建
 
