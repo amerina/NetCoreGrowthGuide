@@ -1508,17 +1508,163 @@ Output: Hello @Pranaya Welcome to Dotnet Tutorials
 
 顾名思义，匿名方法是一种没有名称的方法，即它是一个未命名的代码块。C#中的匿名方法是通过使用delegate关键字定义的，可以将其赋值给我们已经讨论过的delegate类型的变量。简单地说，我们可以说匿名方法是一种没有名称的方法。让我们通过一个实时的例子来理解一个没有名字的方法在C#中如何存在。
 
+1. 创建一个名为Employee.cs的类文件。如您所见，它是一个具有ID、Name、Gender和Salary属性的简单类。
 
+   ```c#
+   namespace AnonymousMethodRealTimeExample
+   {
+       // Step1
+       // Create a class called Employee with
+       // ID, Name, Gender and Salary Properties
+       public class Employee
+       {
+           public int ID { get; set; }
+           public string Name { get; set; }
+           public string Gender { get; set; }
+           public double Salary { get; set; }
+       }
+   }
+   ```
 
+   
 
+2. 在我们的C#泛型委托文章中，我们讨论了Predicate是一个泛型委托，它接受任何数据类型的单个输入参数，并返回一个强制且固定的布尔值。这意味着只要委托返回布尔值，就可以使用C#中的Predicate泛型委托，只接受一个输入参数。下面是Predicate泛型委托的签名。
 
+   ![00](Image\62.png)
 
+   如你所见，Predicate Generic委托接受一个类型为T的输入参数并返回一个布尔值。现在，我们需要使用这个Predicate泛型委托，因此我们需要创建一个方法，其签名必须与Predicate委托的签名匹配。这里，T是我们的Employee类。
 
+   ![00](Image\63.png)
 
+   IsEmployeeExist方法接受一个Employee类型的输入参数并返回一个布尔值。因此上面的方法签名与Predicate&lt;Employee&gt;泛型委托匹配。这个IsEmployeeExist方法逻辑非常简单。它检查作为参数传递给该函数的员工的ID值，如果ID值是103，则返回true，否则返回false。
 
+3. 现在，我们将创建Predicate Generic Delegate的一个实例。在创建实例时，需要将IsEmployeeExist方法作为参数传递给Predicate的构造函数：
 
+   ![00](Image\64.png)
 
+4. 现在我们需要创建一个Employee类型的列表集合，以保存如下图所示的Employee列表。
 
+   ![00](Image\65.png)
+
+5. 在这一步中，我们需要将委托实例即employeePredicate传递给List集合类的Find方法，如下图所示。
+
+   ![00](Image\66.png)
+
+   对于每个employee对象，委托实例employeePredicate在内部调用IsEmployeeExist方法判断传递雇员对象是否存在。正如我们所写的逻辑，id为103的员工，对于该员工，IsEmployeeExist方法返回true，该员工信息将存储在左侧的employee变量中，然后我们只显示该员工的id、Name、Gender和Salary信息。
+
+   我们已经在Employee.cs类文件中创建了Employee类。现在，修改Program.cs类文件：
+
+   ```C#
+   using System;
+   using System.Collections.Generic;
+   namespace AnonymousMethodRealTimeExample
+   {
+       class Program
+       {
+           static void Main(string[] args)
+           {
+               // Step 3: 
+               // Create an instance of Predicate<Employee> delegate and 
+               // pass the method name as an argument to the delegate constructor          
+               Predicate<Employee> employeePredicate = new Predicate<Employee>(IsEmployeeExist);
+   
+               //Step4
+               //Create a collection of List of Employees
+               List<Employee> listEmployees = new List<Employee>()
+               {
+                   new Employee{ ID = 101, Name = "Pranaya", Gender = "Male", Salary = 100000},
+                   new Employee{ ID = 102, Name = "Priyanka", Gender = "Female", Salary = 200000},
+                   new Employee{ ID = 103, Name = "Anurag", Gender = "Male", Salary = 300000},
+                   new Employee{ ID = 104, Name = "Preety", Gender = "Female", Salary = 400000},
+                   new Employee{ ID = 104, Name = "Sambit", Gender = "Male", Salary = 500000},
+               };
+   
+               // Step 5: 
+               // Now pass the delegate instance as the
+               // argument to the Find() method of List collection
+               Employee employee = listEmployees.Find(x => employeePredicate(x));
+               Console.WriteLine(@"ID : {0}, Name : {1}, Gender : {2}, Salary : {3}",
+                   employee.ID, employee.Name, employee.Gender, employee.Salary);
+   
+               Console.ReadKey();
+           }
+   
+           // Step 2: 
+           // Create a method whose signature matches with the
+           // signature of Predicate<Employee> generic delegate
+           public static bool IsEmployeeExist(Employee Emp)
+           {
+               return Emp.ID == 103;
+           }
+       }
+   }
+   ```
+
+   ```
+   输出: ID : 103, Name : Anurag, Gender : Male, Salary : 300000
+   ```
+
+#### 在C#中使用匿名方法
+
+到目前为止，我们做了以下工作。
+
+1. 我们创建一个方法，其签名与Predicate泛型委托匹配
+2. 然后我们创建Predicate泛型委托的实例
+3. 然后我们将Predicate Generic Delegate Instance作为参数传递给List集合类的Find方法
+
+使用匿名方法，我们可以安全地避免以上三个步骤。我们可以将一个匿名方法作为参数传递给Find()方法，如下面的代码所示。
+
+![00](Image\67.png)
+
+使用上面的匿名方法，您可以简单地删除步骤1和步骤2，并使用上面的代码替换步骤5。因此，有了上述更改之后，现在Program类代码应该如下所示：
+
+```c#
+using System;
+using System.Collections.Generic;
+namespace AnonymousMethodRealTimeExample
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //Step2
+            //Create a collection of List of Employees
+            List<Employee> listEmployees = new List<Employee>()
+            {
+                new Employee{ ID = 101, Name = "Pranaya", Gender = "Male", Salary = 100000},
+                new Employee{ ID = 102, Name = "Priyanka", Gender = "Female", Salary = 200000},
+                new Employee{ ID = 103, Name = "Anurag", Gender = "Male", Salary = 300000},
+                new Employee{ ID = 104, Name = "Preety", Gender = "Female", Salary = 400000},
+                new Employee{ ID = 104, Name = "Sambit", Gender = "Male", Salary = 500000},
+            };
+
+            // Step3
+            // An anonymous method is being passed as an argument to
+            // the Find() method of List Collection.
+            Employee employee = listEmployees.Find(
+                                    delegate (Employee x)
+                                    {
+                                        return x.ID == 103;
+                                    }
+                                );
+            Console.WriteLine(@"ID : {0}, Name : {1}, Gender : {2}, Salary : {3}",
+                employee.ID, employee.Name, employee.Gender, employee.Salary);
+
+            Console.ReadKey();
+        }
+    }
+}
+```
+
+```
+Output: ID : 103, Name : Anurag, Gender : Male, Salary : 300000
+```
+
+#### C#中**Find**方法
+
+在上述两个示例中，泛型List集合类的Find()方法期望将委托作为参数传递。如果您想查看Find方法的签名，那么右键单击Find()方法并从上下文菜单中选择Go to Definition。然后，您将看到Find方法的以下方法签名。您可以看到它接受了Predicate泛型的一个参数。
+
+![00](Image\68.png)
 
 
 
