@@ -1169,6 +1169,20 @@ http://acme.com:32563/api/Platforms
 
 ![00](..\Image\12.png)
 
+#### 35、新建Models
+
+```
+public class Platform
+```
+
+```
+public class Command
+```
+
+
+
+#### 36、Add DbContext
+
 
 
 
