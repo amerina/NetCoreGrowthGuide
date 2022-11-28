@@ -1055,7 +1055,7 @@ namespace PlatformService.Migrations
 
 ```
 
-31、重建Docker Image
+#### 32、重建Docker Image
 
 有了以上修改需要重建Docker Image
 
@@ -1095,7 +1095,7 @@ platforms-depl-58994798d9-tlph8   0/1     Error               1 (54s ago)     96
 修改数据库连接：
 
 ```
-"PlatformsConn":"Server=localhost,1433;Initial Catalog=platformsdb;User ID=sa;Password=Famous901;"
+"Server=mssql-clusterip-src,1433;Initial Catalog=platformsdb;User ID=sa;Password=Famous901;TrustServerCertificate=true;"
 ```
 
 解决错误后需要删除Deployment重新创建
@@ -1137,6 +1137,37 @@ kubectl get pods
 ```
 
 输出：
+
+```
+NAME                              READY   STATUS    RESTARTS      AGE
+commands-depl-7d7f97f58c-b896j    1/1     Running   3 (24m ago)   5d
+mssql-depl-55c586854f-mvn4l       1/1     Running   4 (24m ago)   5d
+platforms-depl-769c6cffd5-q2hb6   1/1     Running   0             2m15s
+```
+
+连接SQL Server
+
+![00](..\Image\11.png)
+
+#### 33、Insomnia查看
+
+```
+http://acme.com:32563/api/Platforms
+```
+
+```
+	{
+		"name": "Docker",
+		"publisher": "Docker",
+		"cost": "Free"
+	}
+```
+
+插入SQL Server数据库
+
+#### 34、Commands Services
+
+![00](..\Image\12.png)
 
 
 
