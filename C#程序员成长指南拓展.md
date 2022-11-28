@@ -1245,6 +1245,10 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 
 
+
+
+
+
 9、Kubernetes
 
 ## 9、动态WebAPI实现
