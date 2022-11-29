@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = BloggingService.Host
+build_property.ProjectDir = F:\StepByStep\NetCoreGrowthGuide\ToolStep\MicroServiceBasic\ABPMicroSample\microservices\BloggingService.Host\

@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "5x2YEXiiJ1zwqq3MlPPEhXcZ6bwaNxUrB5vOuErz1gMHUb5gdq5w+Ev7BjENYioJ5Gcw5t/AG1Q7birsQ95vSQ==",
+  "dgSpecHash": "VYWtd64E7lA4nDh+kFgBNqJuwFROS2gEB1YXF5Rmf+iOsCA5qA+HP1ZunVIFRR4YoDx77/NI6e1qMbuMW87unQ==",
   "success": true,
-  "projectFilePath": "F:\\吴朝阳\\abp-samples-master\\MicroserviceDemo\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\160588\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
+    "C:\\Users\\160588\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.1.0\\microsoft.windowsdesktop.app.ref.3.1.0.nupkg.sha512",
+    "C:\\Users\\160588\\.nuget\\packages\\microsoft.netcore.app.ref\\3.1.0\\microsoft.netcore.app.ref.3.1.0.nupkg.sha512"
+  ],
   "logs": []
 }
