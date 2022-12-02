@@ -8,17 +8,79 @@
 
 #### 0、Startup
 
+Startup类主要负责两件事情：
+
+1. 注入服务到容器-ConfigureServices
+2. 配置中间件处理管道-Configure
+
+
+
+
+
+参考：
+
+[ServiceCollection.cs](https://source.dot.net/#Microsoft.Extensions.DependencyInjection.Abstractions/ServiceCollection.cs)
+
+[ServiceCollectionServiceExtensions.cs](https://source.dot.net/#Microsoft.Extensions.DependencyInjection.Abstractions/ServiceCollectionServiceExtensions.cs)
+
+#### 1、Program
+
+Program类主要负责构建应用执行主机Host：
+
+1. CreateHostBuilder-构建主机
+2. Run-运行主机
+
+
+
+参考：
+
+[IApplicationBuilder](https://source.dot.net/#Microsoft.AspNetCore.Http.Abstractions/IApplicationBuilder.cs)
+
+[WebApplication.cs](https://source.dot.net/#Microsoft.AspNetCore/WebApplication.cs)
+
+
+
+[Host.cs](https://source.dot.net/#Microsoft.Extensions.Hosting/Host.cs)
+
+[HostingHostBuilderExtensions.cs](https://source.dot.net/#Microsoft.Extensions.Hosting/HostingHostBuilderExtensions.cs)
+
+
+
 #### 1、依赖注入
 
 参考：[NetCoreGrowthGuide/C#程序员成长指南拓展.md](https://github.com/amerina/NetCoreGrowthGuide/blob/main/C%23程序员成长指南拓展.md)
 
 #### 2、中间件
 
+
+
+
+
+参考：
+
+**授权特性与中间件**
+
+[AuthorizationAppBuilderExtensions.cs](https://source.dot.net/#Microsoft.AspNetCore.Authorization.Policy/AuthorizationAppBuilderExtensions.cs)
+
+[AuthorizationMiddleware.cs](https://source.dot.net/#Microsoft.AspNetCore.Authorization.Policy/AuthorizationMiddleware.cs)
+
+[AuthorizationBuilder.cs](https://source.dot.net/#Microsoft.AspNetCore.Authorization/AuthorizationBuilder.cs)
+
+
+
 #### 3、配置框架
 
 #### 4、路由
 
 #### 5、筛选器
+
+
+
+参考：
+
+[MiddlewareFilterBuilder.cs](https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/Filters/MiddlewareFilterBuilder.cs)
+
+
 
 #### 6、**部署**
 
@@ -122,4 +184,4 @@
 
 ## 6、软件工程
 
-## 7、个人知识体系
+## 7、个人知识体系ian
