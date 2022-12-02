@@ -46,11 +46,11 @@ Program类主要负责构建应用执行主机Host：
 
 
 
-#### 1、依赖注入
+#### 2、依赖注入
 
 参考：[NetCoreGrowthGuide/C#程序员成长指南拓展.md](https://github.com/amerina/NetCoreGrowthGuide/blob/main/C%23程序员成长指南拓展.md)
 
-#### 2、中间件
+#### 3、中间件
 
 
 
@@ -68,17 +68,19 @@ Program类主要负责构建应用执行主机Host：
 
 
 
-#### 3、配置框架
-
-#### 4、路由
-
-#### 5、筛选器
+#### 4、筛选器
 
 
 
 参考：
 
 [MiddlewareFilterBuilder.cs](https://source.dot.net/#Microsoft.AspNetCore.Mvc.Core/Filters/MiddlewareFilterBuilder.cs)
+
+
+
+#### 5、配置框架
+
+#### 6、路由
 
 
 
