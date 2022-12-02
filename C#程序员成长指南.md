@@ -8,10 +8,12 @@
 
 #### 0、Startup
 
+<img src="Image\Startup.png" alt="ASP.Net Core" style="zoom:80%;" />
+
 Startup类主要负责两件事情：
 
 1. 注入服务到容器-ConfigureServices
-2. 配置中间件处理管道-Configure
+2. 配置中间件创建应用的请求处理管道-Configure
 
 
 
@@ -79,6 +81,8 @@ Program类主要负责构建应用执行主机Host：
 
 
 #### 5、配置框架
+
+#### 6、环境
 
 #### 6、路由
 
@@ -186,4 +190,6 @@ Program类主要负责构建应用执行主机Host：
 
 ## 6、软件工程
 
-## 7、个人知识体系ian
+## 7、个人知识体系
+
+<img src="Image\HowToLearn.png" alt="NetCoreDDD"  />
