@@ -21,7 +21,7 @@ Ctrl+B 关闭左边Tab页
 
 
 
-#### 1、新建项目添加依赖项
+#### 1、新建项目Add 依赖项
 
 输出当前版本
 
@@ -41,13 +41,13 @@ dotnet new webapi -n PlatformService
 code -r PlatformService
 ```
 
-添加AutoMapper依赖
+Add AutoMapper依赖
 
 ```powershell
 dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
 ```
 
-添加EFCore依赖
+Add EFCore依赖
 
 ```powershell
 dotnet add package Microsoft.EntityFrameworkCore
@@ -59,13 +59,13 @@ dotnet add package Microsoft.EntityFrameworkCore
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
 
-添加内存数据库支持
+Add 内存数据库支持
 
 ```powershell
  dotnet add package Microsoft.EntityFrameworkCore.Inmemory
 ```
 
-添加SqlServer支持
+Add SqlServer支持
 
 ```powershell
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer
@@ -73,7 +73,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 
 
 
-#### 2、新建Models
+#### 2、Add Models
 
 新建Model类：Platform
 
@@ -83,7 +83,7 @@ Prop+Tab --新建属性
 
 
 
-#### 3、新建DbContext
+#### 3、Add DbContext
 
 新建AppDbContext
 
@@ -98,7 +98,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
                  opt.UseInMemoryDatabase("InMem"));
 ```
 
-#### 4、新建仓储Repository
+#### 4、Add Repository
 
 创建接口IPlatformRepo
 
@@ -118,19 +118,19 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 实现仓储接口PlatformRepo
 
-添加仓储到依赖注入系统：
+Add 仓储到依赖注入系统：
 
 ```
 builder.Services.AddScoped<IPlatformRepo,PlatformRepo>();
 ```
 
-#### 5、Build项目
+#### 5、Build
 
 ```
  dotnet build
 ```
 
-#### 6、添加SeedData类
+#### 6、Add SeedData
 
 ```
 public static class PrepDb
@@ -153,26 +153,35 @@ dotnet build
 dotnet run
 ```
 
-#### 7、添加DTO
+#### 7、Add DTO
 
 ```
 public class PlatformCreateDto
 public class PlatformReadDto
 ```
 
-#### 8、添加Profiles-AutoMapper
+#### 8、Add AutoMapper
+
+Add autoMapper into our Configure services
+
+```
+//注入AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+```
+
+Add Profile File
 
 ```
 public class PlatformsProfile : Profile
 ```
 
-#### 9、添加Controller
+#### 9、Add Controller
 
 ```
 public class PlatformsController:ControllerBase
 ```
 
-#### 10、Insomnia查看Controller
+#### 10、Insomnia See
 
 ```
 如果提示错误：
@@ -180,7 +189,7 @@ SSL peer certificate or SSH remote key was not OK
 注释：app.UseHttpsRedirection();
 ```
 
-#### 11、添加Doker
+#### 11、Add Doker
 
 ![02](..\Image\02.png)
 
@@ -190,7 +199,7 @@ SSL peer certificate or SSH remote key was not OK
 
 ![02](..\Image\04.png)
 
-#### 12、添加Docker file
+#### 12、Add Docker file
 
 [.NET samples | Docker Documentation](https://docs.docker.com/samples/dotnet/)
 
@@ -274,7 +283,7 @@ SSL peer certificate or SSH remote key was not OK
 
    
 
-#### 13、添加Kubernetes
+#### 13、Add Kubernetes
 
 ![02](..\Image\05.png)
 
@@ -413,7 +422,7 @@ service/platformnpservice-src created
 kubectl get services
 ```
 
-#### 14、创建CommandsService
+#### 14、Add CommandsService
 
 ```
 dotnet new webapi -n CommandsService
@@ -425,15 +434,15 @@ dotnet new webapi -n CommandsService
 cd C*
 ```
 
-#### 15、添加依赖项
+#### 15、Add 依赖项
 
-添加AutoMapper依赖
+Add AutoMapper依赖
 
 ```powershell
 dotnet add package AutoMapper.Extensions.Microsoft.DependencyInjection
 ```
 
-添加EFCore依赖
+Add EFCore依赖
 
 ```powershell
 dotnet add package Microsoft.EntityFrameworkCore
@@ -445,13 +454,13 @@ dotnet add package Microsoft.EntityFrameworkCore
 dotnet add package Microsoft.EntityFrameworkCore.Design
 ```
 
-添加内存数据库支持
+Add 内存数据库支持
 
 ```powershell
  dotnet add package Microsoft.EntityFrameworkCore.Inmemory
 ```
 
-添加SqlServer支持
+Add SqlServer支持
 
 ```powershell
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer
@@ -463,7 +472,7 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer
 dotnet run
 ```
 
-#### 16、新建Controller
+#### 16、Add Controller
 
 ```
 using Microsoft.AspNetCore.Mvc;
@@ -492,7 +501,7 @@ namespace CommandsService.Controllers
 
 
 
-#### 17、Insomnia查看Controller
+#### 17、Insomnia See
 
 如果报错：**Error: SSL peer certificate or SSH remote key was not OK**
 
@@ -555,7 +564,7 @@ Synchronous & Asynchronous Messaging
 
 
 
-#### 19、PlatformService新建SyncDataServices
+#### 19、PlatformService Add SyncDataServices
 
 SyncDataServices文件夹下新建HttpCommandDataClient
 
@@ -577,7 +586,7 @@ public async Task SendPlatformToCommand(PlatformReadDto platform)
         }
 ```
 
-#### 20、修改PlatformsController
+#### 20、Edit PlatformsController
 
 新建Platform时调用CommandsService
 
@@ -592,7 +601,7 @@ public async Task SendPlatformToCommand(PlatformReadDto platform)
             }
 ```
 
-#### 21、添加Docker file
+#### 21、Add Docker file
 
 1. 创建一个Dockerfile文件
 
@@ -1003,7 +1012,7 @@ service/mssql-loadbalancer created
 
 #### 31、Platform Service With Sql Server
 
-添加调用
+Add 调用
 
 ```
 context.Database.Migrate();
@@ -1055,7 +1064,7 @@ namespace PlatformService.Migrations
 
 ```
 
-#### 32、重建Docker Image
+#### 32、Rebuild Docker Image
 
 有了以上修改需要重建Docker Image
 
@@ -1149,7 +1158,7 @@ platforms-depl-769c6cffd5-q2hb6   1/1     Running   0             2m15s
 
 ![00](..\Image\11.png)
 
-#### 33、Insomnia查看
+#### 33、Insomnia See
 
 ```
 http://acme.com:32563/api/Platforms
@@ -1169,25 +1178,172 @@ http://acme.com:32563/api/Platforms
 
 ![00](..\Image\12.png)
 
-#### 35、新建Models
+#### 35、Add Models
 
 ```
 public class Platform
 ```
 
 ```
-public class Command
+using System.ComponentModel.DataAnnotations;
+
+namespace CommandsService.Models
+{
+    public class Command
+    {
+        [Key]
+        [Required]
+        public int Id { get; set; }
+
+        [Required]
+        public string HowTo { get; set; }
+
+        [Required]
+        public string CommandLine { get; set; }
+
+        [Required]
+        public int PlatformId { get; set; }
+
+        public Platform Platform { get; set; }
+    }
+}
+```
+
+```
+dotnet build
 ```
 
 
 
 #### 36、Add DbContext
 
+```
+using Microsoft.EntityFrameworkCore;
+using CommandsService.Models;
+
+namespace CommandsService.Data
+{
+    public class AppDbContext : DbContext
+    {
+        public AppDbContext(DbContextOptions<AppDbContext> opt) : base(opt)
+        {
+
+        }
+
+        public DbSet<Platform> Platforms { get; set; }
+        public DbSet<Command> Commands { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Platform>()
+                        .HasMany(p=>p.Commands)
+                        .WithOne(p=>p.Platform!)
+                        .HasForeignKey(p=>p.PlatformId);
+            
+            modelBuilder.Entity<Command>()
+                        .HasOne(p=>p.Platform)
+                        .WithMany(p=>p.Commands)
+                        .HasForeignKey(p=>p.PlatformId);
+
+        }
+    }
+}
+```
+
+```
+dotnet build
+```
+
+#### 37、Add Repository
+
+Add 仓储接口ICommandRepo
+
+```
+public interface ICommandRepo
+```
+
+实现仓储CommandRepo
+
+```
+public class CommandRepo : ICommandRepo
+```
 
 
 
+#### 38、Add DTOs
 
+```
+PlatformReadDto
+CommandReadDto
+CommandCreateDto
+```
 
+#### 39、Add AutoMapper
+
+Add autoMapper into our Configure services
+
+```
+//注入AutoMapper
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+```
+
+Add Profile File
+
+```
+using AutoMapper;
+using CommandsService.Dtos;
+using CommandsService.Models;
+
+namespace CommandsService.Profiles
+{
+    public class CommandsProfile : Profile
+    {
+        public CommandsProfile()
+        {
+            //Source -> Target
+            CreateMap<Platform, PlatformReadDto>();
+            CreateMap<CommandCreateDto, Command>();
+            CreateMap<Command,CommandReadDto>();
+        }
+    }
+}
+```
+
+#### 40、Add Controller
+
+注入相关服务到容器
+
+```
+builder.Services.AddDbContext<AppDbContext>(opt=>opt.UseInMemoryDatabase("InMemory"));
+builder.Services.AddScoped<ICommandRepo,CommandRepo>();
+```
+
+添加方法
+
+```
+[HttpGet]
+public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
+{
+   Console.WriteLine("--> Getting Platforms from CommandsService");
+
+   var platformItems=_repository.GetAllPlatforms();
+
+   return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
+}
+```
+
+```
+dotnet build
+dotnet run
+```
+
+#### 41、Insomnia See
+
+```
+http://localhost:6000/api/c/Platforms/
+```
+
+#### 42、
 
 
 
