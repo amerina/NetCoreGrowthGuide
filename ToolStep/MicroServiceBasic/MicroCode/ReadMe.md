@@ -21,7 +21,7 @@ Ctrl+B 关闭左边Tab页
 
 
 
-#### 1、新建项目Add 依赖项
+#### 1、Add Project Dependency
 
 输出当前版本
 
@@ -434,7 +434,7 @@ dotnet new webapi -n CommandsService
 cd C*
 ```
 
-#### 15、Add 依赖项
+#### 15、Add Project Dependency
 
 Add AutoMapper依赖
 
@@ -1309,7 +1309,7 @@ namespace CommandsService.Profiles
 }
 ```
 
-#### 40、Add Controller
+#### 40、Edit PlatformsController
 
 注入相关服务到容器
 
@@ -1343,7 +1343,63 @@ dotnet run
 http://localhost:6000/api/c/Platforms/
 ```
 
-#### 42、
+#### 42、Add CommandsController
+
+```c#
+using AutoMapper;
+using CommandsService.Data;
+using CommandsService.Dtos;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CommandsService.Controllers
+{
+    [Route("api/c/platforms/{platformId}/[controller]")]
+    [ApiController]
+    public class CommandsController : ControllerBase
+    {
+        private readonly ICommandRepo _repository;
+        private readonly IMapper _mapper;
+
+        public CommandsController(ICommandRepo repository, IMapper mapper)
+        {
+            _repository = repository;
+            _mapper = mapper;
+        }
+    }
+}
+```
+
+#### 43、Insomnia See
+
+```
+http://localhost:6000/api/c/Platforms/1/Commands
+```
+
+```
+{
+	"type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+	"title": "Not Found",
+	"status": 404,
+	"traceId": "00-796e672aebb94310abd066425ec6d87c-b6144499a52d55d3-00"
+}
+```
+
+```
+http://localhost:6000/api/c/Platforms/1/Commands/3
+```
+
+```
+{
+	"type": "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+	"title": "Not Found",
+	"status": 404,
+	"traceId": "00-71056310595234ddc1561256fd349425-21ded68ea273c7f7-00"
+}
+```
+
+
+
+
 
 
 
