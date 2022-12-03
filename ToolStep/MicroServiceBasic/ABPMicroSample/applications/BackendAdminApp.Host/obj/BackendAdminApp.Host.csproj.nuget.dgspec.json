@@ -1,0 +1,654 @@
+{
+  "format": 1,
+  "restore": {
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\applications\\BackendAdminApp.Host\\BackendAdminApp.Host.csproj": {}
+  },
+  "projects": {
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\applications\\BackendAdminApp.Host\\BackendAdminApp.Host.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\applications\\BackendAdminApp.Host\\BackendAdminApp.Host.csproj",
+        "projectName": "BackendAdminApp.Host",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\applications\\BackendAdminApp.Host\\BackendAdminApp.Host.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\applications\\BackendAdminApp.Host\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\ProductManagement.HttpApi.Client.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\ProductManagement.HttpApi.Client.csproj"
+              },
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\ProductManagement.Web.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\ProductManagement.Web.csproj"
+              },
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.AspNetCore.DataProtection.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.Extensions.Caching.StackExchangeRedis": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[3.2.0, )"
+            },
+            "Serilog.Sinks.Elasticsearch": {
+              "target": "Package",
+              "version": "[6.5.0, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[5.5.1, )"
+            },
+            "Volo.Abp.AspNetCore.Authentication.OAuth": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Basic": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.Autofac": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.FeatureManagement.HttpApi.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.Http.Client.IdentityModel.Web": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.Identity.HttpApi.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.Identity.Web": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.PermissionManagement.HttpApi.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.TenantManagement.HttpApi.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.TenantManagement.Web": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Blogging.Application.Contracts": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x86",
+              "version": "[3.1.24, 3.1.24]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj",
+        "projectName": "ProductManagement.Application.Contracts",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\ProductManagement.Domain.Shared.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\ProductManagement.Domain.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Volo.Abp.Ddd.Application": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\ProductManagement.Domain.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\ProductManagement.Domain.Shared.csproj",
+        "projectName": "ProductManagement.Domain.Shared",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\ProductManagement.Domain.Shared.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Domain.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Volo.Abp.Ddd.Domain": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.Localization": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\ProductManagement.HttpApi.Client.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\ProductManagement.HttpApi.Client.csproj",
+        "projectName": "ProductManagement.HttpApi.Client",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\ProductManagement.HttpApi.Client.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi.Client\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Volo.Abp.Http.Client": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\ProductManagement.HttpApi.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\ProductManagement.HttpApi.csproj",
+        "projectName": "ProductManagement.HttpApi",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\ProductManagement.HttpApi.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Application.Contracts\\ProductManagement.Application.Contracts.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Volo.Abp.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\ProductManagement.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\ProductManagement.Web.csproj",
+        "projectName": "ProductManagement.Web",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\ProductManagement.Web.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.Web\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\ProductManagement.HttpApi.csproj": {
+                "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\modules\\product\\src\\ProductManagement.HttpApi\\ProductManagement.HttpApi.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            },
+            "Volo.Abp.AutoMapper": {
+              "target": "Package",
+              "version": "[3.2.1, )"
+            }
+          },
+          "imports": [
+            "portable-net45+win8+wp8+wpa81",
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj",
+        "projectName": "MsDemo.Shared",
+        "projectPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\MsDemo.Shared.csproj",
+        "packagesPath": "C:\\Users\\160588\\.nuget\\packages\\",
+        "outputPath": "F:\\StepByStep\\NetCoreGrowthGuide\\ToolStep\\MicroServiceBasic\\ABPMicroSample\\shared\\MsDemo.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\160588\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[3.1.10, 3.1.10]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[3.1.0, 3.1.0]"
+            }
+          ],
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files (x86)\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
