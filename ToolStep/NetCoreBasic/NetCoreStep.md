@@ -61,5 +61,32 @@ dotnet new webapi -o BookWebAPI
 
 ### 3、简单的MVC项目
 
+#### 1、创建WebMVC项目
+
+```
+dotnet new mvc -o BookMVC
+```
+
+
+
 ### 4、简单的DDD项目
 
+#### 1、使用Clean architecture结构
+
+安装模版
+
+```
+dotnet new -i Ardalis.CleanArchitecture.Template
+```
+
+新建DDD项目
+
+```
+dotnet new clean-arch -o BookDDD
+```
+
+
+
+参考：
+
+[Clean Architecture Solution Template: A starting point for Clean Architecture with ASP.NET Core](https://github.com/ardalis/cleanarchitecture)
