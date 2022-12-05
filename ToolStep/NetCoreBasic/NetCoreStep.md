@@ -45,9 +45,21 @@ Hello World!
 
 ------
 
-2、简单的WebAPI项目
+### 2、简单的WebAPI项目
 
-3、简单的MVC项目
+#### 1、创建Web API项目
 
-4、简单的DDD项目
+```
+dotnet new webapi -o BookWebAPI
+```
+
+
+
+
+
+
+
+### 3、简单的MVC项目
+
+### 4、简单的DDD项目
 
