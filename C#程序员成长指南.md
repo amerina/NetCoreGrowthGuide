@@ -10,14 +10,14 @@
 
 <img src="Image\Startup.png" alt="ASP.Net Core" style="zoom:80%;" />
 
+**Startup 类配置服务和应用的请求管道**
+
 Startup类主要负责两件事情：
 
-1. 注入服务到容器-ConfigureServices
-2. 配置中间件创建应用的请求处理管道-Configure
+- 可选择性地包括 ConfigureServices 方法以配置应用的服务。服务是一个提供应用功能的可重用组件。 在 ConfigureServices 中注册服务，并通过依赖关系注入 (DI) 或     ApplicationServices 在整个应用中使用服务。
+- 包括Configure 方法以创建应用的请求处理管道
 
-
-
-
+在应用启动时，ASP.NET Core 运行时会调用 ConfigureServices 和 Configure
 
 参考：
 
@@ -27,14 +27,28 @@ Startup类主要负责两件事情：
 
 #### 1、Program
 
-Program类主要负责构建应用执行主机Host：
+Program类主要负责构建应用执行主机Host。
 
-1. CreateHostBuilder-构建主机
-2. Run-运行主机
+ASP.NET Core 应用在启动时构建主机。 主机封装应用的所有资源，例如：
 
+- HTTP 服务器实现
+- 中间件组件
+- Logging
+- 依赖关系注入 (DI) 服务
+- Configuration
+- IHostedService实现
 
+**ASP.NET Core 应用使用 HTTP 服务器实现侦听 HTTP 请求。 服务器将请求作为一组组成HttpContext的请求特性呈现给应用程序。**
+
+ASP.NET Core 提供以下服务器实现：
+
+- Kestrel 是跨平台 Web     服务器。 Kestrel 通常使用 IIS 在反向代理配置中运行。 在 ASP.NET Core 2.0 或更高版本中，Kestrel     可作为面向公众的边缘服务器运行，直接向 Internet 公开。
+- IIS HTTP 服务器适用于使用     IIS 的 Windows。 借助此服务器，ASP.NET Core 应用和 IIS 在同一进程中运行。
+- HTTP.sys是适用于不与 IIS     一起使用的 Windows 的服务器。
 
 参考：
+
+[ASP.NET Core 中的 .NET 通用主机](https://docs.microsoft.com/zh-cn/aspnet/core/fundamentals/host/generic-host?view=aspnetcore-5.0)
 
 [IApplicationBuilder](https://source.dot.net/#Microsoft.AspNetCore.Http.Abstractions/IApplicationBuilder.cs)
 
@@ -46,13 +60,25 @@ Program类主要负责构建应用执行主机Host：
 
 [HostingHostBuilderExtensions.cs](https://source.dot.net/#Microsoft.Extensions.Hosting/HostingHostBuilderExtensions.cs)
 
-
-
 #### 2、依赖注入
+
+ASP.NET Core 有内置的依赖关系注入 (DI) 框架，可在应用中提供配置的服务。 例如，日志记录组件就是一项服务。
 
 参考：[NetCoreGrowthGuide/C#程序员成长指南拓展.md](https://github.com/amerina/NetCoreGrowthGuide/blob/main/C%23程序员成长指南拓展.md)
 
 #### 3、中间件
+
+请求处理管道由一系列中间件组件组成。 每个组件在 HttpContext 上执行操作，调用管道中的下一个中间件或终止请求。
+
+按照惯例，通过在 Startup.Configure 方法中调用 Use... 扩展方法，向管道添加中间件组件。
+
+你可以完全控制如何重新排列现有中间件，或根据场景需要注入新的自定义中间件。
+
+![NetCoreMiddleware](Image\NetCoreMiddleware.png)
+
+
+
+
 
 
 
