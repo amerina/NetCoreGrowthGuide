@@ -90,3 +90,12 @@ dotnet new clean-arch -o BookDDD
 参考：
 
 [Clean Architecture Solution Template: A starting point for Clean Architecture with ASP.NET Core](https://github.com/ardalis/cleanarchitecture)
+
+### 5、模块化系统
+
+
+
+
+
+
+
