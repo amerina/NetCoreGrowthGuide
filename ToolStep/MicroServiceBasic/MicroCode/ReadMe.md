@@ -6,6 +6,14 @@ https://kubernetes.io/zh-cn/docs/tutorials/kubernetes-basics/
 
 
 
+移除已添加到Git的文件
+
+```
+git rm --cached ToolStep/MicroServiceBasic/MicroCode/CommandsService/bin/ -r
+```
+
+
+
 #### 0、Visual Studio Code
 
 ```
