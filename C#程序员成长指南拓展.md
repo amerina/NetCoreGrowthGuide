@@ -1253,7 +1253,9 @@ Microsoft.Extensions.DependencyInjection.Abstractions
 
 ## 9、动态WebAPI实现
 
+参考ABP实现动态生成API
 
+[amerina/EasyAPICore: Easy auto generate api by application service. (github.com)](https://github.com/amerina/EasyAPICore)
 
 
 
@@ -1269,7 +1271,8 @@ API客户端：
 参考
 
 1. [API/Auto API Controllers | Documentation Center | ABP.IO](https://docs.abp.io/en/abp/latest/API/Auto-API-Controllers)
-2. 
+
+   
 
 ## 8、认证与授权系统
 
