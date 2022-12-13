@@ -338,6 +338,283 @@ public abstract class ModuleDbContext : DbContext
 
 接下来，让我们添加特定于这个模块的DBContext。记住，除了Catalog模块，没有其他模块可以访问Brand Table。这是通过为每个模块创建单独的DbContexts 来确保的。
 
+导航到Module.Catalog.Core并创建一个新的文件夹Abstractions。这里是你必须放置接口来实现依赖倒置的地方。这就是洋葱架构的精髓，对吧?在这个文件夹中，我们添加一个新接口，并将其命名为ICatalogDbContext。
+
+```c#
+public interface ICatalogDbContext
+{
+    public DbSet<Brand> Brands { get; set; }
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken);
+}
+```
+
+接下来，导航到Modules.Catalog.Infrastructure并添加一个新文件夹Persistence。在这里，添加一个新类CatalogDbContext，它继承自ICatalogDbContext接口和模块Dbcontext基类。
+
+注意，与Catalog模块的数据访问相关的任何内容都必须放在这里。
+
+```c#
+public class CatalogDbContext : ModuleDbContext, ICatalogDbContext
+{
+    protected override string Schema => "Catalog";
+    public CatalogDbContext(DbContextOptions<CatalogDbContext> options): base(options)
+    {
+    }
+    public DbSet<Brand> Brands { get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+    }
+}
+```
+
+注意，这里我们将Schema指定为Catalog。另外，确保从公共ModuleDbContext和特定于当前模块的接口继承。
+
+现在让我们安装所需的包。
+
+为Shared.Infrastructure项目安装以下包：
+
+```powershell
+Install-Package Microsoft.EntityFrameworkCore
+Install-Package Microsoft.EntityFrameworkCore.Relational
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+Install-Package Microsoft.EntityFrameworkCore.Tools
+Install-Package MediatR
+```
+
+为API项目安装以下包：
+
+```powershell
+Install-Package Microsoft.EntityFrameworkCore.Design
+```
+
+现在是添加数据库提供程序扩展的有趣部分。我们知道在这个实现中将使用MSSQL作为数据库提供程序。但是让我们构建一个灵活的系统，它可以很容易地切换到PostgreSQL或其他提供商。理想情况下，这个解决方案应该出现在一个公共项目中，以方便其他模块使用。没错，导航到 Shared.Infrastructure项目并打开Extensions/ServiceCollectionExtensions.cs文件。在这里，添加以下扩展方法：
+
+```c#
+public static IServiceCollection AddDatabaseContext<T>(this IServiceCollection services, IConfiguration config) where T : DbContext
+{
+    var connectionString = config.GetConnectionString("Default");
+    services.AddMSSQL<T>(connectionString);
+    return services;
+}
+private static IServiceCollection AddMSSQL<T>(this IServiceCollection services, string connectionString) where T : DbContext
+{
+    services.AddDbContext<T>(m => m.UseSqlServer(connectionString, e => e.MigrationsAssembly(typeof(T).Assembly.FullName)));
+    using var scope = services.BuildServiceProvider().CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<T>();
+    dbContext.Database.Migrate();
+    return services;
+}
+```
+
+- Line 3 – 获取在API项目appsettings.json中定义的连接字符串。请注意，我们将在下一节中添加连接字符串。
+- Line 4 –调用特定于MSSQL的扩展方法。您也可以为其他DB提供程序编写新的扩展。你明白了吧?
+- Line 9 – 使用EFCore的MSSQL包将传递的DbContext添加到服务容器中。确保您已经安装了它。
+- Line 12 – 使用最新可用的迁移更新数据库。
+
+打开API项目的appsettings.json文件并添加以下配置：
+
+```json
+"ConnectionStrings": {
+  "Default": "Data Source=(localdb)\\mssqllocaldb;Initial Catalog=monolithSample;Integrated Security=True;MultipleActiveResultSets=True"
+}
+```
+
+接下来，我们需要确保每个模块都使用这些扩展。导航到Module.Catalog.Infrastructure并添加一个新文件夹Extensions。在这里添加一个新的静态类ServiceCollectionExtensions
+
+```c#
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddCatalogInfrastructure(this IServiceCollection services, IConfiguration config)
+    {
+        services
+            .AddDatabaseContext<CatalogDbContext>(config)
+            .AddScoped<ICatalogDbContext>(provider => provider.GetService<CatalogDbContext>());
+        return services;
+    }
+}
+```
+
+接下来，在Module.Catalog.Core项目中，添加Extensions文件夹并添加ServiceCollectionExtensions.cs。在实现MediatR处理程序时，我们将需要它。
+
+```c#
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddCatalogCore(this IServiceCollection services)
+    {
+        services.AddMediatR(Assembly.GetExecutingAssembly());
+        return services;
+    }
+}
+```
+
+接下来，我们需要每个模块的扩展，API项目可以读取它来注册所需的服务。导航到Module.Catalog并添加一个新类ModuleExtensions。这里我们将添加其他扩展，如AddCatalogCore和AddCatalogInfrastructure。
+
+```
+public static class ModuleExtensions
+{
+    public static IServiceCollection AddCatalogModule(this IServiceCollection services, IConfiguration configuration)
+    {
+        services
+            .AddCatalogCore()
+            .AddCatalogInfrastructure(configuration);
+        return services;
+    }
+}
+```
+
+最后，转到API Project / Startup / ConfigureServices方法并添加以下内容。确保已添加Module.Catalog 引用。
+
+```
+services.AddCatalogModule(Configuration);
+```
+
+这就是以模块化方式设置数据库访问所需要做的一切。最后一步，让我们添加所需的迁移，并检查表是否按预期创建。
+
+在Visual Studio中，右键单击Module.Catalog.Infrastructure，然后单击“在终端中打开”。执行如下命令。
+
+```powershell
+dotnet ef migrations add "initial" --startup-project ../API -o Persistence/Migrations/ --context CatalogDbContext
+```
+
+<img src="Image/80.png" alt="70" style="zoom:80%;" />
+
+这将在以下文件夹中创建Migrations。
+
+<img src="Image/81.png" alt="70" style="zoom:80%;" />
+
+根据我们的代码，只要应用程序运行，就会创建所需的表。让我们来测试。
+
+<img src="Image/82.png" alt="70" style="zoom:80%;" />
+
+这样，表就完全按照我们预想的那样创建了。
+
+#### 添加MediatR处理程序和控制器
+
+作为该实现的最后一部分，我们将添加所需的MediatR处理程序和API控制器。为了保持文章的简洁，我们将只为Brands Entity添加“GetAll”和“Register”端点。
+
+让我们先在Module.Catalog.Core项目下添加2个新文件夹，并分别将其命名为Queries和Commands。
+
+在Queries文件夹下，添加一个新类并将其命名为GetAllBrandsQuery。
+
+```c#
+namespace Module.Catalog.Core.Queries.GetAll
+{
+    public class GetAllBrandsQuery : IRequest<IEnumerable<Brand>>
+    {
+    }
+    internal class BrandQueryHandler : IRequestHandler<GetAllBrandsQuery, IEnumerable<Brand>>
+    {
+        private readonly ICatalogDbContext _context;
+        public BrandQueryHandler(ICatalogDbContext context)
+        {
+            _context = context;
+        }
+        public async Task<IEnumerable<Brand>> Handle(GetAllBrandsQuery request, CancellationToken cancellationToken)
+        {
+            var brands = await _context.Brands.OrderBy(x => x.Id).ToListAsync();
+            if (brands == null) throw new Exception("Brands Not Found!");
+            return brands;
+        }
+    }
+}
+```
+
+这是MediatR处理程序的简化版本。要了解更多详细信息，可以参考[在ASP.NET Core中使用MediatR实现CQRS-终极指南](https://codewithmukesh.com/blog/cqrs-in-aspnet-core-3-1/)，我们将深入了解MediatR处理程序和CQRS。
+
+类似地，在Register文件夹下添加一个新类RegisterBrandCommand：
+
+```c#
+namespace Module.Catalog.Core.Commands.Register
+{
+    public class RegisterBrandCommand : IRequest<int>
+    {
+        public string Name { get; set; }
+        public string Detail { get; set; }
+    }
+    internal class BrandCommandHandler : IRequestHandler<RegisterBrandCommand, int>
+    {
+        private readonly ICatalogDbContext _context;
+        public BrandCommandHandler(ICatalogDbContext context)
+        {
+            _context = context;
+        }
+        public async Task<int> Handle(RegisterBrandCommand command, CancellationToken cancellationToken)
+        {
+            if (await _context.Brands.AnyAsync(c => c.Name == command.Name, cancellationToken))
+            {
+                throw new Exception("Brand with the same name already exists.");
+            }
+            var brand = new Brand { Detail = command.Detail, Name = command.Name };
+            await _context.Brands.AddAsync(brand, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return brand.Id;
+        }
+    }
+}
+```
+
+现在我们已经完成了处理程序，让我们将它们与我们的BrandsController连接起来。打开BrandsController并添加以下内容：
+
+```
+namespace Module.Catalog.Controllers
+{
+    [ApiController]
+    [Route("/api/catalog/[controller]")]
+    internal class BrandsController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+        public BrandsController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            var brands = await _mediator.Send(new GetAllBrandsQuery());
+            return Ok(brands);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RegisterAsync(RegisterBrandCommand command)
+        {
+            return Ok(await _mediator.Send(command));
+        }
+    }
+}
+```
+
+这就是实现的全部内容。让我们运行应用程序并验证swagger端点。
+
+POST方法允许您添加新的品牌。
+
+<img src="Image/83.png" alt="70" style="zoom:80%;" />
+
+使用Get方法，我们可以从DB中获取所有的品牌记录。
+
+<img src="Image/84.png" alt="70" style="zoom:80%;" />
+
+这就是本文的全部内容。您是否希望我再写一篇文章来构建同样的解决方案，并添加额外的基础设施，如中间件、日志等等?请在评论区告诉我。模块化应用程序绝对是一个更干净、可伸缩的项目的方法。
+
+### fluentPOS -模块化架构的实际实现
+
+展望未来，fluentpos将是我们下一个成熟的模块化架构开源实现，还有Angular Material Frontend，也可能是一个带有MAUI的移动应用!
+
+
+
+### 总结
+
+在本文中，我们学习了ASP.NET Core中的模块化整体体系结构，还学习了如何从头开始构建它!我们还了解了它与微服务和单体架构的比较。你也可以在我的[Github](https://github.com/iammukeshm/modular-monolith-aspnet-core-sample)上找到完整的源代码。有什么建议或问题吗?欢迎在下方评论区留言。谢谢大家，快乐编码!😀
+
+
+
+
+
+参考：
+
+1. [在ASP.NET Core中使用MediatR实现CQRS-终极指南](https://codewithmukesh.com/blog/cqrs-in-aspnet-core-3-1/)
+2. [fluentpos:使用ASP.NET Core 5.0 WebAPI和Blazor Web Assembly构建的开源销售点和库存管理解决方案](https://github.com/AppSlope/fluentpos)
+
+
+
 
 
 
