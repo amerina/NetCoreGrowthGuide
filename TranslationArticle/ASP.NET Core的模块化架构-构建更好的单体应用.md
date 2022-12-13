@@ -32,9 +32,9 @@ WebAPI应用程序必须高度模块化，以改善开发体验。这需要将�
 
 ### 暂时避免微服务的原因
 
-[微服务](https://codewithmukesh.com/blog/microservice-architecture-in-aspnet-core/)绝对是你能为大规模应用程序实现的最佳架构。但我们现在看到的趋势是，即使是中等规模的应用程序也倾向于使用它。这真的是必需的吗?大多数时候，答案是否定的。
+[微服务](基于ASP.NET Core的微服务体系结构.md)绝对是你能为大规模应用程序实现的最佳架构。但我们现在看到的趋势是，即使是中等规模的应用程序也倾向于使用它。这真的是必需的吗?大多数时候，答案是否定的。
 
-阅读微服务架构内容：[Microservice Architecture in ASP.NET Core with API Gateway here](https://codewithmukesh.com/blog/microservice-architecture-in-aspnet-core/).
+阅读微服务架构内容：[基于ASP.NET Core的微服务体系结构](基于ASP.NET Core的微服务体系结构.md).
 
 尽管它是一个可伸缩的体系结构，但它也有很多缺点。实际上，没有不存在缺点的理想解决方案。这完全取决于需求以及您对实现的满意程度。Message buses消息总线、Consumers消费者、Publishers发布者、Multiple deployments多重部署，这些都是微服务带来的一些复杂性。
 
@@ -65,7 +65,7 @@ WebAPI应用程序必须高度模块化，以改善开发体验。这需要将�
 - 每个模块都有一个DBContext，并且只能访问指定的表/实体。
 - 一个模块不应该依赖于任何其他模块。它可以依赖于共享应用程序项目中出现的抽象接口。
 - 每个模块都必须遵循领域驱动的体系结构
-- 每个模块将进一步划分为API、Core和Infrastructure，以实现[清洁架构](https://codewithmukesh.com/blog/onion-architecture-in-aspnet-core/)。
+- 每个模块将进一步划分为API、Core和Infrastructure，以实现[清洁架构](洋葱架构与CQRS在ASP.NET Core中的使用详解.md)。
 - 跨模块通信只能通过接口/事件/内存总线进行。跨模块DB写应该保持最小或完全避免。
 
 为了更好地理解，让我们看看fluentpos项目中的一个实际模块，并检查它的职责。
@@ -95,7 +95,7 @@ WebAPI应用程序必须高度模块化，以改善开发体验。这需要将�
 - 水平缩放可能是一个问题。但是这可以通过负载均衡器进行管理。
 - 由于使用了进程间通信，消息可能会在应用程序终止期间丢失。微服务通过使用Kafka、RabbitMQ等外部消息代理来解决这个问题。(你仍然可以在Monoliths中使用消息代理，但让我们保持简单)
 
-### 检查fluentpos项目结构
+### 检查Fluentpos项目结构
 
 <img src="Image/72.png" alt="70" style="zoom:80%;" />
 
@@ -594,7 +594,7 @@ POST方法允许您添加新的品牌。
 
 这就是本文的全部内容。您是否希望我再写一篇文章来构建同样的解决方案，并添加额外的基础设施，如中间件、日志等等?请在评论区告诉我。模块化应用程序绝对是一个更干净、可伸缩的项目的方法。
 
-### fluentPOS -模块化架构的实际实现
+### Fluentpos-模块化架构的实际实现
 
 展望未来，fluentpos将是我们下一个成熟的模块化架构开源实现，还有Angular Material Frontend，也可能是一个带有MAUI的移动应用!
 
@@ -606,12 +606,12 @@ POST方法允许您添加新的品牌。
 
 
 
-
-
 参考：
 
-1. [在ASP.NET Core中使用MediatR实现CQRS-终极指南](https://codewithmukesh.com/blog/cqrs-in-aspnet-core-3-1/)
-2. [fluentpos:使用ASP.NET Core 5.0 WebAPI和Blazor Web Assembly构建的开源销售点和库存管理解决方案](https://github.com/AppSlope/fluentpos)
+1. [基于ASP.NET Core的微服务体系结构](基于ASP.NET Core的微服务体系结构.md)
+2. [清洁架构](洋葱架构与CQRS在ASP.NET Core中的使用详解.md)
+3. [在ASP.NET Core中使用MediatR实现CQRS-终极指南](在ASP.NET Core中使用MediatR实现CQRS-终极指南.md)
+4. [fluentpos:使用ASP.NET Core 5.0 WebAPI和Blazor Web Assembly构建的开源销售点和库存管理解决方案](https://github.com/AppSlope/fluentpos)
 
 
 
