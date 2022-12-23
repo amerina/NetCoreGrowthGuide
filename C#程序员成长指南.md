@@ -468,7 +468,23 @@ AOP的本质是通过代理对象来间接执行真实对象，在代理类中�
 
 ## 3、ABP框架
 
+### 1、虚拟文件系统
 
+源码：[Volo.Abp.VirtualFileSystem](https://github.com/abpframework/abp/tree/dev/framework/src/Volo.Abp.VirtualFileSystem)
+
+文档：[Virtual File System | Documentation Center | ABP.IO](https://docs.abp.io/zh-Hans/abp/latest/Virtual-File-System)
+
+
+
+
+
+
+
+
+
+
+
+### 2、
 
 
 
