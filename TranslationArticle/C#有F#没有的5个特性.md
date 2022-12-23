@@ -1,0 +1,1 @@
+原文：[5 Features C# Has That F# Doesn’t Have!](https://www.compositional-it.com/news-blog/5-features-that-c-has-that-f-doesnt-have/)
