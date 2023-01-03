@@ -278,31 +278,54 @@ let rec fib n = if n < 2 then 1 else fib (n - 1) + fib (n - 2)
 
 在 F# 中，所有函数都被视为值；实际上，它们被称为“函数值”。 因为函数是值，所以它们可用作其他函数的参数，或在需要使用值的其他上下文中使用。
 
+```F#
+let apply1 (transform : int -> int ) y = transform y
+```
 
+**可通过使用 `->` 标记来指定函数值的类型。** 此标记的左边是参数的类型，右边是返回值。 在前面的示例中，`apply1` 是一个采用函数 `transform` 作为参数的函数，其中 `transform` 是一个采用整数并返回其他整数的函数。 
 
+```F#
+let increment x = x + 1
 
+let result1 = apply1 increment 100
+```
 
+##### 8、Lambda 表达式
 
+可通过使用 `fun` 关键字来定义 lambda 表达式。 lambda 表达式类似于函数定义，只不过使用了 `->` 标记将参数列表与函数体分隔，而不是使用 `=` 标记。
 
+```F#
+let result3 = apply1 (fun x -> x + 1) 100
 
+let result4 = apply2 (fun x y -> x * y ) 10 20
+```
 
+##### 9、管道
 
+使用 F# 处理数据时，普遍使用管道运算符 `|>`。 通过此运算符，可采用灵活的方式建立函数的“管道”。 流水线处理可让函数调用链接在一起形成连续的操作：
 
+```
+let result = 100 |> function1 |> function2
+```
 
+管道运算符本身在 F# 核心库中定义，如下所示：
 
+```
+let (|>) x f = f x
+```
 
+##### 10、函数组合
 
+F# 中的函数可由其他函数组合而成。 
 
+```F#
+let function1 x = x + 1
+let function2 x = x * 2
+let h = function1 >> function2
+let result5 = h 100
+```
 
-
-
-
-
-
-
-
-
-
+组合运算符 `>>` 采用两个函数，返回一个函数；相比之下，管道运算符 `|>` 采用一个值和一个函数，返回一个值。
 
 
 
