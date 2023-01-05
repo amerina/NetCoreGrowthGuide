@@ -1597,7 +1597,82 @@ Todo...
 
 
 
-### **7、拓展**知识
+### 6、MVVM
+
+MVVM模式的组件
+
+- **Model**
+
+  模型是指表示实际状态内容的领域模型（面向对象的方法），也可以引用表示内容的数据访问层（以数据为中心的方法）
+
+  由于模型只是业务实体(对象)数据的表示，它应该只包含包含对象数据和构造函数的属性。
+
+  实现INotifyPropertyChanged是正确的，因为我们认为这是对象责任的一部分。
+
+- **View**
+
+  与模型-视图-控制器 （MVC） 和模型-视图-演示者 （MVP） 模式一样，视图是用户在屏幕上看到的内容的结构、布局和外观。 它显示模型的表示形式并接收用户与视图的交互（鼠标单击、键盘输入、屏幕点击手势等），并通过定义为链接视图和视图模型而定义的数据绑定（属性、事件回调等）将这些处理转发到视图模型
+
+  即使XAML允许，也要避免在视图上放置逻辑。将逻辑移动到ViewModel而不是添加到View，因为:
+
+  - XAML逻辑无法调试
+  - XAML逻辑无法测试
+
+- **View model**
+
+  视图模型是公开公共属性和命令的视图的抽象。MVVM 具有一个绑定器，而不是 MVC 模式的控制器或 MVP 模式的表示器，该绑定程序可自动执行视图与其在视图模型中的绑定属性之间的通信。视图模型被描述为模型中数据的状态。
+  在 MVP 模式中，视图模型和表示器之间的主要区别在于，表示器具有对视图的引用，而视图模型则没有。相反，视图直接绑定到视图模型上的属性以发送和接收更新。为了有效地运行，这需要绑定技术或生成样板代码来执行绑定。
+
+  包含作为视图和模型之间桥梁的逻辑。
+
+  避免在ViewModel中放入太多逻辑，如果ViewModel逻辑太多，一个类无法容纳，可以考虑创建更多的类(服务、引擎等)。
+
+  在ViewModel中始终包含对模型的引用。
+
+- **Binder**
+
+  声明性数据和命令绑定隐含在 MVVM 模式中。在 Microsoft 解决方案堆栈中，绑定程序是一种名为 XAML 的标记语言。 绑定程序使开发人员不必编写样板逻辑来同步视图模型和视图。当在Microsoft堆栈之外实现时，声明性数据绑定技术的存在使这种模式成为可能，并且没有绑定器，人们通常会使用MVP或MVC代替，并且必须编写更多的样板（或使用其他工具生成它）
+
+MVVM 旨在通过使用 WPF（Windows Presentation Foundation）中的数据绑定函数从视图层中删除几乎所有 GUI 代码（“代码隐藏”），以更好地促进视图层开发与模式其余部分的分离。
+
+无需要求用户体验 （UX） 开发人员编写 GUI 代码，他们可以使用框架标记语言（例如 XAML）并创建到视图模型的数据绑定，视图模型由应用程序开发人员编写和维护。
+
+**VM只是设计师和后端程序员之间的桥梁，应该保持简单。**
+
+缓存在客户端上的数据，该数据(本质上是客户机上的缓存)现在被称为ViewModel。它允许丰富的交互性。
+
+- MVC = model, controller, view = essentially one-way communication = poor interactivity
+- MVVM = model, controller, cache, view = two-way communication = rich interactivity
+
+![DomainMap](Image\03.png)
+
+
+
+View Communication:视图直接绑定到ViewModel。由于绑定，视图中的更改会自动反映到ViewModel中，ViewModel中的更改也会自动反映到视图中。
+
+暴露的ViewModel proproperties实现了某种可观察的接口，可用于自动更新视图(在WPF中是INotifyPropertyChanged)
+
+![DomainMap](Image\04.png)
+
+以下是允许和禁止的依赖项列表:
+
+1. 视图code behind代码不应该引用ViewModel。只有当从View的事件中调用DataContext的命令时才允许这样做(但是有更好的方法来做到这一点，而不需要添加这个依赖项)。
+2. 视图不能引用模型中的任何东西。无论是code behind还是绑定都不能与模型对象对话，只能与ViewModel对象对话。
+3. ViewModel应该始终包含一个Model引用。
+4. 完全禁止模型知道ViewModel的任何信息。
+5. ViewModel必须不知道视图的任何信息，因为一个ViewModel可以与不同的视图一起工作。
+
+
+
+参考：
+
+[Model–view–viewmodel - Wikipedia](https://en.wikipedia.org/wiki/Model–view–viewmodel)
+
+[What is the difference between MVC and MVVM? - Stack Overflow](https://stackoverflow.com/questions/667781/what-is-the-difference-between-mvc-and-mvvm)
+
+[MVVM vs MVP vs MVC](https://web.archive.org/web/20150219153055/http://joel.inpointform.net/software-development/mvvm-vs-mvp-vs-mvc-the-differences-explained/)
+
+### 7、拓展知识
 
 #### 1、**管道-过滤器架构**
 
