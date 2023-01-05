@@ -1,0 +1,55 @@
+﻿<Window x:Class="WPFSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFSample"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <DockPanel>
+            <TextBlock Text="Added Names"
+        DockPanel.Dock="Top" Margin="5,3"/>
+            <ListBox ItemsSource="{Binding AddedNames}">
+            </ListBox>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1"
+    VerticalAlignment="Stretch" Width="5"
+     Background="Gray" HorizontalAlignment="Left" />
+
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="Name" Margin="5,3"/>
+            <TextBox Grid.Row="0" Grid.Column="1" 
+                     Text="{Binding CurrentName, 
+             UpdateSourceTrigger=PropertyChanged}"
+                     Margin="5,3"/>
+
+            <TextBlock Grid.Row="1" Text="Your name is:" Margin="5,3"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" 
+                       Text="{Binding CurrentName}"
+                       Margin="5,3"/>
+
+            <Button Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Left"
+         Content="Add Me" Command="{Binding AddCommand}" Margin="5,3" MinWidth="75" />
+
+        </Grid>
+
+    </Grid>
+</Window>
