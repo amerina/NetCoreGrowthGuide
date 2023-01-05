@@ -10,6 +10,11 @@ using ProductService.Domain;
 
 namespace ProductService.Queries
 {
+    /// <summary>
+    /// FindAllProductsHandler实现了IRequestHandler接口,并定义了输入和输出类型
+    /// 
+    /// FindAllProductsHandler响应FindAllProductsQuery并返回IEnumerable<ProductDto>
+    /// </summary>
     public class FindAllProductsHandler : IRequestHandler<FindAllProductsQuery, IEnumerable<ProductDto>>
     {
         private readonly IProductRepository productRepository;

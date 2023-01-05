@@ -20,6 +20,7 @@ namespace ProductService.Test.Controllers
         [Fact]
         public async Task GetAll_ReturnsJsonResult_WithListOfProducts()
         {
+            //Ä£Äâ¿Í»§¶Ë
             var client = factory.CreateClient();
 
             var response = await client.DoGetAsync<List<ProductDto>>("/api/Products");

@@ -13,6 +13,9 @@ namespace ProductService.Test.Handlers
     {
         private readonly Mock<IProductRepository> productRepository;
 
+        /// <summary>
+        /// 模拟出虚拟数据
+        /// </summary>
         private readonly List<Product> products = new List<Product>
         {
             TestProductFactory.Travel(),
@@ -21,6 +24,7 @@ namespace ProductService.Test.Handlers
 
         public FindProductsHandlersTest()
         {
+            //模拟仓储
             productRepository = new Mock<IProductRepository>();
 
 

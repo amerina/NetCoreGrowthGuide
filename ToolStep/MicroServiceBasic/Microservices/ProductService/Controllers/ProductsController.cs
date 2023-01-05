@@ -22,6 +22,7 @@ namespace ProductService.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
+            //现在我们可以用MediatR发送消息了。控制器非常薄。
             var result = await mediator.Send(new FindAllProductsQuery());
             return new JsonResult(result);
         }
