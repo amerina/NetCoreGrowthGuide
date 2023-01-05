@@ -21,7 +21,7 @@
 
 - Ocelot的API网关
 
-- 使用Eureka发现服务
+- 使用Eureka发现服务/HashiCorp Consul
 
 - Polly重试
 

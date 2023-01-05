@@ -1,0 +1,40 @@
+﻿{
+    "ReRoutes": [
+      {
+        "DownstreamPathTemplate": "/api/health",
+        "DownstreamScheme": "http",
+        "UpstreamPathTemplate": "/book",
+        "UseServiceDiscovery": true, /*配置为使用服务发现*/
+        "ServiceName": "BookService", /*BookService服务配置的服务名称*/
+        "UpstreamHttpMethod": [ "Get" ],
+        "QoSOptions": {
+          "ExceptionsAllowedBeforeBreaking": 3,
+          "DurationOfBreak": 1000,
+          "TimeoutValue": 5000
+        },
+        "FileCacheOptions": { "TtlSeconds": 15 },
+        "LoadBalancerOptions": {
+          "Type": "RoundRobin" /*负载均衡策略*/
+        }
+      },
+      {
+        "DownstreamPathTemplate": "/api/health",
+        "DownstreamScheme": "http",
+        "UpstreamPathTemplate": "/customer",
+        "UseServiceDiscovery": true,
+        "ServiceName": "CustomerService",
+        "UpstreamHttpMethod": [ "Get" ],
+        "QoSOptions": {
+          "ExceptionsAllowedBeforeBreaking": 3,
+          "DurationOfBreak": 1000,
+          "TimeoutValue": 5000
+        },
+        "FileCacheOptions": { "TtlSeconds": 15 }
+      }
+    ],
+  "GlobalConfiguration": {
+    "RequestIdKey": "OcRequestId",
+    "AdministrationPath": "/administration",
+    "ServiceDiscoveryProvider": { "Type": "Eureka" } /*服务发现提供者*/
+  }
+}
