@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
+/// <summary>
+/// https://www.c-sharpcorner.com/article/building-api-gateway-using-ocelot-in-asp-net-core/
+/// </summary>
 namespace CustomerAPIServices.Controllers
 {
     [Route("api/[controller]")]
