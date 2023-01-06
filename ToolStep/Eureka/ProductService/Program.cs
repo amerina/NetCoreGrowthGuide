@@ -13,7 +13,7 @@
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("http://*:9002")
+                .UseUrls("http://*:5002")
                 .Build();
     }
 }
