@@ -4,11 +4,11 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APIGateway", "APIGateway\APIGateway.csproj", "{039DF16F-2AD8-4BDB-97A0-5B17484DBA57}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService", "APIServiceA\BookService.csproj", "{1243018F-C0C3-40C6-A2D8-3D74CCD34E0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService", "BookService\BookService.csproj", "{1243018F-C0C3-40C6-A2D8-3D74CCD34E0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "APIServiceB\ProductService.csproj", "{95A340A0-FA6A-4C96-9D53-BB428079758E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductService\ProductService.csproj", "{95A340A0-FA6A-4C96-9D53-BB428079758E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerService", "APIServiceAA\CustomerService.csproj", "{C11CF37B-4542-4F67-A93C-BA01D1483AFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomerService", "CustomerService\CustomerService.csproj", "{C11CF37B-4542-4F67-A93C-BA01D1483AFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
