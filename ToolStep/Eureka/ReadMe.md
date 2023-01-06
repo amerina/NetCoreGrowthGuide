@@ -10,6 +10,16 @@
 
 我们首先创建两个API服务(BookService、CustomerService)。只需创建默认的ASP.NET Core Web API项目。在API网关可以发现我们的API服务之前，我们需要在Eureka服务器中注册它们。
 
+
+
+安装Eureka客户端包
+
+```powershell
+dotnet add package Steeltoe.Discovery.ClientCore --version 2.0.1
+```
+
+
+
 在BookService appsettings.json中添加一些配置：
 
 ```json
@@ -181,6 +191,14 @@ Eureka Server已经启动，但是没有可用的实例。
 
 或Docker运行Eureka
 
+1. 找到[eureka Docker Image](https://hub.docker.com/r/springcloud/eureka/tags)
+2. docker pull springcloud/eureka:latest
+3. 运行Docker Image
+
+![00](Image/01.png)
+
+
+
 
 
 #### **Step 4** 
@@ -193,7 +211,7 @@ Eureka Server已经启动，但是没有可用的实例。
 
 现在，让我们运行API Gateway。
 
-![00](Image/01.png)
+
 
 
 
