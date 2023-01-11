@@ -1599,6 +1599,44 @@ Todo...
 
 ### 6、MVVM
 
+**MVVM 模式有助于将应用程序的业务和表示逻辑与用户界面 (UI) 清晰分离。**
+
+- 视图负责定义用户在屏幕上看到的结构、布局和外观。 
+- 视图模型提供的属性和命令定义了要由 UI 提供的功能，但视图决定了如何显示该功能。
+- 每个视图模型以一种视图可以轻松使用的形式提供来自模型的数据。
+- 可以将模型视为表示应用的领域模型，该模型通常包括数据模型以及业务和验证逻辑。
+
+将视图模型连接到视图的主要方法：
+
+- 最简单的方法是让视图在 XAML 中以声明方式实例化其对应的视图模型。
+
+  ```xaml
+  <ContentPage xmlns:local="clr-namespace:eShop">
+      <ContentPage.BindingContext>
+          <local:LoginViewModel />
+      </ContentPage.BindingContext>
+      <!-- Omitted for brevity... -->
+  </ContentPage>
+  ```
+
+  创建 `ContentPage` 时，会自动构造 `LoginViewModel` 的实例并将其设置为视图的 `BindingContext`。
+
+- 视图可以在代码隐藏文件中包含代码，从而将视图模型分配给其 `BindingContext` 属性。 这通常在视图的构造函数中完成
+
+  ```c#
+  public LoginView()
+  {
+      InitializeComponent();
+      BindingContext = new LoginViewModel(navigationService);
+  }
+  ```
+
+  视图代码隐藏中视图模型的编程构造和分配的优势在于简单易行。 但是，这种方法的主要缺点是视图需要为视图模型提供任何所需的依赖项。 使用依赖关系注入容器有助于保持视图和视图模型之间的松散耦合。
+
+视图可访问的所有视图模型和模型类都应实现 INotifyPropertyChanged 接口。 在视图模型或模型类中实现此接口允许该类在基础属性值发生更改时向视图中的任何数据绑定控件提供更改通知。
+
+
+
 MVVM模式的组件
 
 - **Model**
@@ -1613,7 +1651,7 @@ MVVM模式的组件
 
   与模型-视图-控制器 （MVC） 和模型-视图-演示者 （MVP） 模式一样，视图是用户在屏幕上看到的内容的结构、布局和外观。 它显示模型的表示形式并接收用户与视图的交互（鼠标单击、键盘输入、屏幕点击手势等），并通过定义为链接视图和视图模型而定义的数据绑定（属性、事件回调等）将这些处理转发到视图模型
 
-  即使XAML允许，也要避免在视图上放置逻辑。将逻辑移动到ViewModel而不是添加到View，因为:
+  **即使XAML允许，也要避免在视图上放置逻辑。将逻辑移动到ViewModel而不是添加到View，因为:**
 
   - XAML逻辑无法调试
   - XAML逻辑无法测试
@@ -1661,6 +1699,7 @@ View Communication:视图直接绑定到ViewModel。由于绑定，视图中的�
 3. ViewModel应该始终包含一个Model引用。
 4. 完全禁止模型知道ViewModel的任何信息。
 5. ViewModel必须不知道视图的任何信息，因为一个ViewModel可以与不同的视图一起工作。
+6. 确保视图模型负责定义影响视图显示某些方面的逻辑状态更改，例如命令是否可用，或指示操作处于挂起状态。 通过绑定到视图模型属性来启用和禁用 UI 元素，而不是在代码隐藏中启用和禁用它们。
 
 
 
@@ -1671,6 +1710,8 @@ View Communication:视图直接绑定到ViewModel。由于绑定，视图中的�
 [What is the difference between MVC and MVVM? - Stack Overflow](https://stackoverflow.com/questions/667781/what-is-the-difference-between-mvc-and-mvvm)
 
 [MVVM vs MVP vs MVC](https://web.archive.org/web/20150219153055/http://joel.inpointform.net/software-development/mvvm-vs-mvp-vs-mvc-the-differences-explained/)
+
+[MVVM | Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/architecture/maui/mvvm)
 
 ### 7、拓展知识
 
