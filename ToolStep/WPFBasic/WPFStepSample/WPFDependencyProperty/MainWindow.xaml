@@ -6,11 +6,23 @@
         xmlns:local="clr-namespace:WPFStepSample"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <Style x:Key="TextBlockBottomStyle" BasedOn="{StaticResource {x:Type TextBlock}}" TargetType="TextBlock">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="30"></Setter>
+                <Setter Property="FontStyle" Value="Italic"></Setter>
+                <Setter Property="Width" Value="100"></Setter>
+            </Style.Setters>
+        </Style>
+        <Thickness x:Key="MarginTOP">0 5 0 0</Thickness>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
+        <!--dependency property-->
         <Button x:Name="btnTest" Click="btnTest_Click" Grid.Row="1" Height="40" Width="175" Margin="10" Content="Dependency Property">
             <Button.Style>
                 <!--The x:Type markup extension in XAML has a similar functionality like typeof() in C#-->
@@ -26,6 +38,17 @@
             </Button.Style>
         </Button>
 
+        <!--dependency property user control Sample-->
         <local:CustomerControl x:Name="txtText" SetText="Hello World"></local:CustomerControl>
+
+        <!--MVVM Sample-->
+        <!--WPF在内部使用依赖属性，依赖属性的名称总是以关键字property结尾。这是一个标准的约定-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Label x:Name="lblUserName" Content="UserName:" VerticalAlignment="Center" Margin="200 0 0 0"></Label>
+            <TextBox  x:Name="txtUserName" Text="{Binding UserName}" Height="30" Width="300"></TextBox>
+
+            <Button x:Name="btnSubmit" Margin="{StaticResource MarginTOP}" Content="Submit" Height="20" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"></Button>
+            <TextBlock x:Name="TextBlockUserName" Text="{Binding UserName}" Style="{DynamicResource TextBlockBottomStyle}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+        </StackPanel>
     </Grid>
 </Window>

@@ -23,6 +23,9 @@ namespace WPFStepSample
         public MainWindow()
         {
             InitializeComponent();
+
+            // tell MainWindow.xaml class where the dataContext is
+            this.DataContext = new ViewModel();
         }
 
         private void btnTest_Click(object sender, RoutedEventArgs e)
