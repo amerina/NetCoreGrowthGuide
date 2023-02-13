@@ -1,0 +1,31 @@
+﻿<Window x:Class="WPFStepSample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFStepSample"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button x:Name="btnTest" Click="btnTest_Click" Grid.Row="1" Height="40" Width="175" Margin="10" Content="Dependency Property">
+            <Button.Style>
+                <!--The x:Type markup extension in XAML has a similar functionality like typeof() in C#-->
+                <Style TargetType="{x:Type Button}">
+                    <Style.Triggers>
+                        <!--When the mouse is over the button, it will change the foreground color of a button. 
+                        When the mouse leaves the button, it changes back to its original color.-->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="Red"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+
+        <local:CustomerControl x:Name="txtText" SetText="Hello World"></local:CustomerControl>
+    </Grid>
+</Window>
