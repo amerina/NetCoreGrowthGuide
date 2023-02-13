@@ -18,6 +18,7 @@ namespace WPFStepSample
 {
     /// <summary>
     /// https://www.codeproject.com/Articles/140620/WPF-Tutorial-Dependency-Property
+    /// https://learn.microsoft.com/zh-cn/dotnet/desktop/wpf/advanced/properties-wpf?view=netframeworkdesktop-4.8
     /// CustomerControl1.xaml 的交互逻辑
     /// </summary>
     public partial class CustomerControl1 : UserControl

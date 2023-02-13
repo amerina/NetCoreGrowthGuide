@@ -33,6 +33,19 @@ namespace WPFStepSample
             txtText.SetText = $"{DateTime.Now} {nameof(btnTest)} Clicked.";
         }
 
+        #region Basic Dependency Property
+        /// <summary>
+        /// https://learn.microsoft.com/zh-cn/dotnet/desktop/wpf/advanced/properties-wpf?view=netframeworkdesktop-4.8
+        /// </summary>
+        public static readonly DependencyProperty IsSpinningProperty = DependencyProperty.Register("IsSpinning", typeof(Boolean),typeof(MainWindow));
+        public bool IsSpinning
+        {
+            get { return (bool)GetValue(IsSpinningProperty); }
+            set { SetValue(IsSpinningProperty, value); }
+        }
+
+        #endregion
+
         #region CustomerControl1
         /// <summary>
         /// https://www.codeproject.com/Articles/140620/WPF-Tutorial-Dependency-Property
