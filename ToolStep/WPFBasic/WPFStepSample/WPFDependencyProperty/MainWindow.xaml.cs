@@ -32,5 +32,33 @@ namespace WPFStepSample
         {
             txtText.SetText = $"{DateTime.Now} {nameof(btnTest)} Clicked.";
         }
+
+        #region CustomerControl1
+        /// <summary>
+        /// https://www.codeproject.com/Articles/140620/WPF-Tutorial-Dependency-Property
+        /// </summary>
+        public static readonly DependencyProperty IsValuePassedProperty = DependencyProperty.RegisterAttached("IsValuePassed", typeof(bool), typeof(MainWindow),
+        new FrameworkPropertyMetadata(new PropertyChangedCallback(IsValuePassed_Changed)));
+
+        public static void SetIsValuePassed(DependencyObject obj, bool value)
+        {
+            obj.SetValue(IsValuePassedProperty, value);
+        }
+        public static bool GetIsValuePassed(DependencyObject obj)
+        {
+            return (bool)obj.GetValue(IsValuePassedProperty);
+        }
+
+        public static void IsValuePassed_Changed(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            MessageBox.Show("Value passed");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.SetIsValuePassed(this, !(bool)this.GetValue(IsValuePassedProperty));
+        }
+        #endregion
+
     }
 }

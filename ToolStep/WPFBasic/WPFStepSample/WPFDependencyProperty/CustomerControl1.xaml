@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="WPFStepSample.CustomerControl1"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPFStepSample"
+             mc:Ignorable="d"  x:Name="uccustomcontrol"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding ElementName=uccustomcontrol, Path=DP}" MinHeight="50" MinWidth="100" Grid.Row="0"/>
+        <ListBox x:Name="lstEvents" ItemsSource="{Binding}" Grid.Row="1"/>
+    </Grid>
+</UserControl>
