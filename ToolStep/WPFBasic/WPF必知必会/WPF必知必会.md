@@ -7,5 +7,7 @@
 2. [依赖属性](依赖属性.md)
 3. [路由事件](路由事件.md)
 4. [逻辑和可视化树](逻辑和可视化树.md)
-5. [MVVMPattern](MVVMPattern.md)
+5. [数据绑定](数据绑定.md)
+6. [MVVMPattern](MVVMPattern.md)
+7. 
 

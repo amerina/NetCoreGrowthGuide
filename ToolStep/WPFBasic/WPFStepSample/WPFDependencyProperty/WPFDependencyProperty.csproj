@@ -68,6 +68,7 @@
     <Compile Include="CustomerControl.xaml.cs">
       <DependentUpon>CustomerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MarkupExtension\ReflectionExtension.cs" />
     <Compile Include="TypeConverter\GeoPointConverter.cs" />
     <Compile Include="TypeConverter\GeoPointItem.cs" />
     <Compile Include="TypeConverter\GeoPointUC.xaml.cs">
