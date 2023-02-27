@@ -6,17 +6,18 @@ using HotChocolate.AspNetCore.Playground;
 using HotChocolate.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using GraphQLBasic.GraphQL;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<TimeGraphContext>(context =>
+builder.Services.AddDbContext<TimeGraphContext>(optionsAction: context =>
 {
     context.UseInMemoryDatabase("TimeGraphServer");
-});
+}, contextLifetime: ServiceLifetime.Singleton);
 
 builder.Services.AddGraphQLServer()
-                //.AddType<ProjectType>()
-                //.AddType<TimeLogType>()
+                .AddType<ProjectType>()
+                .AddType<TimeLogType>()
                 .AddQueryType<Query>();
 
 var app = builder.Build();
