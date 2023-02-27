@@ -1,6 +1,6 @@
 ﻿version: '3.4'  
   
-elasticsearch:  
+  elasticsearch:  
    container_name: elasticsearch  
    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2 
    ports:  

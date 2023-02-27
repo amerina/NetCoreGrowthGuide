@@ -35,7 +35,7 @@ var app = builder.Build();
 builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                      .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true);//.UseSerilog();
 
-builder.Host.UseSerilog(); 
+builder.Host.UseSerilog().; 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
