@@ -11,3 +11,11 @@
 6. [MVVMPattern](MVVMPattern.md)
 7. 
 
+
+
+
+
+参考：
+
+[How to begin WPF development? - Stack Overflow](https://stackoverflow.com/questions/129772/how-to-begin-wpf-development)
+
