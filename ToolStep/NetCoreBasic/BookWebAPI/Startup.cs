@@ -39,6 +39,7 @@ namespace BookWebAPI
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
