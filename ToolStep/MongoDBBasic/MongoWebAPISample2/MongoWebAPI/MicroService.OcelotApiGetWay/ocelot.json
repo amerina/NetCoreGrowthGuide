@@ -1,0 +1,105 @@
+{
+  //"GlobalConfiguration": {
+  //  "RequestIdKey": "OcRequestId",
+  //  "AdministrationPath": "/admin"
+  //},
+  "ReRoutes": [
+    {
+      "DownstreamPathTemplate": "/api/{url}", /*上游转发到下游的url地址（也就是我们的目标api的地址，比如产品系统的api或者订单系统的api）*/
+      "UpstreamPathTemplate": "/order/{url}", /*上游api路由模板地址*/
+      "UpstreamHttpMethod": [
+        "Get" /*上游支持的请求方式*/,"Post"
+      ],
+      "AddHeadersToRequest": {},
+      "AddClaimsToRequest": {},
+      "RouteClaimsRequirement": {},
+      "AddQueriesToRequest": {},
+      "RequestIdKey": "",
+      "FileCacheOptions": {
+        "TtlSeconds": 0,
+        "Region": ""
+      },
+      "ReRouteIsCaseSensitive": false,
+      "ServiceName": "",
+      "DownstreamScheme": "http", /*下游的http头*/
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost", /*下游的api Host*/
+          "Port": 60285 /*下游的api端口*/
+        }
+      ],
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 0,
+        "DurationOfBreak": 0,
+        "TimeoutValue": 0
+      },
+      "LoadBalancer": "",
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": false,
+        "Period": "",
+        "PeriodTimespan": 0,
+        "Limit": 0
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "",
+        "AllowedScopes": []
+      },
+      "HttpHandlerOptions": {
+        "AllowAutoRedirect": true,
+        "UseCookieContainer": true,
+        "UseTracing": true
+      },
+      "DangerousAcceptAnyServerCertificateValidator": false
+    },
+    {
+      "DownstreamPathTemplate": "/api/{url}",
+      "UpstreamPathTemplate": "/api/books/{url}",
+      "UpstreamHttpMethod": [
+        "Get",
+        "Post"
+      ],
+      "AddHeadersToRequest": {},
+      "AddClaimsToRequest": {},
+      "RouteClaimsRequirement": {},
+      "AddQueriesToRequest": {},
+      "RequestIdKey": "",
+      "FileCacheOptions": {
+        "TtlSeconds": 0,
+        "Region": ""
+      },
+      "ReRouteIsCaseSensitive": false,
+      "ServiceName": "",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5001
+        }
+      ],
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 0,
+        "DurationOfBreak": 0,
+        "TimeoutValue": 0
+      },
+      "LoadBalancer": "",
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": false,
+        "Period": "",
+        "PeriodTimespan": 0,
+        "Limit": 0
+      },
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "",
+        "AllowedScopes": []
+      },
+      "HttpHandlerOptions": {
+        "AllowAutoRedirect": true,
+        "UseCookieContainer": true,
+        "UseTracing": true
+      },
+      "DangerousAcceptAnyServerCertificateValidator": false
+    }
+  ]
+}
