@@ -1,0 +1,55 @@
+﻿Redis有8种数据类型，当然常用的主要是 String、Hash、List、Set、 SortSet 这5种类型，
+他们都是基于键值的方式组织数据。每一种数据类型提供了非常丰富的操作命令，可以满足绝大部分需求，如果有特殊需求还能自己通过 lua 脚本自己创建新的命令（具备原子性）
+
+
+
+
+
+#https://www.learmoreseekmore.com/2020/11/dotnetcore-api-redis-cache.html
+#https://tutexchange.com/using-redis-cache-with-asp-net-core-3-1-using-stackexchange-redis-extensions-core-extensions/
+#https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-5.0
+
+优点
+数据在多个服务器上是一致的
+
+多个应用程序/服务器可以使用 Redis Server 的一个实例来缓存数据
+从长远来看，这降低了维护成本
+
+在服务器重新启动和应用程序部署时，缓存不会丢失，因为缓存位于应用程序外部
+
+它不使用本地服务器的资源
+
+缺点
+由于它是外部的，响应时间可能会慢一点，这取决于到 Redis 服务器的连接强度
+
+
+It supports quite a lot of data structures like string, hashes, lists, queries, and much more
+
+
+
+
+实现仓储模式,隐藏不用数据库的实现细节
+
+
+IDistributedCache Interface:
+Idistributtedcache 接口包含一组有助于使用缓存的方法，其中一些方法如下所示
+
+Get, GetAsync, GetStringAsync - Get，GetAsync，GetStringAsync-fetches the cached data by the key passed to the method. 通过传递给方法的键获取缓存的数据
+
+Set, SetAsync, SetStringAsync - Set，SetAsync，SetStringAsync-saves the data to the cache table with a specific key. 使用特定的键将数据保存到缓存表中
+
+Remove, RemoveAsync - 删除，RemoveAsync-removes the cached data with specific to key passed. 删除具有特定于键传递的缓存数据
+
+
+
+
+**************
+Redis计数器
+INCRBY key increment
+将 key 所储存的值加上给定的增量值（increment）
+
+
+
+
+
+
