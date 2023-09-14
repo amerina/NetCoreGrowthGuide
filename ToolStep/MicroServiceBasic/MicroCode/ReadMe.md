@@ -197,7 +197,7 @@ SSL peer certificate or SSH remote key was not OK
 注释：app.UseHttpsRedirection();
 ```
 
-#### 11、Add Doker
+#### 11、Add Docker
 
 ![02](..\Image\02.png)
 
