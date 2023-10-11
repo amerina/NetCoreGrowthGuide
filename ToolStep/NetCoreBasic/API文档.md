@@ -1,0 +1,1 @@
+[Swagger and ReDoc for Documenting WEB API in .NET 5 - DEV Community](https://dev.to/caiocesar/swagger-and-redoc-for-documenting-web-api-in-net-5-2ba0)
