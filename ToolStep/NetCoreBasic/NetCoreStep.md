@@ -109,6 +109,7 @@ dotnet new webapi -n BookSeparation
 cd BookSeparation
 dotnet add package Microsoft.AspNetCore.Mvc
 dotnet add package Microsoft.EntityFrameworkCore
+dotnet add package Microsoft.EntityFrameworkCore.InMemory
 ```
 
 #### Step 3: 创建数据库添加上下文
@@ -131,12 +132,22 @@ public class TodoContext : DbContext
         : base(options)
     {
     }
-
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseInMemoryDatabase("BookSeparation"); // 指定使用内存数据库
+    }
     public DbSet<Todo> Todos { get; set; }
 }
 ```
 
-#### Step 4: 构建必要的API端点
+#### Step 4: 注册TodoContext
+
+```c#
+//注册 DbContext
+builder.Services.AddDbContext<TodoContext>();
+```
+
+#### Step 5: 构建必要的API端点
 
 ```c#
 [Route("api/[controller]")]
@@ -163,8 +174,52 @@ public class TodoController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetTodo), new { id = todo.Id }, todo);
     }
+    
+    [HttpGet]
+    public async Task<ActionResult<Todo>> GetTodo(int id)
+    {
+         return await _context.Todos.FirstAsync(x => x.Id == id);
+    }
 }
 ```
+
+#### Step 6: 添加ReDoc支持
+
+[Swagger and ReDoc for Documenting WEB API in .NET 5 - DEV Community](https://dev.to/caiocesar/swagger-and-redoc-for-documenting-web-api-in-net-5-2ba0)
+
+```powershell
+//安装NuGet packages
+dotnet add package Swashbuckle.AspNetCore
+dotnet add package Swashbuckle.AspNetCore.Swagger
+dotnet add package Swashbuckle.AspNetCore.ReDoc
+```
+
+```c#
+//注册SwaggerDoc
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BookSeparation", Version = "v1" });
+});
+```
+
+
+
+```C#
+//add Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BookSeparation v1"));
+
+//add Roc
+//访问https://localhost:7080/api-docs
+app.UseReDoc(c =>
+{
+   c.DocumentTitle = "BookSeparation API Documentation";
+   c.ConfigObject.HideHostname = true;
+   c.SpecUrl = "/swagger/v1/swagger.json";
+});
+```
+
+
 
 #### 前端：
 
@@ -295,11 +350,11 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchTodos({ commit }) {
-      const response = await axios.get('/api/todo');
+      const response = await axios.get('/api/todo/list');
       commit('setTodos', response.data);
     },
     async createTodo({ commit }, todo) {
-      const response = await axios.post('/api/todo', todo);
+      const response = await axios.post('/api/todo/create', todo);
       commit('addTodo', response.data);
     }
   },
@@ -339,7 +394,15 @@ export default new Vuex.Store({
 
 一旦构建了后端和前端，就可以分别部署它们，并使用HTTP请求在它们之间进行通信。这使得您的项目具有更好的可伸缩性和灵活性。
 
+#### Step8 : Running the Project
 
+```
+npm run build
+```
+
+可供参考：
+
+[tareq403/VueJS-ToDo-Frontend: A simple VueJS frontend project to (github.com)](https://github.com/tareq403/VueJS-ToDo-Frontend)
 
 
 
